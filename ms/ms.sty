@@ -139,6 +139,24 @@ Titles for Systematic biology:
 \doublespacing
 }
 
+\newcommand{\mstitleshort}{
+\parindent=0pt
+\begin{center}%
+  {\LARGE \mstitle \par}%
+  \vskip 3em%
+  {\large
+    \lineskip .75em%
+    \begin{tabular}[t]{c}%
+      \theauthor
+    \end{tabular}\par}%
+  \vskip 1.5em%
+\end{center}\par
+
+\setlength{\parskip}{0pt} % threequarters
+\theaffiliation
+\setlength{\parskip}{.2ex plus1pt} % threequarters
+}
+
 % Abstract environment that does not decrease the font size.
 \renewenvironment{abstract}{
   \section*{Abstract}
