@@ -1,0 +1,58 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[osf]{mathpazo}
+\usepackage{ms}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[labelfont=bf]{caption} % make label for figure bold
+
+% Allow referencing into the supporting information, once that exists.
+\IfFileExists{./competition-kernels-sm.tex}{%
+  \usepackage{xr}%
+  \externaldocument{competition-kernels-sm}}{}
+
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\title{Trait gradients}
+
+\author{ Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
+\date{}
+\affiliation{Department of Biological Sciences, Macquarie University,
+  Sydney, Australia}
+\runninghead{}
+\keywords{}
+
+\usepackage{color}
+
+\input{common-defs}
+
+\begin{document}
+
+% Disable words breaking over lines for final submission:
+% \raggedright
+% \pagestyle{empty}
+
+%\mstitlepage
+\parindent=1.5em
+\addtolength{\parskip}{.3em}
+
+% \begin{abstract}
+% Abstract goes here\ldots
+% \end{abstract}
+
+\section{Introduction}
+
+\citep{Falster-2011}
+
+\clearpage
+
+\bibliographystyle{amnat}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,45 @@
+packages:
+  - plant
+  - rootSolve
+  - rmarkdown
+
+sources:
+  - R
+
+plot_options:
+  tall:
+    height: 6.5
+    width: 5.5
+  wide:
+    height: 3.5
+    width: 5.5
+    pointsize: 10
+  skinny:
+    height: 4.5
+    width: 3
+    pointsize: 10
+  square:
+    height: 5.5
+    width: 5.5
+
+knitr_options:
+  vignette:
+    auto_figure_prefix: true
+    chdir: true
+
+targets:
+  all:
+    depends:
+      - ms/ideas.pdf
+
+  # NOTE: some issues getting dependencies to behave sensibly here
+  # (manuscript rebuilding when figures change but tex does not)
+  # figures:
+  #   depends:
+
+  ms/ideas.pdf:
+    depends:
+      - ms/ms.sty
+      - ms/amnat.bst
+    command: latex_build("ms/ideas.tex", "ms/references.bib", clean=TRUE)
+
