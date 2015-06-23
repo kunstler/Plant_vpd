@@ -1,0 +1,29 @@
+Refs,trait,MAT,Precip,Water availability,Number of frost days,Veget
+Niinemets-2001,LMA,+,-,,,all
+Wright-2002,LMA,,-,,,all
+Wright-2004 Wright-2005,LMA,+,-,,,all
+Onoda-2011,LMA,,-,,,all
+Moles-2014,LMA,+,-,,,all
+Simova-2014,LMA,-,-,,,all
+Laughlin-2012,LMA,-,,,,tree
+Fortunel-2014,LMA,,,-,,tree
+Cornwell-2009,LMA,,,-,,tree
+VanBodegom-2014,LMA,,,-,-,all
+Maire-2014,LMA,-,,,+,all
+Fortunel-2014,Wood density,,,-,,tree
+Swenson-2010,Wood density,+,+,,,tree
+Stahl-2014,Wood density,+,0,,,tree
+VanBodegom-2014,Wood density,,,,-,tree
+Simova-2014,Wood density,(+),(-),,,tree
+Chave-2006,Wood density,,,-,,tree
+Chave-2009,Wood density,,,,,tree
+Kooyman-2010,Wood density,,,,,tree
+Preston-2006,Wood density,,,-,,tree
+Cornwell-2009,Wood density,,,-,,tree
+Wright-2005,Narea,+,-,,,all
+Moles-2014,Narea,-,0,,,all
+Maire-2015,Narea,,-,,,all
+Reich-2004,Nmass,-+,,,,all
+Moles-2014,Nmass,-,0,,,all
+Ordonez-2009,Nmass,+,,,,all
+Swenson-2010,Nmass,-,-,,,tree
