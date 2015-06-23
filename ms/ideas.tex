@@ -46,21 +46,26 @@
 
 \section{Background \& Motivation}
 
-Why trait gradients
+(Why gradients) Goal for ecology to understand why vegetation changes across large biogeographic gradients? Important because
 
-Plant model as platform \citep{Falster-2016}
+- turnover of species key driver of (beta) diversity
+- key functional attributes known to shift, these influence functioning of vegetation, for example  rates of tissue turnover
+- outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
+
+Several studies document gradient of key leaf and stem traits with precipitation
+
+- consistent patterns for LMA and WD
+- Numerous empirical investigations, but mechanisms remain largely unknown / unexplored.
+
+A promising approach for investigating causes of trait adaptation is via models capturing process of adaptation -- allow you to encode various rules and see how virtual system responds. Many abstract theoretical models, establish some basic principles. For example, Holt, Barton, Taper \& Case. ....
+
+Yet few connect with real gradients and real traits. (What is missing to explain observed empirical patterns). Observed trait gradients are present but weak, majority of variation within sites / climate zones. Need to explain both range (coexistence) and change in mean. There are some optimisation (cost-benefit) models seek to explain changes in traits along gradients  (Sterck?, ask Mark). Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
+
+Here we use a new model -- \plant\ \citep{Falster-2016} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Driven by competition for light in size-structured metapopulations. Outcomes of competition moderated by environmental factors such as site productivity and disturbance regime.
 
 Key questions
 
-\section{Conceptual overview of analysis}
 
-\subsection{Diversification in successional strategy}
-
-Requires demographic trade-off between growth in high-light and shade-tolerance.
-
-Possible via trade-offs in either LMA or wood density,
-
-\subsection{Stress tolerance trait}
 
 
 \section{Review: Empirical patterns of trait variation across abiotic
@@ -147,6 +152,53 @@ gradients}
 
 \item \citet{Ordonez-2009}: Nmass increase with MAT.
 \end{itemize}
+
+\subsection{Summary}
+
+There appears to be a clear pattern of decreasing LMA and decreasing WD with increasing water availability (measured either as mean annual precip, or some other measure of wetness). This relationship was found in all studies and areas, with but one exception: \citet{Swenson-2010} found an increase in WD with MAP across the north America. However, it is important to note that Swenson's study infers WD from species distribution maps, estimates are likely to be more uncertain than where known occurrences are used. Further, using similar dataset, \citet{Stahl-2015} found no relationship between MAP and WD.
+
+\section{Conceptual overview of analysis}
+
+\subsection{Diversification in successional strategy}
+
+Requires demographic trade-off between growth in high-light and shade-tolerance.
+
+Possible via trade-offs in either LMA or wood density,
+
+
+1. Change in productivity
+  - high LMA as adaptation to both log light and low water
+2. Change the relationship LMA and turnover
+  - slope or elevation
+3. Introduce additional trait. 3 possible outcomes
+  - compensates for lower water, leaf N per area
+    - make LMA shift less than would have been otherwise
+    - instead differentiate species in N (with flow on effect to shade tolerance) and also in LL
+  - ameliorates risk of mortality
+    - (do we know which trait changes embolism risk)
+      - psi50: don't know which traits
+      - vessel size:
+    - assume has some carbon cost, otherwise not beneficial
+    - diverts carbon away from growth, so amplifies change in LMA
+  - height at maturation
+    - will decrease difference in LMA
+
+Tasks
+
+1. get evolutionary assembly working again
+  - basic patterns for lma with site productivity
+  - Sensitivity of LMA to different factors (get in right range)
+2. implement/improve leaf Nitrogen physiology
+  - link for water?
+3. Define new risk amelioration trait and effect on mortality
+4. Review treatment of water in DGVMs
+
+
+\subsection{Stress tolerance trait}
+
+
+
+
 
 \clearpage
 
