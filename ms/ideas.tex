@@ -13,7 +13,7 @@
 
 % We will generate all images so they have a width \maxwidth. This means
 % that they will get their normal width if they fit onto the page, but
-% are scaled down if they would overflow the margins.
+% are scaled down if they would overflow the MAPgins.
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
@@ -69,69 +69,84 @@ gradients}
 
 \subsection{Leaf mass per area}
 
-\citet{Niinemets-2001}: compared LMA for 558 broad-leaved and 39 needle-leaved shrubs and trees from 182 geographical locations distributed. LMA decreasing with rainfall (in driest month). Also increasing with irradiance. Thickness and LMA also increasing with MAT.
+\begin{itemize}
+\item \citet{Niinemets-2001}: compared LMA for 558 broad-leaved and 39 needle-leaved shrubs and trees from 182 geographical locations distributed. LMA decreasing with rainfall (in driest month). Also increasing with irradiance. Thickness and LMA also increasing with MAT.
 
-\citet{Wright-2002}: compared relationships between LMA and leaf lifespan at two low and two high rainfall sites. Low rainfall sites tended to have slightly high LMA and also lower LL at given LMA, i.e. intercept of relationship decreased. Species from low rainfall sites were also easier to cut (work to shear) at given LMA, so the interpretation was that lower LL for given LMA was because leaves consisted of soft internal tissues (e.g. more mesophyll, high leaf N).
+\item \citet{Wright-2002}: compared relationships between LMA and leaf lifespan at two low and two high rainfall sites. Low rainfall sites tended to have slightly high LMA and also lower LL at given LMA, i.e. intercept of relationship decreased. Species from low rainfall sites were also easier to cut (work to shear) at given LMA, so the interpretation was that lower LL for given LMA was because leaves consisted of soft internal tissues (e.g. more mesophyll, high leaf N).
 
-\citet{Wright-2004}: Data 2,370 species from 163 sites. LMA increases with MAT and decrease with MAR (figure 3).
+\item \citet{Wright-2004}: Data 2,370 species from 163 sites. LMA increases with MAT and decrease with MAP (figure 3).
 
-\citet{Wright-2005}: At hotter, drier and higher irradiance sites mean LMA was higher; At drier sites average LL was shorter at a given LMA (confirming patterns from Wright 2002); at hotter sites the increase in LL was less for a given increase in LMA (LL-LMA slope became less positive)
+\item \citet{Wright-2005}: At hotter, drier and higher irradiance sites mean LMA was higher; At drier sites average LL was shorter at a given LMA (confirming patterns from Wright 2002); at hotter sites the increase in LL was less for a given increase in LMA (LL-LMA slope became less positive)
 
-\citet{Onoda-2011}: data for 2819 species from 90 sites worldwide. LMA tends to be higher on drier sites.
+\item \citet{Onoda-2011}: data for 2819 species from 90 sites worldwide. LMA tends to be higher on drier sites.
 
-\citet{Moles-2014}: data for 10792 species from 722 sites. LMA decreases with MAR, increases with MAT.
+\item \citet{Moles-2014}: data for 10792 species from 722 sites. LMA decreases with MAP, increases with MAT.
 
-\citet{Simova-2014}: across entire Nth American continent, LMA decreasing with MAT and MAP, increasing with degree of seasonality. No significant change in variance. Note patterns with temperature in this study is opposite to all the above results. Also decreases with MAT but increases with degree of seasonality --> is this conflicting?
+\item \citet{Simova-2014}: across entire Nth American continent, LMA decreasing with MAT and MAP, increasing with degree of seasonality. No significant change in variance. Note patterns with temperature in this study is opposite to all the above results. Also decreases with MAT but increases with degree of seasonality -- is this conflicting?
 
-\citet{Laughlin-2012}: Data for nine tree species in the south-west USA across 196 plots,between 2200 and 3600 m altitude, corresponding to a 10 degC range in MAT. LMA decreased with MAT.
+\item \citet{Laughlin-2012}: Data for nine tree species in the south-west USA across 196 plots,between 2200 and 3600 m altitude, corresponding to a 10 degC range in MAT. LMA decreased with MAT.
 
-\citet{Fortunel-2014}: higher LMA  in white sand forest than in flooded forest or terra firme forest (with less water stress). However, variation within site is larger than between sites.
+\item \citet{Fortunel-2014}: higher LMA  in white sand forest than in flooded forest or terra firme forest (with less water stress). However, variation within site is larger than between sites.
 
-\citet{vanOmmenKloeke-2012}: looked at leaf lifespan for 189 deciduous and 506 evergreen species across 83 study locations. The LLS of deciduous and evergreen species showed opposite responses to temperature: deciduous LLS increases while evergreen LLS decreases. Pattern with MAP was weak.
+\item \citet{vanOmmenKloeke-2012}: looked at leaf lifespan for 189 deciduous and 506 evergreen species across 83 study locations. The LLS of deciduous and evergreen species showed opposite responses to temperature: deciduous LLS increases while evergreen LLS decreases. Pattern with MAP was weak. Note, similar result already reported by \citet{Wright-2005}.
 
-\citet{Douma-2011}: data from 156 plots from natural ecosystems throughout The Netherlands.  Decrease in LMA with nutrient availability.
-\citet{VanBodegom-2014}: LMA increase with PET and decrease with number of frost days and the number of wet days (precip > PET). But stronger effect of Nmin (net nitrogen mineralization rate).
+\item \citet{Douma-2011}: data from 156 plots from natural ecosystems throughout The Netherlands.  Decrease in LMA with nutrient availability.
 
-\citet{Cornwell-2009}: LMA decrease with soil water availability and increase with elevation.
+\item \citet{VanBodegom-2014}: LMA increase with PET and decrease with number of frost days and the number of wet days (precip > PET). But stronger effect of Nmin (net nitrogen mineralization rate).
 
-\citet{Maire-2015}: LMA decrease with Tmax and increase number of frost days.
+\item \citet{Cornwell-2009}: LMA decrease with soil water availability and increase with elevation.
 
+\item \citet{Maire-2015}: LMA decrease with Tmax and increase number of frost days.
+\end{itemize}
 
 \subsection{Wood density}
 
-\citet{Fortunel-2014}: higher wood density in white sand forest than in flooded forest or terra firme forest (with less water stress). However, variation within site is larger than between sites.
+\begin{itemize}
+  \item \citet{Fortunel-2014}: higher wood density in white sand forest than in flooded forest or terra firme forest (with less water stress). However, variation within site is larger than between sites.
 
-\citet{Swenson-2010}: Mean wood density of US forest inventory plots increase with precipitation and temperature. But variance of wood density decrease with Tmax.
+\item \citet{Swenson-2010}: Mean wood density of US forest inventory plots increase with precipitation and temperature. But variance of wood density decrease with Tmax.
 
-\citet{VanBodegom-2014}: Wood density decrease with number of frost days. 
+\item \citet{VanBodegom-2014}: Wood density decrease with number of frost days.
 
-\citet{Laughlin-2012}: Data for nine tree species in the south-west USA across 196 plots,between 2200 and 3600 m altitude, corresponding to a 10 degC range in MAT. Concave-shaped relationship with MAT.
+\item \citet{Laughlin-2012}: Data for nine tree species in the south-west USA across 196 plots,between 2200 and 3600 m altitude, corresponding to a 10 degC range in MAT. Concave-shaped relationship with MAT.
 
-\citet{Simova-2014}: across entire Nth American continent. Weak non-significant pattern of WD increasing with MAT, decreasing with MAP, and variance decreasing with MAP (lower variance in high rainfall)
+\item \citet{Simova-2014}: across entire Nth American continent. Weak non-significant pattern of WD increasing with MAT, decreasing with MAP, and variance decreasing with MAP (lower variance in high rainfall).
 
-\citet{Chave-2006}: WD for 2456 tree species from Central and South America. Wood density varied over more than one order of magnitude across species, with an overall mean of 0.645 g/cm3. Our geographical analysis showed significant decreases in wood density with increasing altitude and significant differences among low-altitude geographical regions: wet forests of Central America and western Amazonia have significantly lower mean wood density than dry forests of Central and South America, eastern and central Amazonian forests, and the Atlantic forests of Brazil; and eastern Amazonian forests have lower wood densities than the dry forests and the Atlantic forest.
+\item \citet{Chave-2006}: WD for 2456 tree species from Central and South America. Wood density varied over more than one order of magnitude across species, with an overall mean of 0.645 g/cm3. Our geographical analysis showed significant decreases in wood density with increasing altitude and significant differences among low-altitude geographical regions: wet forests of Central America and western Amazonia have significantly lower mean wood density than dry forests of Central and South America, eastern and central Amazonian forests, and the Atlantic forests of Brazil; and eastern Amazonian forests have lower wood densities than the dry forests and the Atlantic forest.
 
-\citet{Chave-2009}: some weak evidence that WD max be more variable in tropic than temperate zone. A negative relationship between wood density and soil fertility appears widespread (Baker et al. 2004; ter Steege et al. 2006), as does a positive but weaker relationship between wood density and temperature. Little relationship with rainfall (cite Swenson). Yet Fig 6 suggests can predict 50\% of variance in mean WD across nth and Sth America from mean annual temperature, annual precipitation, precipitation seasonality and temperature seasonality.
+\item \citet{Chave-2009}: some weak evidence that WD max be more variable in tropic than temperate zone. A negative relationship between wood density and soil fertility appears widespread (Baker et al. 2004; ter Steege et al. 2006), as does a positive but weaker relationship between wood density and temperature. Little relationship with rainfall (cite Swenson). Yet Fig 6 suggests can predict 50\% of variance in mean WD across nth and Sth America from mean annual temperature, annual precipitation, precipitation seasonality and temperature seasonality.
 
-\citet{Kooyman-2010}: plot means of WD in Australian rainforests tends to increase with soil texture and decrease with soil depth.
+\item \citet{Kooyman-2010}: plot means of WD in Australian rainforests tends to increase with soil texture and decrease with soil depth.
 
-\citet{Preston-2010}: Wood density decrease soil water availability, vessel area increase with water availability.
+\item \citet{Preston-2006}: Wood density decrease soil water availability, vessel area increase with water availability.
 
-\citet{Cornwell-2009}: Wood density decrease with soil water availability and increase with elevation. Lumen fraction fraction and vessel area increase with soil water availability.
+\item \citet{Cornwell-2009}: Wood density decrease with soil water availability and increase with elevation. Lumen fraction fraction and vessel area increase with soil water availability.
+\end{itemize}
 
 \citet{Stahl-2014}: Wood density increase with MAT but nore relation with MAP.
 
-\subsection{Leaf nitrogen}
+\subsection{Leaf nitrogen per area}
 
-\citet{Swenson-2010}: Mean leaf nitrogen of US forest inventory plot decrease with precipitation and temperature. And variance of variance of leaf nitrogen decrease with Tmax.
+\begin{itemize}
+\item \citet{Wright-2005}: Data 2,370 species from 163 sites. At hotter, drier and higher irradiance sites, leaf N per area was higher. Pattern strongest with MAP and irradiance (also VPD and PET), but only weak change with MAT.
 
-\citet{Reich-2004}: Nmass highest at average temperature (lower in tropicla forest and tundra).
+\item \citet{Swenson-2010}: Mean leaf nitrogen of US forest inventory plot decrease with precipitation and temperature. And variance of variance of leaf nitrogen decrease with Tmax.
 
-\citet{Maire-2015}: Narea decrease with Precip/PET and temperature range (Tmax - Tmin).
+\item \citet{Moles-2014}: data for 10792 species from 722 sites. Narea decrease with increasing MAT. Non-sig with MAP.
 
-\citet{Moles-2014}: data for 10792 species from 722 sites. Nmass and Narea decrease with increasing MAT.
+\item \citet{Maire-2015}: Narea decrease with Precip/PET and temperature range (Tmax - Tmin).
 
-\citet{Ordonez-2009}: Nmass increase with MAT.
+\end{itemize}
+
+\subsection{Leaf nitrogen per mass}
+
+\begin{itemize}
+\item \citet{Reich-2004}: Nmass highest at average temperature (lower in tropical forest and tundra).
+
+\item \citet{Moles-2014}: data for 10792 species from 722 sites. Nmass decrease with increasing MAT.
+
+\item \citet{Ordonez-2009}: Nmass increase with MAT.
+\end{itemize}
 
 \clearpage
 
