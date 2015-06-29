@@ -48,7 +48,7 @@ targets:
   figures:
     depends:
     - figures/lma_gradient_single.pdf
-    - figures/lma_gradient_multi.pdf:
+    - figures/lma_gradient_multi.pdf
 
   figures/lma_gradient_single.pdf:
     command: lma_gradient_plot(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
