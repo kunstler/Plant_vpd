@@ -1,7 +1,4 @@
-library(plant.assembly)
-library(plant)
 plant_log_console()
-
 
 lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
 

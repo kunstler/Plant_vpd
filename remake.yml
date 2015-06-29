@@ -1,6 +1,7 @@
 packages:
   - plant
   - plant.assembly
+  - loggr
   - rmarkdown
   - RColorBrewer
 
