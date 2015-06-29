@@ -1,13 +1,12 @@
-library(plant.assembly)
-library(plant)
-plant_log_console()
 
-p <- ebt_base_parameters()
+source("R/assembly.R")
+
+p <- trait_gradients_base_parameters()
+
 p$disturbance_mean_interval <- 10.0
 sys0 <- community(p, bounds_infinite("lma"))
+#sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
-## This is not working with a change to the expand parameters code.
-## Should possibly nuke existing cohort times to be simple.
 obj_m0 <- assembler(sys0, list(birth_move_tol=1))
 obj_m <- assembler_run(obj_m0, 20)
 obj_m$done
