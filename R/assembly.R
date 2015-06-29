@@ -3,6 +3,40 @@ library(plant)
 plant_log_console()
 
 
+lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
+
+  all_data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
+  cols <- c("blue", "orange")
+  cols <- rev(brewer.pal(3, "Blues"))
+
+  plot(NA, log="x", xlim=c(0.02, 0.2), ylim=c(-2,0.5),
+    xlab= "Leaf mass per area (kg/m2)",
+    ylab="Fitness")
+  abline(h=0, col="grey")
+
+  for(i in seq_along(all_data)) {
+    data <- all_data[[i]]
+    ff <- community_fitness_approximate(last(data$history))
+    lma <- seq_log_range(data$community$bounds, 200)
+    w <- ff(lma)
+    lma_res <- data$community$traits[,"lma"]
+    points(lma,w, type='l', col=cols[i])
+    points(lma_res,ff(lma_res), type='p', col=cols[i], pch=19)
+  }
+}
+
+run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
+
+  p <- trait_gradients_base_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+  sys0 <- community(p, bounds_infinite("lma"))
+# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
+
+  obj_m0 <- assembler(sys0, list(birth_move_tol=1))
+  assembler_run(obj_m0, 20)
+}
+
 ##' Hopefully sensible set of parameters for use with the EBT.  Turns
 ##' accuracy down a bunch, makes it noisy, sets up the
 ##' hyperparameterisation that we most often use.
@@ -14,8 +48,13 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$schedule_eps <- 0.005
   ctrl$equilibrium_eps <- 1e-3
   FFW16_trait_gradient_hyperpar <- make_FFW16_trait_gradient_hyperpar(...)
-  FFW16_Parameters(patch_area=1.0, control=ctrl,
+  p <- FFW16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FFW16_trait_gradient_hyperpar)
+
+  # neutralise reproduction
+  p$strategy_default$c_r1 <- 0.5
+  p$strategy_default$c_r2 <- 0
+  p
 }
 
 
@@ -31,16 +70,18 @@ trait_gradients_base_parameters <- function(...) {
 ##' @export
 ##' @rdname FFW16_hyperpar
 make_FFW16_trait_gradient_hyperpar <- function(
+                              site_prod=1.0,
                               B4=1.71,
                               lma_0=0.2,
                               k_l_0=0.45,
                               narea_0=1.87e-3,
                               c_PN = 80000,
                               c_RN = 21000,
-                              d0_0=0.01
+                              d0_0=0.01,
                               c_ds = 0,
                               stc_0=0
                               ) {
+  force(site_prod)
   force(B4)
   force(lma_0)
   force(k_l_0)
@@ -71,7 +112,7 @@ make_FFW16_trait_gradient_hyperpar <- function(
     ## narea / photosynthesis / respiration
     ## Photosynthesis per mass leaf N [mol CO2 / kgN / yr]
     ## TODO: this is where we improve photosynthesis model
-    c_p1  <- c_PN * narea
+    c_p1  <- c_PN * narea * site_prod
 
     ## Respiration per mass leaf N [mol CO2 / kgN / yr]
     ## = (6.66e-4 * (365*24*60*60))

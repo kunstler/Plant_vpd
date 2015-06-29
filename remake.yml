@@ -2,6 +2,7 @@ packages:
   - plant
   - rootSolve
   - rmarkdown
+  - RColorBrewer
 
 sources:
   - R
@@ -43,3 +44,28 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/ideas.tex", "ms/references.bib", clean=TRUE)
 
+  figures/lma_gradient_single.pdf:
+    command: lma_gradient_plot(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+    plot: square
+
+  assembly_lma_single_1:
+    command: run_assembly(disturbance_mean_interval=5, site_prod=0.8)
+
+  assembly_lma_single_2:
+    command: run_assembly(disturbance_mean_interval=5, site_prod=1.0)
+
+  assembly_lma_single_3:
+    command: run_assembly(disturbance_mean_interval=5, site_prod=1.2)
+
+  figures/lma_gradient_multi.pdf:
+    command: lma_gradient_plot(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+    plot: square
+
+  assembly_lma_multi_1:
+    command: run_assembly(disturbance_mean_interval=40, site_prod=0.8)
+
+  assembly_lma_multi_2:
+    command: run_assembly(disturbance_mean_interval=40, site_prod=1.0)
+
+  assembly_lma_multi_3:
+    command: run_assembly(disturbance_mean_interval=40, site_prod=1.2)
