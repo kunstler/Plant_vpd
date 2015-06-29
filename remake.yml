@@ -1,6 +1,6 @@
 packages:
   - plant
-  - rootSolve
+  - plant.assembly
   - rmarkdown
   - RColorBrewer
 
