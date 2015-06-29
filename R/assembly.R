@@ -1,4 +1,3 @@
-plant_log_console()
 
 lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
 
@@ -41,6 +40,7 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
 ##' @authorDaniel Falster
 ##' @export
 trait_gradients_base_parameters <- function(...) {
+  plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.005
   ctrl$equilibrium_eps <- 1e-3
