@@ -3,9 +3,9 @@ lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
 
   all_data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
   cols <- c("blue", "orange")
-  cols <- rev(brewer.pal(3, "Blues"))
+  cols <- rev(brewer.pal(5, "Blues"))
 
-  plot(NA, log="x", xlim=c(0.02, 0.2), ylim=c(-2,0.5),
+  plot(NA, log="x", xlim=c(0.01, 1), ylim=c(-2,0.5),
     xlab= "Leaf mass per area (kg/m2)",
     ylab="Fitness")
   abline(h=0, col="grey")
@@ -19,6 +19,7 @@ lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
     points(lma,w, type='l', col=cols[i])
     points(lma_res,ff(lma_res), type='p', col=cols[i], pch=19)
   }
+  legend("topleft", bty="n", legend=c("low", "med", "high"), col=cols, pch=19)
 }
 
 run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
