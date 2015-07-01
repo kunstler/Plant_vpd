@@ -46,49 +46,55 @@
 
 \section{Background \& Motivation}
 
-Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large prportion of the global diversity ($\beta$ diversity).
+Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity).
 
-- outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
+\begin{itemize}
+\item outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
+\end{itemize}
 
 Several studies document gradient of key leaf and stem traits with precipitation
 
-- consistent patterns for LMA and WD
-- Numerous empirical investigations, but mechanisms remain largely unknown / unexplored.
+\begin{itemize}
+\item consistent patterns for LMA and WD
+\item Numerous empirical investigations, but mechanisms remain largely unknown / unexplored.
+\end{itemize}
 
 A promising approach for investigating causes of trait adaptation is via models capturing process of adaptation -- allow you to encode various rules and see how virtual system responds. Many abstract theoretical models, establish some basic principles. For example, Holt, Barton, Taper \& Case. ....
 
 Yet few connect with real gradients and real traits. (What is missing to explain observed empirical patterns). Observed trait gradients are present but weak, majority of variation within sites / climate zones. Need to explain both range (coexistence) and change in mean. There are some optimisation (cost-benefit) models seek to explain changes in traits along gradients  (Sterck?, ask Mark). Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
 
-In addition, most of \textit{physiological models} have been focused on effect of climate on growth, but much les sis understood in term of efefct on mortality or recruitment. 
+In addition, most of \textit{physiological models} have been focused on effect of climate on growth, but much les sis understood in term of efefct on mortality or recruitment.
 
 Here we use a new model -- \plant\ \citep{Falster-2016} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Driven by competition for light in size-structured metapopulations. Outcomes of competition moderated by environmental factors such as site productivity and disturbance regime.
 
 
-
-Key questions
+\section{Key questions}
 
 In \plant\ the coexistence between tree is mainly related to difference in successional niche underpinned by LMA. We will explore how the predicted mixture of traits changes along climatic gradient exploring different assumption about how environmental gradients
-affect the dynamics. 
+affect the dynamics.
 
 1. In the most simple version environmental gradients changes productivity (photosynthesis) and
 thus competition for light and selection on LMA (this is already presented in \citet{Falster-2016}).
 
-2. In second version, the environemental gradient affect the productivity ($A{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
+2. In second version, the environmental gradient affect the productivity ($A{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
 
-\citet{Wright-2005} reported that the trade-off between LMA and LLS is changing with precipitation with sites with higher precipitation having higher LLS at a given LMA. In contrast, the change in the trade-off between $A_{mass}$ and LMA results in lower $A_{mass}$ at given LMA in sites with higher precipitation. This variation may be related to a change in Leaf N, with species from lower precipitation sites having higher leaf $N_{mass}$ resulting in lower tissue toughness but higher $A_{mass}$ \citep{Wright-2002}. In term in $A_{area}$ this would translate in higher $A_{area}$ at low precipitation sites...  This is a change in optimum $A_{area}$ the $A_{area}$ integrated over the year (as implemented in \plant\ ) is probably higher in site with high precipitation. 
+\begin{itemize}
+\item \citet{Wright-2005} reported that the trade-off between LMA and LLS is changing with precipitation with sites with higher precipitation having higher LLS at a given LMA. In contrast, the change in the trade-off between $A_{mass}$ and LMA results in lower $A_{mass}$ at given LMA in sites with higher precipitation. This variation may be related to a change in Leaf N, with species from lower precipitation sites having higher leaf $N_{mass}$ resulting in lower tissue toughness but higher $A_{mass}$ \citep{Wright-2002}. In term in $A_{area}$ this would translate in higher $A_{area}$ at low precipitation sites...  This is a change in optimum $A_{area}$ the $A_{area}$ integrated over the year (as implemented in \plant\ ) is probably higher in site with high precipitation.
 
-We could explore the effect of changes in elevation of the LLS-LMA trade-off along a precipitation gradient as this is one the stronger pattern in the glopnet data. One issue here is that I think that the results will be strongly influenced by the relative effect of precipitation on $A_{area}$ vs precipitation on the elevation of the trade-off. What kind of slope of precipitation vs $A_{area}$ should we used?
+\item We could explore the effect of changes in elevation of the LLS-LMA trade-off along a precipitation gradient as this is one the stronger pattern in the Glopnet data. One issue here is that I think that the results will be strongly influenced by the relative effect of precipitation on $A_{area}$ vs precipitation on the elevation of the trade-off. What kind of slope of precipitation vs $A_{area}$ should we used?
 
-Then the second step would be to explore how LMA interact with a second trait controlling the response to the environmental gardient. This second trait could either affect the response of growth (Amax) or the survival or both. In the litterature there is several traits that have been proposed to act in that way but there is relatively few consus on that. We will start with two traits for which the pattern and mechansims are better understood.
- 
+\item Then the second step would be to explore how LMA interact with a second trait controlling the response to the environmental gradient. This second trait could either affect the response of growth (Amax) or the survival or both. In the literature there is several traits that have been proposed to act in that way but there is relatively few consensus on that. We will start with two traits for which the pattern and mechanisms are better understood.
+\end{itemize}
+
 2. Aridity gradients affect productivity (photosynthesis) but a
-high leaf N allow for an adaptation in term of photosynthesis to low water availabilty but
-with a cost (higher leaf N comes at both a respiration cost and higher
+high leaf N allow for an adaptation in term of photosynthesis to low water availability but with a cost (higher leaf N comes at both a respiration cost and higher
 leaf turnover cost).
 
-\citet{Wright-2003} explore how N can substitute for water. $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N is in its respiration cost with higher dark leaf respiration per area for higher Narea.
+\begin{itemize}
+\item \citet{Wright-2003} explore how N can substitute for water. $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N is in its respiration cost with higher dark leaf respiration per area for higher Narea.
 
-\citet{Prentice-2014} expanded this prediction in term of more details Farquahr model for C3 plant, but this is probably not needed for the \plant\ model. However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and reponse to water stress. 
+\item \citet{Prentice-2014} expanded this prediction in term of more details Farquhar model for C3 plant, but this is probably not needed for the \plant\ model. However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and response to water stress.
+\end{itemize}
 
 3. Frost gradients affect survival but
 short vessel size allow for an adaptation to lower temperature in term
@@ -96,13 +102,15 @@ of survival but
 with a carbon cost (for instance lower vessel size leading to lower
 $A_{max}$ \citep{Poorter-2010} but this ref is on RGR).
 
-- For frost tolerance, \citet{Charrier-2013} provides an analysis of physiological processes and 'traits' that may explain variation in tree elevation limits between 11 european tree speciess (including one pine and 10 angiosperms). Their results show that the level of frost cavitation and the ability to refill cavited vessels are driven by the vessel size and the allocation to non-structural carbohydrate (NSC) in winter (helping to improve living tissue survival during frost and increasing the osmotic pressure to refill the vessel). Frost cavitation is in turn strongly correlated to species elevation limit. Thus small vessel size and high allocation to NSC could favor survival in frost conditions. The cost of small vessel size has been shown to be a smaller growth rate \citep{Poorter-2010} (include that into $A_{max}$?) and allocation to NSC have a direct carbon cost.
+\begin{itemize}
+\item  For frost tolerance, \citet{Charrier-2013} provides an analysis of physiological processes and 'traits' that may explain variation in tree elevation limits between 11 European tree species (including one pine and 10 angiosperms). Their results show that the level of frost cavitation and the ability to refill cavitated vessels are driven by the vessel size and the allocation to non-structural carbohydrate (NSC) in winter (helping to improve living tissue survival during frost and increasing the osmotic pressure to refill the vessel). Frost cavitation is in turn strongly correlated to species elevation limit. Thus small vessel size and high allocation to NSC could favour survival in frost conditions. The cost of small vessel size has been shown to be a smaller growth rate \citep{Poorter-2010} (include that into $A_{max}$?) and allocation to NSC have a direct carbon cost.
+\end{itemize}
 
+4. Then there is a growing literature on traits controlling survival in drought, but our understanding of the traits controlling it is still limited, so including that in the model is not so easy.
 
-4. Then there is a growing litterature on traits controlling survival in drought, but our understanding of the traits controlling it is still limited, so including that in the model is not so easy.
-
-- Water stress mortality can be caused either by carbon starvation or hydraulic failure \citep{McDowell-2008,McDowell-2011,Skelton-2015}. Isohydric plants decrease quickly their $g_s$ (stomatal conductance) during water stress to avoid caviation but at the expense of carbon uptake. In contrast, anisohydric plants have high $g_s$ during water stress to maintain carbon uptake but have greater risk of cavitation and the cost of constructing xylem resisting high water deficit is high. There is a tradeoff between stomatal regulation and tolerance to low water potential in term of caviation. But it is unclear which 'easy to measure' traits could underpin this tradeoff between this two different axis of tolerance to water stress.
-
+\begin{itemize}
+\item Water stress mortality can be caused either by carbon starvation or hydraulic failure \citep{McDowell-2008,McDowell-2011,Skelton-2015}. Isohydric plants decrease quickly their $g_s$ (stomatal conductance) during water stress to avoid caviation but at the expense of carbon uptake. In contrast, anisohydric plants have high $g_s$ during water stress to maintain carbon uptake but have greater risk of cavitation and the cost of constructing xylem resisting high water deficit is high. There is a tradeoff between stomatal regulation and tolerance to low water potential in term of cavitation. But it is unclear which 'easy to measure' traits could underpin this tradeoff between this two different axis of tolerance to water stress.
+\end{itemize}
 
 \section{Review: Empirical patterns of trait variation across abiotic
 gradients}
@@ -197,44 +205,38 @@ There appears to be a clear pattern of decreasing LMA and decreasing WD with inc
 
 \subsection{Diversification in successional strategy}
 
-Requires demographic trade-off between growth in high-light and shade-tolerance.
-
-Possible via trade-offs in either LMA or wood density,
+Requires demographic trade-off between growth in high-light and shade-tolerance. Possible via trade-offs in either LMA or wood density,
 
 
-1. Change in productivity
-  - high LMA as adaptation to both log light and low water
-2. Change the relationship LMA and turnover
-  - slope or elevation
-3. Introduce additional trait. 3 possible outcomes
-  - compensates for lower water, leaf N per area
-    - make LMA shift less than would have been otherwise
-    - instead differentiate species in N (with flow on effect to shade tolerance) and also in LL
-  - ameliorates risk of mortality
-    - (do we know which trait changes embolism risk)
-      - psi50: don't know which traits
-      - vessel size:
-    - assume has some carbon cost, otherwise not beneficial
-    - diverts carbon away from growth, so amplifies change in LMA
-  - height at maturation
-    - will decrease difference in LMA
-
-Tasks
-
-1. get evolutionary assembly working again
-  - basic patterns for lma with site productivity
-  - Sensitivity of LMA to different factors (get in right range)
-2. implement/improve leaf Nitrogen physiology
-  - link for water?
-3. Define new risk amelioration trait and effect on mortality
-4. Review treatment of water in DGVMs
-
-
-\subsection{Stress tolerance trait}
-
-
-
-
+\begin{enumerate}
+\item Change in productivity
+  \begin{itemize}
+  \item  high LMA as adaptation to both log light and low water
+  \end{itemize}
+\item Change the relationship LMA and turnover
+  \begin{itemize}
+  \item slope or elevation
+  \end{itemize}
+\item Introduce additional trait. 3 possible outcomes
+  \begin{itemize}
+    \item compensates for lower water, leaf N per area
+      \begin{itemize}
+        \item make LMA shift less than would have been otherwise
+        \item instead differentiate species in N (with flow on effect to shade tolerance) and also in LL
+      \end{itemize}
+    \item ameliorates risk of mortality
+      \begin{itemize}
+        \item(do we know which trait changes embolism risk)
+        \item psi50: don't know which traits
+        \item vessel size:
+        \begin{itemize}
+          \item assume has some carbon cost, otherwise not beneficial
+          \item diverts carbon away from growth, so amplifies change in LMA
+        \end{itemize}
+      \end{itemize}
+      \item height at maturation - will decrease difference in LMA
+  \end{itemize}
+\end{enumerate}
 
 \clearpage
 
