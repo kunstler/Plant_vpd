@@ -30,7 +30,7 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
   sys0 <- community(p, bounds_infinite("lma"))
 # sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
-  obj_m0 <- assembler(sys0, list(birth_move_tol=1))
+  obj_m0 <- assembler(sys0, list(birth_move_tol=0.05))
   assembler_run(obj_m0, 20)
 }
 
@@ -45,6 +45,10 @@ trait_gradients_base_parameters <- function(...) {
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.005
   ctrl$equilibrium_eps <- 1e-3
+
+  ctrl$equilibrium_nsteps  <- 20
+  ctrl$equilibrium_solver_name <- "hybrid"
+
   FFW16_trait_gradient_hyperpar <- make_FFW16_trait_gradient_hyperpar(...)
   p <- FFW16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FFW16_trait_gradient_hyperpar)
