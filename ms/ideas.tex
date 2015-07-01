@@ -46,11 +46,7 @@
 
 \section{Background \& Motivation}
 
-Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity).
-
-\begin{itemize}
-\item This pattern are the outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
-\end{itemize}
+Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity). In addition,  This pattern are the outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
 
 Several studies document gradient of key leaf and stem traits with precipitation
 
@@ -60,9 +56,19 @@ Several studies document gradient of key leaf and stem traits with precipitation
 \end{itemize}
 
 A promising approach for investigating causes of trait adaptation is via models capturing process of adaptation -- allow you to encode various rules and see how virtual system responds. Many abstract theoretical models, establish some basic principles. For example, Holt, Barton, Taper \& Case. ....
+Most of the abstract theoretical are based on strong assumption about how traits are link to the competition and the response to the environmental gradient (for instance a traits describing the local adaptation to the local environmental conditions also drives the competition through a normal competition kernel or function). Very few model start from the mechanisms of competition for resources and the physiology of the response to the environmental gradient to predict how local adaptation and competition will shape the community assembly.
 
-Yet few connect with real gradients and real traits. (What is missing to explain observed empirical patterns). Observed trait gradients are present but weak, majority of variation within sites / climate zones. Need to explain both range (coexistence) and change in mean. There are some optimisation (cost-benefit) models seek to explain changes in traits along gradients  (Sterck?, ask Mark). Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
-
+Yet few connect with real gradients and real traits.    (What is missing to explain observed empirical patterns). Observed trait gradients are present but weak, majority of variation within sites / climate zones. Need to explain both range (coexistence) and change in mean. There are some optimisation (cost-benefit) models seek to explain changes in traits along gradients  (Sterck?, ask Mark). Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
+% We need to organise more clearly this section as optimisation model
+% can also be viewed as adaptation model. The two mains points would
+% be (i) model and their limitations and (ii) the observed gradients
+% with higher variance within site than between sites and their lack
+% of connection with model. The output would be to show that model need
+% to be based on key physiological mechanism to allow connection with
+% the field and that to deal with the large within site variance
+% model need to include interplay between mechanisms allowing
+% coexistence and abiotic effect. It may be also interesting to have
+% few lines one abiotic filtering debate.
 In addition, most of \textit{physiological models} have been focused on effect of climate on growth, but much less is understood in term of effect on mortality or recruitment.
 
 Here we use a new model -- \plant\ \citep{Falster-2016} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Driven by competition for light in size-structured meta-populations. Outcomes of competition moderated by environmental factors such as site productivity and disturbance regime.
@@ -70,8 +76,24 @@ Here we use a new model -- \plant\ \citep{Falster-2016} -- that connects directl
 
 \section{Key questions}
 
-In \plant\ the coexistence between tree is mainly related to difference in successional niche underpinned by LMA. We will explore how the predicted mixture of traits changes along climatic gradient exploring different assumption about how environmental gradients
-affect the dynamics.
+In \plant\ the coexistence between tree is mainly related to difference in successional niche underpinned by LMA through competition for light. We will explore how the predicted mixture of traits changes along climatic gradient exploring different assumption about how environmental gradients
+affect the dynamics and competition for light. There is several
+potential mechanisms through which the environmental gradient could
+affect the community assembly. First the gradient can simply affect
+the productivity with consequence on the process of light
+competition. Secondly, the environmental gradient can affect the
+trade-off underpinning the strategy of light use (so changing the
+trade-off between LMA and LLS). Then the trait controlling competition
+for light may interact with other traits controlling the effect of the
+gradients on either growth as in the two previous points, or through
+mortality. Effects on growth or survival may have different effects as
+they may interact in different way with competition for light). Our knowledge of the traits and potential mechanisms that
+may determine species response to different abiotic gradient is still
+limited. Here we will explore two traits for which our understanding
+is more advanced Leaf N along precipitation gradients affecting growth
+and frost and vessel size (allocation to reserve as well ??) affecting
+survival.
+
 
 \section{Review: Empirical patterns of trait variation across abiotic
 gradients}
@@ -205,10 +227,10 @@ of survival but
 with a carbon cost (for instance lower vessel size leading to lower
 $A_{max}$ \citep{Poorter-2010}, we know that vessel diameter scale with scale with sapwood area conductivity and $A_{max}$ \citep{Chen-2009,Choat-2011}).
 
-TO DO need to read \citet{Markesteijn-2011} for potential coordination between vessel size and shade-tolerance as well.
 
 \begin{itemize}
 \item  For frost tolerance, \citet{Charrier-2013} provides an analysis of physiological processes and 'traits' that may explain variation in tree elevation limits between 11 European tree species (including one pine and 10 angiosperms). Their results show that the level of frost cavitation and the ability to refill cavitated vessels are driven by the vessel size and the allocation to non-structural carbohydrate (NSC) in winter (helping to improve living tissue survival during frost and increasing the osmotic pressure to refill the vessel). Frost cavitation is in turn strongly correlated to species elevation limit. Thus small vessel size and high allocation to NSC could favour survival in frost conditions. The cost of small vessel size has been shown to be a smaller growth rate \citep{Poorter-2010} (include that into $A_{max}$?) and allocation to NSC have a direct carbon cost. Diverting carbon from growth in to NSC may have the effect of amplifying the changes in LMA.
+\item TO DO need to read \citet{Markesteijn-2011} for potential coordination between vessel size and shade-tolerance as well.
 \end{itemize}
 
 5. Then there is a growing literature on traits controlling survival in drought, but our understanding of the traits controlling it is still limited, so including that in the model is not so easy.
