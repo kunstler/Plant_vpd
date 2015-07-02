@@ -4,6 +4,7 @@ packages:
   - loggr
   - rmarkdown
   - RColorBrewer
+  - smatr
 
 sources:
   - R
@@ -14,15 +15,16 @@ plot_options:
     width: 5.5
   wide:
     height: 3.5
-    width: 5.5
-    pointsize: 10
+    width: 7
   skinny:
     height: 4.5
     width: 3
-    pointsize: 10
   square:
     height: 5.5
     width: 5.5
+  large_square:
+    height: 7
+    width: 7
 
 knitr_options:
   vignette:
@@ -49,8 +51,11 @@ targets:
 
   figures:
     depends:
+    - figures/data_climate.pdf
     - figures/lma_gradient_single.pdf
     - figures/lma_gradient_multi.pdf
+
+# Simulation results and figures ###################################################
 
   figures/lma_gradient_single.pdf:
     command: lma_gradient_plot(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
@@ -89,3 +94,22 @@ targets:
     command: run_assembly(disturbance_mean_interval=40, site_prod=1.2)
     check: exists
     cleanup_level: purge
+
+# Data sources and figures  ###################################################
+
+  figures/data_climate.pdf:
+    command: figure_lma_climate(leaf_traits)
+    plot: large_square
+
+  figures/lma_ll_trade_off.pdf:
+    command: figure_lma_tradeoff(leaf_traits)
+    plot: square
+
+  leaf_traits:
+    packages: xlsx
+    command: >
+      process_wright_2004("download/wright-2004.xls",
+                          "data/wright_2004_locations.csv")
+
+  download/wright-2004.xls:
+    download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
