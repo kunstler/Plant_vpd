@@ -13,7 +13,7 @@ lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
   for(i in seq_along(all_data)) {
     data <- all_data[[i]]
     ff <- community_fitness_approximate(last(data$history))
-    lma <- seq_log_range(data$community$bounds, 200)
+    lma <- sort(c(seq_log_range(data$community$bounds, 400), data$community$traits))
     w <- ff(lma)
     lma_res <- data$community$traits[,"lma"]
     points(lma,w, type='l', col=cols[i])
