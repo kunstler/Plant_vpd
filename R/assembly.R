@@ -1,5 +1,22 @@
 
-lma_gradient_plot <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
+plot_trait_gradient <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
+
+  data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
+  grad <- c(0.8, 1.0, 1.2)
+
+  y <- lapply(data, function(x) x$community$traits[,"lma"])
+
+  plot(NA, type="n", log="y", las=1, xlim=c(0.6, 1.4), ylim= c(0.02,1),
+    ylab= expression(paste("Leaf-mass per area (kg ", m^-2,")")),
+    xlab="Site productivity")
+
+
+  for(i in seq_along(data)) {
+    points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black", pch=16)
+  }
+}
+
+plot_fitness_assembly <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
 
   all_data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
   cols <- rev(brewer.pal(5, "Blues"))

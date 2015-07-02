@@ -53,19 +53,28 @@ targets:
     depends:
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
-    - figures/lma_gradient_single.pdf
-    - figures/lma_gradient_multi.pdf
+    - figures/fitness_lma_single.pdf
+    - figures/fitness_lma_multi.pdf
+    - figures/gradient_lma_single.pdf
+    - figures/gradient_lma_multi.pdf
 
 # Simulation results and figures ###################################################
 
-  figures/lma_gradient_single.pdf:
-    command: lma_gradient_plot(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+  figures/fitness_lma_single.pdf:
+    command: plot_trait_gradient(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
     plot: square
 
-  figures/lma_gradient_multi.pdf:
-    command: lma_gradient_plot(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+  figures/fitness_lma_multi.pdf:
+    command: plot_trait_gradient(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
     plot: square
 
+  figures/gradient_lma_single.pdf:
+    command: plot_trait_gradient(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+    plot: square
+
+  figures/gradient_lma_multi.pdf:
+    command: plot_trait_gradient(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+    plot: square
 
   assembly_lma_single_1:
     command: run_assembly(disturbance_mean_interval=5, site_prod=0.8)
