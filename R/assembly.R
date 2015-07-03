@@ -28,7 +28,8 @@ plot_fitness_assembly <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3
 
   for(i in seq_along(all_data)) {
     data <- all_data[[i]]
-    ff <- community_fitness_approximate(last(data$history))
+    community <- last(data$history)
+    ff <- community_fitness_approximate(community)
     lma <- sort(c(seq_log_range(data$community$bounds, 400), data$community$traits))
     w <- ff(lma)
     lma_res <- data$community$traits[,"lma"]
@@ -44,7 +45,8 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
-  sys0 <- community(p, bounds_infinite("lma"))
+  sys0 <- community(p, bounds_infinite("lma"),
+                     fitness_approximate_control=list(type="gp"))
 # sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
   obj_m0 <- assembler(sys0, list(birth_move_tol=0.05))

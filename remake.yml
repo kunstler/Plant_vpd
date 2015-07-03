@@ -61,11 +61,11 @@ targets:
 # Simulation results and figures ###################################################
 
   figures/fitness_lma_single.pdf:
-    command: plot_trait_gradient(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+    command: plot_fitness_assembly(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
     plot: square
 
   figures/fitness_lma_multi.pdf:
-    command: plot_trait_gradient(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+    command: plot_fitness_assembly(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
     plot: square
 
   figures/gradient_lma_single.pdf:
