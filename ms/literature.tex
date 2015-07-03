@@ -131,9 +131,10 @@ TODO
 
 There appears to be a clear pattern of decreasing LMA and decreasing WD with increasing water availability (measured either as mean annual precip, or some other measure of wetness). This relationship was found in all studies and areas, with but one exception: \citet{Swenson-2010} found an increase in WD with MAP across the north America. However, it is important to note that Swenson's study infers WD from species distribution maps, estimates are likely to be more uncertain than where known occurrences are used. Further, using similar data set, \citet{Stahl-2015} found no relationship between MAP and WD.
 
+
 \section{Review: Evolution along environmental gradients}
 
-All studies assume that there is an gradual cline in optimum trait value along environmental gradient. Then investigate how competitive interactions can affect process of adaptation along gradient to cause range boundaries between species.
+There are numerous studies from the evolutionary literature investigating adaptation and character displacement along environmental gradients. All start with the assumption that there is an gradual cline in optimum trait value along environmental gradient, and then given this starting point investigate how competitive interactions affect process of adaptation along the gradient.
 
 Range limits:
 
@@ -148,10 +149,62 @@ Range limits:
 Clustering along gradient:
 
 \begin{itemize}
-item \citep{Doebeli-2003}:
+\item \citep{Doebeli-2003}:
 \item \citep{Polechova-2005}:
-item \citep{Leimar-2008}:
+\item \citep{Leimar-2008}:
 \end{itemize}
+
+
+\section{Theoretical set-ups}
+
+\subsection{Discrete populations}
+
+One approach is to model a discrete number of populations linked by dispersal. The approach below follows \citet{Pontarp-2015}, who looked at evolution across two patches.
+
+Let $x_i$ be the trait of species $i$ and $\mathbf{x} = [x_1,\ldots, x_i]$ be the vector of trait values for all species in the system. Now denote $n_{i,A}, n_{i,B}$ to be the density of species $i$ in two patches (A and B), and the vector $\mathbf{n} = [n_{1,A}, n_{1,B}, \ldots, n_{i,A}, n_{i,B}]$ to be the density of all species across all patches.
+
+We denote $R_j(x_i, \mathbf{n})$ to be the fitness of individuals with trait $x_i$ in patch $j$. The populations dynamics for the density of species $i$ are then given by
+$$n_{i,A}(t+1) = (1-m) \,(1+R_A(x_i, \mathbf{n})) \, n_{i,A}(t) + v\, n_{i,B}(t),$$
+$$n_{i,B}(t+1) = m  \, (1+R_A(x_i, \mathbf{n}))\, n_{i,A}(t) + (1-m) \,  (1+R_B(x_i, \mathbf{n})) \, n_{i,B}(t),$$
+where $m$ is the probability of dispersing from one patch to the other. Using matrix algebra the dynamics of $\mathbf{n_i} = [n_{i,A}, n_{i,B}]$ can be written as
+$$\mathbf{n_i}(t+1)=\mathbf{M}(x_i, \mathbf{n}) \mathbf{n_i},$$
+where
+$$ \mathbf{M}(x_i, \mathbf{n}) =  \left[ \begin{array}{cc}
+(1-m) \,(1+R_A(x_i, \mathbf{n})) & m (1+R_B(x_i, \mathbf{n})) \\
+m \,(1+R_A(x_i, \mathbf{n})) & (1-m) (1+R_B(x_i, \mathbf{n})) \\
+\end{array} \right].$$
+
+The per-capita growth rate of the $x_i$ individuals across the meta-population is then given by the dominant eigen value of $\mathbf{M}(x_i, \mathbf{n})$. The equilibrium population density is given by a vector $\mathbf{n^*}$.
+
+A nice feature of this set-up is that when $m=0$ (patches completely decoupled), $\mathbf{M}(x_i, \mathbf{n})$ becomes a diagonal matrix with eigen-value given by the average of fitness across the two patches.
+
+
+\subsection{Reaction-diffusion models}
+
+Another approach is to model the continuous change in trait values across the gradient. below I describe two different approaches. note that neither of these go so far as to model the full adaptive dynamics --  this would be difficult because the density distributions for each phenotype are continuous functions.
+
+\citet{Case-2000} models the continuous distribution of traits for two species. The system is designed to allow gradual changes in phenotype for each species as well as range boundaries and species turnover.  The core elements of the setup (too complicated to repeat here) are as follows:
+\begin{itemize}
+  \item Population dynamics based on Lotka-Volterra equations
+  \item Competition at given spatial location based on trait-similarity
+  \item Optimum trait value which is gradually changing along the gradient
+  \item For each species model the distribution $N_i(x,t)$: the density of phenotype $i$ at spatial location $x$ and at time $t$.
+  \item Changes in phenotype distributions at location $x$ given by standard approach from Lande 196, including heritability term
+  \item Movements and gene flow addded via a diffusion term $D\partial^2 N_i(x,t) /\partialx^2$
+\end{itemize}
+From an initial distribution of phenotypes for one or more species, it is possible to simulate the expansion and gradual adaptation of the population along the gradient.
+
+
+\cite{Leimar-2008} likewise model adaptation along an environmental gradient using a continuous reaction diffusion. The model is presented as a generalisation of \citet{Doebeli-2003}, which is an individual based model. The key features of their set-up are as follows:
+\begin{itemize}
+  \item Population dynamics based on Lotka-Volterra equations
+  \item Only tracks trait distribution, i.e. density $N(u,x)$ of trait values $u$ at location $x$. Does not worry about designating these into species. Therefore says nothing about species turnover and range edges
+  \item Competition at given spatial location based on trait-similarity. In addition there is also competition along the gradient. Trait and distance based competition occurs via kernels which can have varying shapes
+  \item Optimum trait value which is gradually changing along the gradient
+  \item Movements and gene flow added via explicit movement and mutation kernels
+  \item Adds Allee effect (increase in fitness at low densities).
+\end{itemize}
+
 
 \clearpage
 
