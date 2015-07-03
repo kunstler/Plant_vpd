@@ -139,19 +139,19 @@ There are numerous studies from the evolutionary literature investigating adapta
 Range limits:
 
 \begin{itemize}
-\item \citep{Kirkpatrick-1997}:
-\item \citep{Case-2000}:
-\item \citep{Goldberg-2006}:
-\item \citep{Bridle-2007}:
-\item \citep{Price-2009}:
+\item \citet{Kirkpatrick-1997}: Haldane argued that species' ranges could be set intraspecifically when gene flow from a species' populous center over-whelms local adaptation at the periphery. Kirkpatrick and Barton modeled Haldane's process with a quantitative genetic model that combines density-dependent local population growth with dispersal and gene flow across a linear environmental gradient in optimum phenotype.  One of 3 outcomes is possible: the species will become extinct, expand to fill all of the available habitat, or be confined to a limited range in which it is sufficiently adapted to allow population growth. When the environment changes rap-idly in space, increased migration inhibits local adaptation and so decreases the species' total population size. Gene flow can cause enough maladaptation that the peripheral half of a species' range acts as a demographic sink.
+\item \citet{Case-2000}:  Extended the Kirkpatrick and Barton model to include interspecific competition and the frequency-dependent selection that it generates, as well as stabilizing selection on a quantitative character. Reproduces the Kirkpatrick and Barton single-species result that limited ranges can be produced with sufficiently steep environmental gradients and strong dispersal. Also finds that interspecific competition can interact with environmental gradients and gene flow to generate limited ranges with much less extreme gradient and dispersal parameters than in the single-species case. Stable range limits can be seen as ultimately arising from insufficient relevant genetic variability for natural selection at range boundaries and/or gene flow from the interior of the range swamping out local adaptation at the range boundaries
+\item \citet{Goldberg-2006}: Relate results to type of competition. Present four spatial models of character displacement in quantitative traits affecting competition and hybridization between the species. Our models highlight the connections between range limits and character displacement in continuous space. We conclude that the classic pattern (greater phenotypic difference between species in sympatry than allopatry) is less likely to occur for a trait affecting resource acquisition than for a trait affecting mate choice.
+\item \citet{Bridle-2007}: Review on factors limiting range edges
 \end{itemize}
 
 Clustering along gradient:
 
 \begin{itemize}
-\item \citep{Doebeli-2003}:
-\item \citep{Polechova-2005}:
-\item \citep{Leimar-2008}:
+\item \citet{Doebeli-2003}: Show that along an environmental gradient, evolutionary branching can occur much more easily than in non-spatial models. This facilitation is most pronounced for gradients of intermediate slope. Moreover, spatial evolutionary branching readily generates patterns of spatial segregation and abutment between the emerging species.
+\item \citet{Polechova-2005}: Questions findings of \citet{Doebeli-2003}, arguing that results solely due to boundary effects.  Argued that a gradual environmental cline will lead to gradual variation in a quantitative trait.
+\item \citet{Leimar-2008}: Revisits question of clustering along gradient. Extends  \citet{Doebeli-2003} into a continuous model based on reaction-diffusion set-up. Finds that clustering not possible with competition Gaussian kernel, but is possible with other non-Gaussian shapes (see \citet{Leimar-2013} for further extensions).
+
 \end{itemize}
 
 
@@ -190,7 +190,7 @@ Another approach is to model the continuous change in trait values across the gr
   \item Optimum trait value which is gradually changing along the gradient
   \item For each species model the distribution $N_i(x,t)$: the density of phenotype $i$ at spatial location $x$ and at time $t$.
   \item Changes in phenotype distributions at location $x$ given by standard approach from Lande 196, including heritability term
-  \item Movements and gene flow addded via a diffusion term $D\partial^2 N_i(x,t) /\partialx^2$
+  \item Movements and gene flow addded via a diffusion term $D\partial ^2 N_i(x,t)/ \partial x^2$
 \end{itemize}
 From an initial distribution of phenotypes for one or more species, it is possible to simulate the expansion and gradual adaptation of the population along the gradient.
 
