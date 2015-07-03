@@ -49,7 +49,7 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
                      fitness_approximate_control=list(type="gp"))
 # sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
-  obj_m0 <- assembler(sys0, list(birth_move_tol=0.05))
+  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
   assembler_run(obj_m0, 20)
 }
 
