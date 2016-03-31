@@ -60,7 +60,7 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
 ##' @authorDaniel Falster
 ##' @export
 trait_gradients_base_parameters <- function(...) {
-  plant_log_console()
+  #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.005
   ctrl$equilibrium_eps <- 1e-3
@@ -68,10 +68,9 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$equilibrium_nsteps  <- 20
   ctrl$equilibrium_solver_name <- "hybrid"
 
-  FFW16_trait_gradient_hyperpar <- make_FFW16_trait_gradient_hyperpar(...)
-  p <- FFW16_Parameters(patch_area=1.0, control=ctrl,
-                   hyperpar=FFW16_trait_gradient_hyperpar)
-
+  FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)
+  p <- FF16_Parameters(patch_area=1.0, control=ctrl,
+                   hyperpar=FF16_trait_gradient_hyperpar)
   # neutralise reproduction
   p$strategy_default$c_r1 <- 0.5
   p$strategy_default$c_r2 <- 0
@@ -79,7 +78,7 @@ trait_gradients_base_parameters <- function(...) {
 }
 
 
-##' Hyperparameterisation of FFW16 model used in this analysis.
+##' Hyperparameterisation of FF16 model used in this analysis.
 ##' @title Hyperparameters for plant
 ##' @param lma_0 LMA value...
 ##' @param k_l_0 ...
@@ -90,7 +89,7 @@ trait_gradients_base_parameters <- function(...) {
 ##' @param c_RN Respiration per unit leaf N
 ##' @export
 ##' @rdname FFW16_hyperpar
-make_FFW16_trait_gradient_hyperpar <- function(
+make_FF16_trait_gradient_hyperpar <- function(
                               site_prod=1.0,
                               B4=1.71,
                               lma_0=0.2,
@@ -122,7 +121,6 @@ make_FFW16_trait_gradient_hyperpar <- function(
     if(nrow(m)==0L) {
       return(m)
     }
-
     lma       <- with_default("lma")
     narea     <- with_default("narea", narea_0)
     stc       <- with_default("stc", stc_0)
@@ -134,6 +132,7 @@ make_FFW16_trait_gradient_hyperpar <- function(
     ## Photosynthesis per mass leaf N [mol CO2 / kgN / yr]
     ## TODO: this is where we improve photosynthesis model
     c_p1  <- c_PN * narea * site_prod
+    ## Do we try to have maximum leaf area photosynthesis to vary with leaf N and site prod ? In that case why don't we need to recompute the the photosynthesis model with alpha_p1 and alpha_p2 ??
 
     ## Respiration per mass leaf N [mol CO2 / kgN / yr]
     ## = (6.66e-4 * (365*24*60*60))
