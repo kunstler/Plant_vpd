@@ -72,92 +72,174 @@ trait_gradients_base_parameters <- function(...) {
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
   # neutralise reproduction
-  p$strategy_default$c_r1 <- 0.5
-  p$strategy_default$c_r2 <- 0
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
   p
 }
 
-
-##' Hyperparameterisation of FF16 model used in this analysis.
-##' @title Hyperparameters for plant
-##' @param lma_0 LMA value...
-##' @param k_l_0 ...
-##' @param B4 Slope of lma / leaf turnover log-log relationship
-##' @param d0_0 Baseline mortality rate
-##' @param narea_0 nitrogen per unit leaf area
-##' @param c_PN Photosynthesis per unit leaf N
-##' @param c_RN Respiration per unit leaf N
+##' Hyperparameters for FF16 physiological model
+##' @title Hyperparameters for FF16 physiological model
+##' @param lma_0 Central (mean) value for leaf mass per area [kg /m2]
+##' @param B_kl1 Rate of leaf turnover at lma_0 [/yr]
+##' @param B_kl2 Scaling slope for phi in leaf turnover [dimensionless]
+##' @param rho_0 Central (mean) value for wood density [kg /m3]
+##' @param B_dI1 Rate of instantaneous mortality at rho_0 [/yr]
+##' @param B_dI2 Scaling slope for wood density in intrinsic mortality [dimensionless]
+##' @param B_ks1 Rate of sapwood turnover at rho_0 [/yr]
+##' @param B_ks2 Scaling slope for rho in sapwood turnover [dimensionless]
+##' @param B_rs1 CO_2 respiration per unit sapwood volume [mol / yr / m3 ]
+##' @param B_rb1 CO_2 respiration per unit sapwood volume [mol / yr / m3 ]
+##' @param B_f1 Cost of seed accessories per unit seed mass [dimensionless]
+##' @param narea nitrogen per leaf area [kg / m2]
+##' @param narea_0 central (mean) value for nitrogen per leaf area [kg / m2]
+##' @param B_lf1 Potential CO_2 photosynthesis at average leaf nitrogen [mol / d / m2]
+##' @param B_lf2 Curvature of leaf photosynthetic light response curve [dimensionless]
+##' @param B_lf3 Quantum yield of leaf photosynthetic light response curve [dimensionless]
+##' @param B_lf4 CO_2 respiration per unit leaf nitrogen [mol / yr / kg]
+##' @param B_lf5 Scaling exponent for leaf nitrogen in maximum leaf photosynthesis [dimensionless]
+##' @param k_I light extinction coefficient [dimensionless]
+##' @param latitude degrees from equator (0-90), used in solar model [deg]
 ##' @export
-##' @rdname FFW16_hyperpar
+##' @rdname FF16_hyperpar
 make_FF16_trait_gradient_hyperpar <- function(
-                              site_prod=1.0,
-                              B4=1.71,
-                              lma_0=0.2,
-                              k_l_0=0.45,
-                              narea_0=1.87e-3,
-                              c_PN = 80000,
-                              c_RN = 21000,
-                              d0_0=0.01,
-                              c_ds = 0,
-                              stc_0=0
-                              ) {
-  force(site_prod)
-  force(B4)
-  force(lma_0)
-  force(k_l_0)
-  force(narea_0)
-  force(c_PN)
-  force(c_RN)
-  force(d0_0)
-  force(c_ds)
-  force(stc_0)
+                                lma_0=0.1978791,
+                                B_kl1=0.4565855,
+                                B_kl2=1.71,
+                                rho_0=608.0,
+                                B_dI1=0.01,
+                                B_dI2=0.0,
+                                B_ks1=0.2,
+                                B_ks2=0.0,
+                                B_rs1=4012.0,
+                                B_rb1=2.0*4012.0,
+                                B_f1 =3.0,
+                                narea=1.87e-3,
+                                narea_0=1.87e-3,
+                                B_lf1=5120.738 * 1.87e-3 * 24 * 3600 / 1e+06,
+                                B_lf2=0.5,
+                                B_lf3=0.04,
+                                B_lf4=21000,
+                                B_lf5=1,
+                                k_I=0.5,
+                                latitude=0,
+                                site_prod=1.0) {
+  assert_scalar <- function(x, name=deparse(substitute(x))) {
+    if (length(x) != 1L) {
+      stop(sprintf("%s must be a scalar", name), call. = FALSE)
+    }
+  }
+  assert_scalar(lma_0)
+  assert_scalar(B_kl1)
+  assert_scalar(B_kl2)
+  assert_scalar(rho_0)
+  assert_scalar(B_dI1)
+  assert_scalar(B_dI2)
+  assert_scalar(B_ks1)
+  assert_scalar(B_ks2)
+  assert_scalar(B_rs1)
+  assert_scalar(B_rb1)
+  assert_scalar(B_f1)
+  assert_scalar(narea)
+  assert_scalar(narea_0)
+  assert_scalar(B_lf1)
+  assert_scalar(B_lf2)
+  assert_scalar(B_lf3)
+  assert_scalar(B_lf4)
+  assert_scalar(B_lf5)
+  assert_scalar(k_I)
+  assert_scalar(latitude)
+  assert_scalar(site_prod)
 
   function(m, s, filter=TRUE) {
     with_default <- function(name, default_value=s[[name]]) {
       rep_len(if (name %in% colnames(m)) m[, name] else default_value,
               nrow(m))
     }
-
-    if(nrow(m)==0L) {
-      return(m)
-    }
     lma       <- with_default("lma")
-    narea     <- with_default("narea", narea_0)
-    stc       <- with_default("stc", stc_0)
+    rho       <- with_default("rho")
+    omega     <- with_default("omega")
+    narea     <- with_default("narea", narea)
 
     ## lma / leaf turnover relationship:
-    k_l   <- k_l_0 * (lma / lma_0) ^ (-B4)
+    k_l   <- B_kl1 * (lma / lma_0) ^ (-B_kl2)
 
-    ## narea / photosynthesis / respiration
-    ## Photosynthesis per mass leaf N [mol CO2 / kgN / yr]
-    ## TODO: this is where we improve photosynthesis model
-    c_p1  <- c_PN * narea * site_prod
-    ## Do we try to have maximum leaf area photosynthesis to vary with leaf N and site prod ? In that case why don't we need to recompute the the photosynthesis model with alpha_p1 and alpha_p2 ??
+    ## rho / mortality relationship:
+    d_I  <- B_dI1 * (rho / rho_0) ^ (-B_dI2)
 
-    ## Respiration per mass leaf N [mol CO2 / kgN / yr]
-    ## = (6.66e-4 * (365*24*60*60))
-    ## Obtained from global average of ratio of dark respiration rate to
-    ## leaf nitrogen content using the GLOPNET dataset
+    ## rho / wood turnover relationship:
+    k_s  <- B_ks1 *  (rho / rho_0) ^ (-B_ks2)
+
+    ## rho / sapwood respiration relationship:
+
+    ## Respiration rates are per unit mass, so this next line has the
+    ## effect of holding constant the respiration rate per unit volume.
+    ## So respiration rates per unit mass vary with rho, respiration
+    ## rates per unit volume don't.
+    r_s <- B_rs1 / rho
+    # bark respiration follows from sapwood
+    r_b <- B_rb1 / rho
+
+    ## omega / accessory cost relationship
+    a_f3 <- B_f1 * omega
+
+    ## Narea, photosynthesis, respiration
+
+    assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+      x <- QY * I + Amax
+      (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+    }
+
+    ## Photosynthesis  [mol CO2 / m2 / yr]
+    approximate_annual_assimilation <- function(narea, latitude) {
+      E <- seq(0, 1, by=0.02)
+      ## Only integrate over half year, as solar path is symmetrical
+      D <- seq(0, 365/2, length.out = 10000)
+      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+
+      Amax <- site_prod*B_lf1 * (narea/narea_0) ^  B_lf5
+      theta <- B_lf2
+      QY <- B_lf3
+
+      AA <- NA * E
+
+      for (i in seq_len(length(E))) {
+        AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
+                                    k_I * I * E[i], Amax, theta, QY))
+      }
+      if(all(diff(AA) < 1E-8)) {
+        # line fitting will fail if all have are zero, or potentially same value
+        ret <- c(last(AA), 0)
+        names(ret) <- c("p1","p2")
+      } else {
+        fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA), start = list(p1 = 100, p2 = 0.2))
+        ret <- coef(fit)
+      }
+      ret
+    }
+
+    # This needed in case narea has length zero, in which case trapezium fails
+    a_p1 <- a_p2 <- 0 * narea
+    ## TODO: Remove the 0.5 hardcoded default for k_I here, and deal
+    ## with this more nicely.
+    if (length(narea) > 0 || k_I != 0.5) {
+      i <- match(narea, unique(narea))
+      y <- vapply(unique(narea), approximate_annual_assimilation,
+                  numeric(2), latitude)
+      a_p1  <- y["p1", i]
+      a_p2  <- y["p2", i]
+    }
+
     ## Respiration rates are per unit mass, so convert to mass-based
     ## rate by dividing with lma
     ## So respiration rates per unit mass vary with lma, while
     ## respiration rates per unit area don't.
-    c_Rl  <- (c_RN * narea) / lma
+    r_l  <- B_lf4 * narea / lma
 
-    ## Stress tolerance trait -- reduces mortality for given
-    ## respiration cost per unit leaf area
-
-    c_Rl  <- c_Rl + (stc / lma)
-
-    ## Baseline mortality rate
-    c_d0  <- d0_0
-    ## Decreases with investment in stress tolerance
-    ## By default c_ds = 0 so trait has no effect
-    c_d0  <- d0_0 * exp(-c_ds * stc)
-
-    extra <- cbind(k_l,                   # lma
-                   c_d0,                  # stress_tolerance
-                   c_p1, c_Rl)            # narea
+    extra <- cbind(k_l,                # lma
+                   d_I, k_s, r_s, r_b, # rho
+                   a_f3,               # omega
+                   a_p1, a_p2,         # narea
+                   r_l)                # lma, narea
 
     overlap <- intersect(colnames(m), colnames(extra))
     if (length(overlap) > 0L) {
@@ -168,6 +250,9 @@ make_FF16_trait_gradient_hyperpar <- function(
     ## Filter extra so that any column where all numbers are with eps
     ## of the default strategy are not replaced:
     if (filter) {
+      if (nrow(extra) == 0L) {
+        extra <- NULL
+      } else {
         pos <- diff(apply(extra, 2, range)) == 0
         if (any(pos)) {
           eps <- sqrt(.Machine$double.eps)
@@ -180,6 +265,12 @@ make_FF16_trait_gradient_hyperpar <- function(
           }
         }
       }
-    cbind(m, extra)
+    }
+
+    if (!is.null(extra)) {
+      m <- cbind(m, extra)
+    }
+    m
   }
 }
+
