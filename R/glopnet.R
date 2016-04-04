@@ -67,8 +67,8 @@ process_wright_2004 <- function(filename, sitevars_file) {
   data$leaf_turnover <- 1/data$leaflifespan ## per year
   names(data)[names(data) %in% c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
 
-  subset(data, data[["map"]] > 400
-    & data[["growthform"]] %in% c("S","T"))
+  subset(data,  # data[["map"]] > 400 #why did you subset the data to have more than 400m of MAP ??
+     data[["growthform"]] %in% c("S","T"))
 }
 
 figure_lma_climate <- function(data) {
@@ -151,4 +151,121 @@ figure_lma_tradeoff <- function(data) {
                    sum(!is.na(leaf_turnover)))
   legend("topright", legend=tolower(names(col_table)), bty="n",
          pch=16, col=col_table, cex=1, title=title)
+
+}
+
+plot_coef_sma <- function(df, var){
+  plot(df[[var]], df$elevationm,
+       ylim = range(df$elevationch, df$elevationcl),
+       pch = 16, xlab = var, ylab = "SMA LTR-LCC-tradeoff intercept")
+  segments(df[[var]], df$elevationcl, df[[var]], df$elevationch)
+  abline(lm(formula(paste("elevationm ~ ", var)), data = df , weights = df$elevw), col = 'gray')
+  plot(df[[var]], df$slopem,
+       ylim = range(df$slopech, df$slopecl),
+       pch = 16, xlab = var, ylab = "SMA LTR-LCC-tradeoff slope")
+  segments(df[[var]], df$slopecl, df[[var]], df$slopech)
+  abline(lm(formula(paste("slopem ~ ", var)), data = df , weights = df$slopw), col = 'gray')
+}
+
+
+figure_lma_tradeoff_climate<- function(data) {
+  require(dplyr)
+  data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
+    & table(data[["location"]])[data[["location"]]] > 9)
+  location <- data[["location"]]
+  lma <- data[["lma"]]/mean(data[["lma"]])
+  leaf_turnover <- data[["leaf_turnover"]]
+  biomes <- sort(unique(data[["biome"]]))
+  col_table <- nice_colors(length(biomes))
+  names(col_table) <- biomes
+  sm <- sma(leaf_turnover ~ lma, log="xy")
+  print(summary(sm))
+  sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
+  table_coef <- do.call("rbind",lapply(sm1$coef,
+                         function(x){ d <- (cbind(x[1,], x[2, ]));
+                                      colnames(d) <-  as.vector(t(outer(c('elevation', 'slope'),
+                                                                      c('m', 'cl', 'ch'),
+                                                                      paste0)));
+                                      return(data.frame(d))}))
+  df <- left_join(data.frame(location = rownames(table_coef),
+                             table_coef,
+                             pval = unlist(sm1$pval)),
+                  data[!duplicated(data$location), c("location", "mat", "map")],
+                  by = "location")
+  df$elevw <- 1/(df$elevationch - df$elevationcl)
+  df$slopw <- 1/(df$slopech - df$slopecl)
+  df$aet_turc <- df$map/sqrt(0.9 + df$map^2/(300 + 25 * df$mat + 0.05 * df$mat^3))*12
+  # TURC ANNUAL AET
+  df <-  df[df$pval <= 0.05, ]
+  df$mat_o_map<-  scale(df$mat/df$map)
+  df$map <-  scale(df$map)
+  df$mat <-  scale(df$mat)
+  df$aet_turc<-  scale(df$aet_turc)
+
+  par(mfrow = c(3,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+  #MAP
+  plot_coef_sma(df, "map")
+  # MAT
+  plot_coef_sma(df, "mat")
+  #MAT/MAP
+  plot_coef_sma(df, "mat_o_map")
+  print("elevation vs pet")
+  print(summary(lm(elevationm~mat_o_map,
+                   data = df ,
+                   weights = df$slopw)))
+  print("slope vs pet")
+  print(summary(lm(slopem~mat_o_map,
+                   data = df ,
+                   weights = df$slopw)))
+
+}
+
+
+
+figure_B_kl_climate<- function(data) {
+  require(dplyr)
+  data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
+    & table(data[["location"]])[data[["location"]]] > 9)
+  location <- data[["location"]]
+  lma <- data[["lma"]]/mean(data[["lma"]])
+  leaf_turnover <- data[["leaf_turnover"]]
+  biomes <- sort(unique(data[["biome"]]))
+
+  col_table <- nice_colors(length(biomes))
+  names(col_table) <- biomes
+  sm <- sma(leaf_turnover ~ lma, log="xy")
+  print(summary(sm))
+  sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
+  table_coef <- do.call("rbind",lapply(sm1$coef,
+                         function(x){ d <- (cbind(x[1,], x[2, ]));
+                                      colnames(d) <-  as.vector(t(outer(c('elevation', 'slope'),
+                                                                      c('m', 'cl', 'ch'),
+                                                                      paste0)));
+                                      return(data.frame(d))}))
+  df <- left_join(data.frame(location = rownames(table_coef),
+                             table_coef,
+                             pval = unlist(sm1$pval)),
+                  data[!duplicated(data$location), c("location", "mat", "map")],
+                  by = "location")
+  df$elevw <- 1/(df$elevationch - df$elevationcl)
+  df$slopw <- 1/(df$slopech - df$slopecl)
+  df$aet_turc <- df$map/sqrt(0.9 + df$map^2/(300 + 25 * df$mat + 0.05 * df$mat^3))*12
+  # TURC ANNUAL AET
+  df <-  df[df$pval <= 0.05, ]
+  df$mat_o_map<-  scale(df$mat/df$map)
+  param <- data.frame(coef = c("inter", "slope"),
+                      elev = coef(lm(elevationm~mat_o_map,
+                                     data = df ,
+                                     weights = df$slopw)),
+                      slop = coef(lm(slopem~mat_o_map,
+                                     data = df ,
+                                     weights = df$slopw)))
+
+  seq_stress <- seq(from = -1, to = 1, length.out = 100)
+  par(mfrow = c(1, 2))
+  plot(seq_stress,exp(param[1, 2] + seq_stress * param[2,2]),
+       xlab = "T/P", ylab = "B_kl1", type = "l")
+  plot(seq_stress,param[1, 3] + seq_stress * param[2,3],
+       xlab = "T/P", ylab = "B_kl2", type = "l")
+  print(param)
 }

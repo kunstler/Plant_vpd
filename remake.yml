@@ -53,6 +53,8 @@ targets:
     depends:
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
+    - figures/data_lma_ll_trade_off_climate.pdf
+    - figures/data_B_kl_climate.pdf
     - figures/fitness_lma_single.pdf
     - figures/fitness_lma_multi.pdf
     - figures/gradient_lma_single.pdf
@@ -115,6 +117,14 @@ targets:
   figures/data_lma_ll_trade_off.pdf:
     command: figure_lma_tradeoff(leaf_traits)
     plot: square
+
+  figures/data_lma_ll_trade_off_climate.pdf:
+    command: figure_lma_tradeoff_climate(leaf_traits)
+    plot: tall
+
+  figures/data_B_kl_climate.pdf:
+    command: figure_B_kl_climate(leaf_traits)
+    plot: wide
 
   leaf_traits:
     packages: xlsx
