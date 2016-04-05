@@ -65,7 +65,7 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$schedule_eps <- 0.005
   ctrl$equilibrium_eps <- 1e-3
 
-  ctrl$equilibrium_nsteps  <- 20
+  ctrl$equilibrium_nsteps  <- 30
   ctrl$equilibrium_solver_name <- "hybrid"
 
   FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)

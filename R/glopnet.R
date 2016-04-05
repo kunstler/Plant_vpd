@@ -67,7 +67,7 @@ process_wright_2004 <- function(filename, sitevars_file) {
   data$leaf_turnover <- 1/data$leaflifespan ## per year
   names(data)[names(data) %in% c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
 
-  subset(data,  # data[["map"]] > 400 #why did you subset the data to have more than 400m of MAP ??
+  subset(data,   data[["map"]] > 400 & #why did you subset the data to have more than 400m of MAP ??
      data[["growthform"]] %in% c("S","T"))
 }
 
@@ -121,7 +121,7 @@ figure_lma_climate <- function(data) {
 figure_lma_tradeoff <- function(data) {
 
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
-    & table(data[["location"]])[data[["location"]]] > 5)
+    & table(data[["location"]])[data[["location"]]] > 9)
 
   location <- data[["location"]]
   lma <- data[["lma"]]
@@ -154,6 +154,42 @@ figure_lma_tradeoff <- function(data) {
 
 }
 
+
+figure_lma_tradeoff_climate <- function(data, group_name= "location") {
+
+  data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
+    & table(data[["location"]])[data[["location"]]] > 9)
+  lma <- data[["lma"]]
+  leaf_turnover <- data[["leaf_turnover"]]
+  data$mat_o_map<-  as.vector(scale(data$mat/data$map))
+  data$levels <- cut(data$mat_o_map, breaks = 10, labels = FALSE, ordered_result = TRUE)
+  colfunc <- colorRampPalette(c("blue", "red"))
+  cols <- colfunc(10)
+  groups<- data[[group_name]]
+  sm1 <- sma(leaf_turnover ~ lma * groups, log="xy")
+
+  col_sm1 <- cols[data[["levels"]][match(sm1[["groups"]], groups)]]
+
+  par(mar=c(4.6, 4.6, .5, .5))
+  plot(NA, type="n", log="xy", xlim=c(0.01, 1.28), ylim=c(0.03, 32),
+       xlab="", ylab="", las=1)
+  mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")), line=3, side = 1)
+  mtext(expression(paste("Leaf turnover rate (",yr^-1,")")), line=3, side = 2)
+
+  points(lma, leaf_turnover, col=make_transparent(cols[data$levels], 0.5), pch=16)
+  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=1.25, p.lines.transparent=0.15)
+
+  x <- seq_log_range(c(0.001,3), 40)
+  points(x, 0.0286*x^-1.71, type='l', col='black', lwd=2)
+
+  title <- sprintf("%d sites, %d species",
+                   length(unique(groups)),
+                   sum(!is.na(leaf_turnover)))
+  legend("topright", legend=paste("T/P class", 1:10), bty="n",
+         pch=16, col=cols, cex=1, title=title)
+
+}
+
 plot_coef_sma <- function(df, var){
   plot(df[[var]], df$elevationm,
        ylim = range(df$elevationch, df$elevationcl),
@@ -168,7 +204,7 @@ plot_coef_sma <- function(df, var){
 }
 
 
-figure_lma_tradeoff_climate<- function(data) {
+figure_lma_tradeoff_climate_slope_elev<- function(data) {
   require(dplyr)
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
@@ -263,7 +299,7 @@ figure_B_kl_climate<- function(data) {
 
   seq_stress <- seq(from = -1, to = 1, length.out = 100)
   par(mfrow = c(1, 2))
-  plot(seq_stress,exp(param[1, 2] + seq_stress * param[2,2]),
+  plot(seq_stress,10^(param[1, 2] + seq_stress * param[2,2]),
        xlab = "T/P", ylab = "B_kl1", type = "l")
   plot(seq_stress,param[1, 3] + seq_stress * param[2,3],
        xlab = "T/P", ylab = "B_kl2", type = "l")

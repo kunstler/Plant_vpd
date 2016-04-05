@@ -53,7 +53,9 @@ targets:
     depends:
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
-    - figures/data_lma_ll_trade_off_climate.pdf
+    - figures/data_lma_ll_trade_off_climate_loc.pdf
+    - figures/data_lma_ll_trade_off_climate_lev.pdf
+    - figures/data_lma_ll_trade_off_climate_slope_elev.pdf
     - figures/data_B_kl_climate.pdf
     - figures/fitness_lma_single.pdf
     - figures/fitness_lma_multi.pdf
@@ -94,17 +96,17 @@ targets:
     cleanup_level: purge
 
   assembly_lma_multi_1:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=0.8)
+    command: run_assembly(disturbance_mean_interval=50, site_prod=0.8)
     check: exists
     cleanup_level: purge
 
   assembly_lma_multi_2:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=1.0)
+    command: run_assembly(disturbance_mean_interval=50, site_prod=1.0)
     check: exists
     cleanup_level: purge
 
   assembly_lma_multi_3:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=1.2)
+    command: run_assembly(disturbance_mean_interval=50, site_prod=1.2)
     check: exists
     cleanup_level: purge
 
@@ -118,8 +120,16 @@ targets:
     command: figure_lma_tradeoff(leaf_traits)
     plot: square
 
-  figures/data_lma_ll_trade_off_climate.pdf:
+  figures/data_lma_ll_trade_off_climate_loc.pdf:
     command: figure_lma_tradeoff_climate(leaf_traits)
+    plot: tall
+
+  figures/data_lma_ll_trade_off_climate_lev.pdf:
+    command: figure_lma_tradeoff_climate(leaf_traits, I(group_name = 'levels'))
+    plot: tall
+
+  figures/data_lma_ll_trade_off_climate_slope_elev.pdf:
+    command: figure_lma_tradeoff_climate_slope_elev(leaf_traits)
     plot: tall
 
   figures/data_B_kl_climate.pdf:
