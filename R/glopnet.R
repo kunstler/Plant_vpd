@@ -209,7 +209,7 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
   location <- data[["location"]]
-  lma <- data[["lma"]]/mean(data[["lma"]])
+  lma <- data[["lma"]]/10^(log10(mean(data[["lma"]])))
   leaf_turnover <- data[["leaf_turnover"]]
   biomes <- sort(unique(data[["biome"]]))
   col_table <- nice_colors(length(biomes))
@@ -263,7 +263,7 @@ figure_B_kl_climate<- function(data) {
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
   location <- data[["location"]]
-  lma <- data[["lma"]]/mean(data[["lma"]])
+  lma <- data[["lma"]]/10^(log10(mean(data[["lma"]])))
   leaf_turnover <- data[["leaf_turnover"]]
   biomes <- sort(unique(data[["biome"]]))
 

@@ -96,17 +96,17 @@ targets:
     cleanup_level: purge
 
   assembly_lma_multi_1:
-    command: run_assembly(disturbance_mean_interval=50, site_prod=0.8)
+    command: run_assembly(disturbance_mean_interval=40, site_prod=0.8)
     check: exists
     cleanup_level: purge
 
   assembly_lma_multi_2:
-    command: run_assembly(disturbance_mean_interval=50, site_prod=1.0)
+    command: run_assembly(disturbance_mean_interval=40, site_prod=1.0)
     check: exists
     cleanup_level: purge
 
   assembly_lma_multi_3:
-    command: run_assembly(disturbance_mean_interval=50, site_prod=1.2)
+    command: run_assembly(disturbance_mean_interval=40, site_prod=1.2)
     check: exists
     cleanup_level: purge
 
@@ -136,11 +136,25 @@ targets:
     command: figure_B_kl_climate(leaf_traits)
     plot: wide
 
+
   leaf_traits:
     packages: xlsx
     command: >
       process_wright_2004("download/wright-2004.xls",
                           "data/wright_2004_locations.csv")
 
+  wood_clim:
+    command: get_climate_niche(wood)
+    check: exists
+    cleanup_level: purge
+
+  wood:
+    packages: xlsx
+    command: >
+      process_zanne_2010("download/zanne-2010.xls")
+
   download/wright-2004.xls:
     download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
+
+  download/zanne-2010.xls:
+    download: "https://datadryad.org/bitstream/handle/10255/dryad.1139/GlobalVesselAnatomyDatabase.xls?sequence=1"
