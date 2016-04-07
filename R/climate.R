@@ -1,88 +1,32 @@
-#Returns the index of the nearest plot(x2,y2) to each of the target plots (x1,y1)
-NearestPlot <- function(x1,y1,x2,y2) {
-
-  res = numeric(length(x1))
-
-  for (i in 1:length(x1)) {
-    dists = sqrt((x1[i] - x2)^2 + (y1[i] - y2)^2)
-    res[i] = which.min(dists)
-    }
-  return(res)
-
-} #NearestPlot
 
 
 #looks up MAT and MAP for given lat/lon values
-GetClimate <-function(lats,lons) {
-  #create raster grid for tiles
-  xNum<-0:11
-  yNum<-0:4
+GetClimate <-function(lats,lons, wc) {
+  plot.mat <- numeric(length(lats))
+  plot.tmax <- numeric(length(lats))
+  plot.map <- numeric(length(lats))
+  plot.pdry <- numeric(length(lats))
 
-  xLon<-seq(from=-165,to=165,by=30)
-  yLat<-seq(from=75,to=-45,by=-30)
-
-  NumMat<-outer(yNum,xNum,paste,sep="")
-  NumLookup<-as.vector(NumMat)
-
-  NumRast <- raster(matrix(1:60,nrow=5),xmn=-180,xmx=180,ymn=-60,ymx=90)
-
-  LonLatLookup<-expand.grid(Lat=yLat,Lon=xLon)
-  row.names(LonLatLookup) <- NumMat
-
-  #get the set of tiles corresponding to the lons/lats arguments
-  tiles <- extract(NumRast,cbind(lons,lats))
-  unique.tiles <- unique(tiles)
-
-  plot.mat <- numeric(length(tiles))
-  plot.tmax <- numeric(length(tiles))
-  plot.map <- numeric(length(tiles))
-  plot.pdry <- numeric(length(tiles))
-  #download each of the tiles
-  for (i.tile in unique.tiles) {
-    temp.tile <- tryCatch(getData('worldclim',
-                                  var = 'bio',
-                                  res = 0.5,
-                                  lon = LonLatLookup[i.tile,"Lon"],
-                                  lat = LonLatLookup[i.tile,"Lat"]),
-                          error = function(err) NA)
-
-  if(class(temp.tile) == "RasterStack"){
-
-    plot.mat[tiles==i.tile] <- extract(temp.tile,
-                                       cbind(lons[tiles==i.tile],
-                                             lats[tiles==i.tile]),
-                                       layer=1,nl=1)/10
-                                  #retrieve MAT, divide by 10 for deg C
-    plot.tmax[tiles==i.tile] <- extract(temp.tile,
-                                       cbind(lons[tiles==i.tile],
-                                             lats[tiles==i.tile]),
-                                       layer=5,nl=1)/10
-                                  #retrieve T max of warmest month, divide by 10 for deg C
-    plot.map[tiles==i.tile] <- extract(temp.tile,
-                                       cbind(lons[tiles==i.tile],
-                                             lats[tiles==i.tile]),
-                                       layer=12,nl=1) #retrieve MAP
-    plot.pdry[tiles==i.tile] <- extract(temp.tile,
-                                       cbind(lons[tiles==i.tile],
-                                             lats[tiles==i.tile]),
-                                       layer=14,nl=1) #retrieve P dryest month
-    nas <- which(tiles==i.tile & is.na(plot.mat))
-
-    #assign climate of nearest plot to all nas
-    if (length(nas)>0 & sum(!is.na(plot.mat))>3) {
-      good <- which(tiles==i.tile & !is.na(plot.mat))
-
-      near <- NearestPlot(lons[nas],lats[nas],lons[good],lats[good])
-
-      plot.mat[nas] <- plot.mat[good[near]]
-      plot.map[nas] <- plot.map[good[near]]
-      plot.tmax[nas] <- plot.tmax[good[near]]
-      plot.pdry[nas] <- plot.pdry[good[near]]
-    }
-   }
-  }
-
-
+  plot.mat <- extract(wc,
+                      cbind(lons,
+                            lats),
+                      layer=1,nl=1)/10
+  #retrieve MAT, divide by 10 for deg C
+  plot.tmax <- extract(wc,
+                       cbind(lons,
+                             lats),
+                       layer=2,nl=1)/10
+  #retrieve T max of warmest month, divide by 10 for deg C
+  plot.map <- extract(wc,
+                      cbind(lons,
+                            lats),
+                      layer=3,nl=1)
+  #retrieve MAP
+  plot.pdry <- extract(wc,
+                       cbind(lons,
+                             lats),
+                       layer=4,nl=1)
+  #retrieve P dryest month
   return(data.frame(MAT=plot.mat,MAP=plot.map, TMAX = plot.tmax, PDRY = plot.pdry))
 
 } #GetClimate

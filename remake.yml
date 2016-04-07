@@ -5,6 +5,12 @@ packages:
   - rmarkdown
   - RColorBrewer
   - smatr
+  - raster
+  - gtools
+  - dplyr
+  - dismo
+  - rgbif
+  - parrallel
 
 sources:
   - R
@@ -61,6 +67,7 @@ targets:
     - figures/fitness_lma_multi.pdf
     - figures/gradient_lma_single.pdf
     - figures/gradient_lma_multi.pdf
+    - figures/wood_climate.pdf
 
 # Simulation results and figures ###################################################
 
@@ -136,6 +143,10 @@ targets:
     command: figure_B_kl_climate(leaf_traits)
     plot: wide
 
+  figures/wood_climate.pdf:
+    command: plot_wood_clim(wood_clim)
+    plot: wide
+
 
   leaf_traits:
     packages: xlsx
@@ -144,14 +155,16 @@ targets:
                           "data/wright_2004_locations.csv")
 
   wood_clim:
-    command: get_climate_niche(wood)
-    check: exists
-    cleanup_level: purge
+    command: get_climate_niche(wood, wc)
 
   wood:
     packages: xlsx
     command: >
       process_zanne_2010("download/zanne-2010.xls")
+
+  wc:
+    command: >
+      get_wc()
 
   download/wright-2004.xls:
     download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
