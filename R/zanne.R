@@ -16,6 +16,22 @@ process_zanne_2010<- function(filename){
   return(df)
 }
 
+
+process_olson_2014<- function(filename){
+  require(xlsx)
+  ## There are several strategies for reading in an excel file, but
+  ## this one works quite well.
+  df <-read.xlsx2(filename, sheetIndex=2,
+                  stringsAsFactors=FALSE, check.names=FALSE)
+
+  names(df) <- paste(names(df), df[1, ])
+  df <-  df[-1, ]
+
+  for(i in c(6:11, 14:33)) df[, i] <- as.numeric(df[, i])
+  return(df)
+}
+
+
 ## get climatic niche of the species
 
 get_climate_niche_sp<- function(sp, wc){

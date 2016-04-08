@@ -55,6 +55,12 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/literature.tex", "ms/references.bib", clean=TRUE)
 
+  ms/abstract_sfe.pdf:
+    depends:
+      - ms/ms.sty
+    command: latex_build("ms/abstract_sfe.tex", clean=TRUE)
+
+
   figures:
     depends:
     - figures/data_climate.pdf
@@ -144,7 +150,7 @@ targets:
     plot: wide
 
   figures/wood_climate.pdf:
-    command: plot_wood_clim(wood_clim)
+    command: plot_wood_clim(zanne_clim)
     plot: wide
 
 
@@ -154,13 +160,18 @@ targets:
       process_wright_2004("download/wright-2004.xls",
                           "data/wright_2004_locations.csv")
 
-  wood_clim:
-    command: get_climate_niche(wood, wc)
+  zanne_clim:
+    command: get_climate_niche(zanne, wc)
 
-  wood:
+  zanne:
     packages: xlsx
     command: >
       process_zanne_2010("download/zanne-2010.xls")
+
+  olson:
+    packages: xlsx
+    command: >
+      process_olson_2010("download/olson-2014.xls")
 
   wc:
     command: >
@@ -172,8 +183,5 @@ targets:
   download/zanne-2010.xls:
     download: "https://datadryad.org/bitstream/handle/10255/dryad.1139/GlobalVesselAnatomyDatabase.xls?sequence=1"
 
-  download/bio1_9_30s_bil.zip:
-    download: "http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/bio1-9_30s_bil.zip"
-
-  download/bio10_19_30s_bil.zip:
-    download: "http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/bio10-19_30s_bil.zip"
+  download/olson-2014.xls:
+    download: "http://api.onlinelibrary.wiley.com/asset/v1/doi/10.1111%2Fele.12302/asset/supinfo%2Fele12302-sup-0001-AppendixS1.xls?l=j6%2BNsqLlmq%2FUmTwPXEFuIHuWIDkoh16bdSPkBsbx1JqrIriGYfLAO23oVGh0yhC%2B91BwN0ZWzMJL%0Amf%2BX2bFUKS64r5EDpuQ9"
