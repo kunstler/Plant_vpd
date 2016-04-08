@@ -1,7 +1,15 @@
+get_wc <- function(){
+  require(raster)
+  wc <- getData('worldclim',
+                var = 'bio',
+                res = 2.5)
+return(wc)
+}
 
 
 #looks up MAT and MAP for given lat/lon values
 GetClimate <-function(lats,lons, wc) {
+
   plot.mat <- numeric(length(lats))
   plot.tmax <- numeric(length(lats))
   plot.map <- numeric(length(lats))
@@ -15,19 +23,21 @@ GetClimate <-function(lats,lons, wc) {
   plot.tmax <- extract(wc,
                        cbind(lons,
                              lats),
-                       layer=2,nl=1)/10
+                       layer=5,nl=1)/10
   #retrieve T max of warmest month, divide by 10 for deg C
   plot.map <- extract(wc,
                       cbind(lons,
                             lats),
-                      layer=3,nl=1)
+                      layer=12,nl=1)
   #retrieve MAP
   plot.pdry <- extract(wc,
                        cbind(lons,
                              lats),
-                       layer=4,nl=1)
+                       layer=14,nl=1)
   #retrieve P dryest month
   return(data.frame(MAT=plot.mat,MAP=plot.map, TMAX = plot.tmax, PDRY = plot.pdry))
 
 } #GetClimate
+
+
 

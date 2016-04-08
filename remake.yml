@@ -10,7 +10,7 @@ packages:
   - dplyr
   - dismo
   - rgbif
-  - parrallel
+  - parallel
 
 sources:
   - R
@@ -171,3 +171,9 @@ targets:
 
   download/zanne-2010.xls:
     download: "https://datadryad.org/bitstream/handle/10255/dryad.1139/GlobalVesselAnatomyDatabase.xls?sequence=1"
+
+  download/bio1_9_30s_bil.zip:
+    download: "http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/bio1-9_30s_bil.zip"
+
+  download/bio10_19_30s_bil.zip:
+    download: "http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/bio10-19_30s_bil.zip"

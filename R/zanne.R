@@ -64,15 +64,6 @@ print(paste("species ", sp, " error in gbif no data"))
 return(res)
 }
 
-get_wc <- function(dir = "wc0_5"){
-require(gtools)
-require(raster)
-list_ras <- mixedsort(list.files(dir,
-                                 full.names = TRUE,
-                                 pattern = ".bil"))
-wc <- raster::stack(list_ras)
-return(wc)
-}
 
 get_climate_niche<- function(df, wc){
 require(dplyr)
