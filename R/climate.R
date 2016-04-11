@@ -1,11 +1,3 @@
-get_wc <- function(){
-  require(raster)
-  wc <- getData('worldclim',
-                var = 'bio',
-                res = 2.5)
-return(wc)
-}
-
 
 #looks up MAT and MAP for given lat/lon values
 GetClimate <-function(lats,lons, wc) {

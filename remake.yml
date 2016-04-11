@@ -8,9 +8,6 @@ packages:
   - raster
   - gtools
   - dplyr
-  - dismo
-  - rgbif
-  - parallel
 
 sources:
   - R
@@ -153,7 +150,6 @@ targets:
     command: plot_wood_clim(zanne_clim)
     plot: wide
 
-
   leaf_traits:
     packages: xlsx
     command: >
@@ -161,21 +157,23 @@ targets:
                           "data/wright_2004_locations.csv")
 
   zanne_clim:
-    command: get_climate_niche(zanne, wc)
+    command: get_climate_niche(zanne, worldclim)
+    packages:
+      - parallel
+      - rgbif
+      - dismo
 
   zanne:
     packages: xlsx
-    command: >
-      process_zanne_2010("download/zanne-2010.xls")
+    command: process_zanne_2010("download/zanne-2010.xls")
 
   olson:
     packages: xlsx
-    command: >
-      process_olson_2010("download/olson-2014.xls")
+    command: process_olson_2010("download/olson-2014.xls")
 
-  wc:
-    command: >
-      get_wc()
+  worldclim:
+    command: getData(I('worldclim'), var = I('bio'), res = 2.5, path=I("download"))
+    packages: raster
 
   download/wright-2004.xls:
     download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
