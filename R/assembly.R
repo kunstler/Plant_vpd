@@ -1,24 +1,25 @@
 
-plot_trait_gradient <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
+plot_trait_gradient <- function(list_assembly_lma, vec_site_prod) {
+  list_data <- list_assembly_lma
+  grad <- vec_site_prod
 
-  data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
-  grad <- c(0.8, 1.0, 1.2)
-
-  y <- lapply(data, function(x) x$community$traits[,"lma"])
+  y <- lapply(list_data, function(x) x$community$traits[,"lma"])
 
   plot(NA, type="n", log="y", las=1, xlim=c(0.6, 1.4), ylim= c(0.02,1),
     ylab= expression(paste("Leaf-mass per area (kg ", m^-2,")")),
     xlab="Site productivity")
 
 
-  for(i in seq_along(data)) {
+  for(i in seq_along(list_data)) {
     points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black", pch=16)
   }
 }
 
-plot_fitness_assembly <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3) {
+plot_fitness_assembly <- function(list_assembly_lma, vec_site_prod) {
+  list_data <- list_assembly_lma
+  grad <- vec_site_prod
 
-  all_data <- list(assembly_lma_1, assembly_lma_2, assembly_lma_3)
+
   cols <- rev(brewer.pal(5, "Blues"))
 
   plot(NA, log="x", xlim=c(0.01, 1), ylim=c(-2,0.5),
@@ -26,8 +27,8 @@ plot_fitness_assembly <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3
     ylab="Fitness")
   abline(h=0, col="grey")
 
-  for(i in seq_along(all_data)) {
-    data <- all_data[[i]]
+  for(i in seq_along(list_data)) {
+    data <- list_data[[i]]
     community <- last(data$history)
     ff <- community_fitness_approximate(community)
     lma <- sort(c(seq_log_range(data$community$bounds, 400), data$community$traits))
@@ -40,7 +41,14 @@ plot_fitness_assembly <- function(assembly_lma_1, assembly_lma_2, assembly_lma_3
 }
 
 
-run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
+run_assembly_list<- function(vec_site_prod, disturbance_mean_interval=10) {
+require(parallel)
+
+mclapply(vec_site_prod, run_assembly, disturbance_mean_interval, mc.cores = 7)
+}
+
+
+run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
@@ -62,17 +70,17 @@ run_assembly <- function(disturbance_mean_interval=10, site_prod=1.0) {
 trait_gradients_base_parameters <- function(...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.003
-  ctrl$equilibrium_eps <- 1e-3
+  ctrl$schedule_eps <- 0.002
+  ctrl$equilibrium_eps <- 1e-4
 
   ctrl$equilibrium_nsteps  <- 40
-  ctrl$equilibrium_solver_name <- "hybrid"
+  ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
   FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
-  # neutralise reproduction
+      # neutralise reproduction
   p$strategy_default$a_f1 <- 0.5
   p$strategy_default$a_f2 <- 0
   p
@@ -198,7 +206,7 @@ make_FF16_trait_gradient_hyperpar <- function(
       D <- seq(0, 365/2, length.out = 10000)
       I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
 
-      Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
+      Amax <- (site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
       theta <- B_lf2
       QY <- B_lf3
 

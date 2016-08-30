@@ -75,48 +75,28 @@ targets:
 # Simulation results and figures ###################################################
 
   figures/fitness_lma_single.pdf:
-    command: plot_fitness_assembly(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+    command: plot_fitness_assembly(list_assembly_lma_single, I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)))
     plot: square
 
   figures/fitness_lma_multi.pdf:
-    command: plot_fitness_assembly(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+    command: plot_fitness_assembly(list_assembly_lma_multi, I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)))
     plot: square
 
   figures/gradient_lma_single.pdf:
-    command: plot_trait_gradient(assembly_lma_single_1, assembly_lma_single_2, assembly_lma_single_3)
+    command: plot_trait_gradient(list_assembly_lma_single, I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)))
     plot: square
 
   figures/gradient_lma_multi.pdf:
-    command: plot_trait_gradient(assembly_lma_multi_1, assembly_lma_multi_2, assembly_lma_multi_3)
+    command: plot_trait_gradient(list_assembly_lma_multi, I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)))
     plot: square
 
-  assembly_lma_single_1:
-    command: run_assembly(disturbance_mean_interval=5, site_prod=0.8)
+  list_assembly_lma_single:
+    command: run_assembly_list(I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)), disturbance_mean_interval = 5)
     check: exists
     cleanup_level: purge
 
-  assembly_lma_single_2:
-    command: run_assembly(disturbance_mean_interval=5, site_prod=1.0)
-    check: exists
-    cleanup_level: purge
-
-  assembly_lma_single_3:
-    command: run_assembly(disturbance_mean_interval=5, site_prod=1.2)
-    check: exists
-    cleanup_level: purge
-
-  assembly_lma_multi_1:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=0.8)
-    check: exists
-    cleanup_level: purge
-
-  assembly_lma_multi_2:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=1.0)
-    check: exists
-    cleanup_level: purge
-
-  assembly_lma_multi_3:
-    command: run_assembly(disturbance_mean_interval=40, site_prod=1.2)
+  list_assembly_lma_multi:
+    command: run_assembly_list(I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)), disturbance_mean_interval = 40)
     check: exists
     cleanup_level: purge
 
