@@ -156,17 +156,17 @@ figure_lma_tradeoff <- function(data) {
 
 
 figure_lma_tradeoff_climate <- function(data, group_name= "location") {
-
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
   lma <- data[["lma"]]
   leaf_turnover <- data[["leaf_turnover"]]
   data$mat_o_map<-  as.vector(scale(data$mat/data$map))
   data$levels <- cut(data$mat_o_map, breaks = 10, labels = FALSE, ordered_result = TRUE)
-  colfunc <- colorRampPalette(c("blue", "red"))
-  cols <- colfunc(10)
   groups<- data[[group_name]]
   sm1 <- sma(leaf_turnover ~ lma * groups, log="xy")
+
+  colfunc <- colorRampPalette(c("blue", "red"))
+  cols <- colfunc(10)
 
   col_sm1 <- cols[data[["levels"]][match(sm1[["groups"]], groups)]]
 
@@ -176,8 +176,9 @@ figure_lma_tradeoff_climate <- function(data, group_name= "location") {
   mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")), line=3, side = 1)
   mtext(expression(paste("Leaf turnover rate (",yr^-1,")")), line=3, side = 2)
 
-  points(lma, leaf_turnover, col=make_transparent(cols[data$levels], 0.5), pch=16)
-  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=1.25, p.lines.transparent=0.15)
+  points(lma, leaf_turnover, col=cols[data$levels],
+         pch=16)
+  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=1.25)
 
   x <- seq_log_range(c(0.001,3), 40)
   points(x, 0.0286*x^-1.71, type='l', col='black', lwd=2)
@@ -195,12 +196,15 @@ plot_coef_sma <- function(df, var){
        ylim = range(df$elevationch, df$elevationcl),
        pch = 16, xlab = var, ylab = "SMA LTR-LCC-tradeoff intercept")
   segments(df[[var]], df$elevationcl, df[[var]], df$elevationch)
-  abline(lm(formula(paste("elevationm ~ ", var)), data = df , weights = df$elevw), col = 'gray')
+  abline(lm(formula(paste("elevationm ~ ", var)), data = df ,
+            weights = df$elevw),
+         col = 'gray')
   plot(df[[var]], df$slopem,
        ylim = range(df$slopech, df$slopecl),
        pch = 16, xlab = var, ylab = "SMA LTR-LCC-tradeoff slope")
   segments(df[[var]], df$slopecl, df[[var]], df$slopech)
-  abline(lm(formula(paste("slopem ~ ", var)), data = df , weights = df$slopw), col = 'gray')
+  abline(lm(formula(paste("slopem ~ ", var)), data = df , weights = df$slopw),
+         col = 'gray')
 }
 
 
@@ -238,13 +242,15 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   df$mat <-  scale(df$mat)
   df$aet_turc<-  scale(df$aet_turc)
 
-  par(mfrow = c(3,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+  par(mfrow = c(4,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
   #MAP
   plot_coef_sma(df, "map")
   # MAT
   plot_coef_sma(df, "mat")
   #MAT/MAP
   plot_coef_sma(df, "mat_o_map")
+  #MAT/MAP
+  plot_coef_sma(df, "aet_turc")
   print("elevation vs pet")
   print(summary(lm(elevationm~mat_o_map,
                    data = df ,
@@ -267,8 +273,6 @@ figure_B_kl_climate<- function(data) {
   leaf_turnover <- data[["leaf_turnover"]]
   biomes <- sort(unique(data[["biome"]]))
 
-  col_table <- nice_colors(length(biomes))
-  names(col_table) <- biomes
   sm <- sma(leaf_turnover ~ lma, log="xy")
   print(summary(sm))
   sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
