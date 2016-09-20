@@ -51,6 +51,10 @@ plot(fecundity ~ tt[-1], res_FF16$state[-1, ], type = "l", las = 1,
                   res_FF16$state[-1, 'fecundity']))
 
 
+
+### COMPARE WITH NEW PARAM WITH variation in slope and eleveation with MAT over MAP
+
+
 ### EXPLORE IMPACT on POPULATION EQUILIBRIUM SEED PRODUCTION
 
 run <- function(seed_rain_in, p) {

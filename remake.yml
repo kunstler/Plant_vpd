@@ -62,8 +62,9 @@ targets:
     depends:
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
-    - figures/data_lma_ll_trade_off_climate_loc.pdf
-    - figures/data_lma_ll_trade_off_climate_lev.pdf
+    - figures/data_lma_ll_trade_off_climate_lev_T_P.pdf
+    - figures/data_lma_ll_trade_off_climate_lev_P.pdf
+    - figures/data_lma_ll_trade_off_climate_lev_T.pdf
     - figures/data_lma_ll_trade_off_climate_slope_elev.pdf
     - figures/data_B_kl_climate.pdf
     - figures/fitness_lma_single.pdf
@@ -71,6 +72,10 @@ targets:
     - figures/gradient_lma_single.pdf
     - figures/gradient_lma_multi.pdf
     - figures/wood_climate.pdf
+
+  param:
+    depends:
+    - output/param_slope_ToP.csv
 
 # Simulation results and figures ###################################################
 
@@ -100,6 +105,16 @@ targets:
     check: exists
     cleanup_level: purge
 
+  list_assembly_lma_single_slope_elev:
+    command: run_assembly_list(I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)), I(FUN = run_assembly_slope_elev), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_slope_elev:
+    command: run_assembly_list(I(vec_site_prod = c(0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3)), I(FUN = run_assembly_slope_elev), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
 # Data sources and figures  ###################################################
 
   figures/data_climate.pdf:
@@ -110,12 +125,16 @@ targets:
     command: figure_lma_tradeoff(leaf_traits)
     plot: square
 
-  figures/data_lma_ll_trade_off_climate_loc.pdf:
+  figures/data_lma_ll_trade_off_climate_lev_T_P.pdf:
     command: figure_lma_tradeoff_climate(leaf_traits)
     plot: tall
 
-  figures/data_lma_ll_trade_off_climate_lev.pdf:
-    command: figure_lma_tradeoff_climate(leaf_traits, I(group_name = 'levels'))
+  figures/data_lma_ll_trade_off_climate_lev_P.pdf:
+    command: figure_lma_tradeoff_climate(leaf_traits, I(var_clim = 'map'))
+    plot: tall
+
+  figures/data_lma_ll_trade_off_climate_lev_T.pdf:
+    command: figure_lma_tradeoff_climate(leaf_traits, I(var_clim = 'mat'))
     plot: tall
 
   figures/data_lma_ll_trade_off_climate_slope_elev.pdf:
@@ -129,6 +148,9 @@ targets:
   figures/wood_climate.pdf:
     command: plot_wood_clim(zanne_clim)
     plot: wide
+
+  output/param_slope_ToP.csv:
+    command: param_B_kl_climate(leaf_traits)
 
   leaf_traits:
     packages: xlsx

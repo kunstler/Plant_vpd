@@ -51,8 +51,10 @@ process_wright_2004 <- function(filename, sitevars_file) {
   d <- cbind(d[-c(i_log)], d_unlogged)
 
   # add location info
-  sitevars <- read.csv(sitevars_file, stringsAsFactors=FALSE)
-  data <- merge(d, sitevars, by.x = 'Dataset', by.y = 'dataset_location')
+  sitevars <- read.csv(sitevars_file, stringsAsFactors = FALSE,
+                       encoding = "UTF-8")
+  data <- merge(d, sitevars, by.x = 'Dataset', by.y = 'dataset_location',
+                all.x = TRUE, all.y = FALSE, sort = FALSE)
 
   #lowercase names
   names(data) <- tolower(names(data))
@@ -60,15 +62,18 @@ process_wright_2004 <- function(filename, sitevars_file) {
   # unit conversions
   data$lma <- data$lma/1000 # Converts to kg
   data$n.area <- data$n.area/1000 # Converts to kg
-  data$a.area <- (data$a.area * 31557.6)*10^-6 # converts to mol/kg/yr from micro-mol/g/s
+  data$a.area <- (data$a.area * 31557.6)*10^-6
+       # converts to mol/kg/yr from micro-mol/g/s
   data$rd.area <- (data$rd.area * 31557.6)*10^-6 # converts to mol/kg/yr from micro-mol/g/s
 
   data$leaflifespan <- data$leaflifespan/12 ## convert LL from months to years
   data$leaf_turnover <- 1/data$leaflifespan ## per year
-  names(data)[names(data) %in% c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
+  names(data)[names(data) %in%
+              c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
 
-  subset(data,   data[["map"]] > 400 & #why did you subset the data to have more than 400m of MAP ??
-     data[["growthform"]] %in% c("S","T"))
+  ## subset(data,   data[["map"]] > 400 & #why did you subset the data to have more than 400m of MAP ??
+  ##    data[["growthform"]] %in% c("S","T"))
+  data
 }
 
 figure_lma_climate <- function(data) {
@@ -155,38 +160,49 @@ figure_lma_tradeoff <- function(data) {
 }
 
 
-figure_lma_tradeoff_climate <- function(data, group_name= "location") {
+figure_lma_tradeoff_climate <- function(data,
+                                        var_clim = 'mat_o_map') {
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
   lma <- data[["lma"]]
   leaf_turnover <- data[["leaf_turnover"]]
   data$mat_o_map<-  as.vector(scale(data$mat/data$map))
-  data$levels <- cut(data$mat_o_map, breaks = 10, labels = FALSE, ordered_result = TRUE)
-  groups<- data[[group_name]]
+  if(var_clim == 'map'){
+    data$levels <- cut(data[[var_clim]],
+                     breaks = c(150, 300, 600, 1200, 2400, 4800) ,
+                     labels = FALSE, ordered_result = TRUE)
+}else{
+  data$levels <- cut(data[[var_clim]], breaks = 5, labels = FALSE,
+                     ordered_result = TRUE)
+}
+
+  groups<- data[['levels']]
   sm1 <- sma(leaf_turnover ~ lma * groups, log="xy")
 
   colfunc <- colorRampPalette(c("blue", "red"))
-  cols <- colfunc(10)
+  cols <- colfunc(length(unique(data[['levels']])))
 
   col_sm1 <- cols[data[["levels"]][match(sm1[["groups"]], groups)]]
 
   par(mar=c(4.6, 4.6, .5, .5))
   plot(NA, type="n", log="xy", xlim=c(0.01, 1.28), ylim=c(0.03, 32),
        xlab="", ylab="", las=1)
-  mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")), line=3, side = 1)
+  mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")),
+        line=3, side = 1)
   mtext(expression(paste("Leaf turnover rate (",yr^-1,")")), line=3, side = 2)
 
   points(lma, leaf_turnover, col=cols[data$levels],
          pch=16)
-  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=1.25)
+  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=2)
 
   x <- seq_log_range(c(0.001,3), 40)
-  points(x, 0.0286*x^-1.71, type='l', col='black', lwd=2)
+  points(x, 0.0286*x^-1.71, type='l', col='black', lwd=1, lty = 2)
 
   title <- sprintf("%d sites, %d species",
                    length(unique(groups)),
                    sum(!is.na(leaf_turnover)))
-  legend("topright", legend=paste("T/P class", 1:10), bty="n",
+  legend("topright", legend=paste(var_clim, " class",
+                                  1:length(unique(data[['levels']]))), bty="n",
          pch=16, col=cols, cex=1, title=title)
 
 }
@@ -242,7 +258,7 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   df$mat <-  scale(df$mat)
   df$aet_turc<-  scale(df$aet_turc)
 
-  par(mfrow = c(4,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+  par(mfrow = c(3,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
   #MAP
   plot_coef_sma(df, "map")
   # MAT
@@ -250,7 +266,6 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   #MAT/MAP
   plot_coef_sma(df, "mat_o_map")
   #MAT/MAP
-  plot_coef_sma(df, "aet_turc")
   print("elevation vs pet")
   print(summary(lm(elevationm~mat_o_map,
                    data = df ,
@@ -266,46 +281,86 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
 
 figure_B_kl_climate<- function(data) {
   require(dplyr)
+    browser()
+
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
-    & table(data[["location"]])[data[["location"]]] > 9)
+                       & table(data[["location"]])[data[["location"]]] > 9)
   location <- data[["location"]]
-  lma <- data[["lma"]]/10^(log10(mean(data[["lma"]])))
+  lma <- data[["lma"]]/0.1978791
   leaf_turnover <- data[["leaf_turnover"]]
-  biomes <- sort(unique(data[["biome"]]))
 
   sm <- sma(leaf_turnover ~ lma, log="xy")
   print(summary(sm))
   sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
   table_coef <- do.call("rbind",lapply(sm1$coef,
-                         function(x){ d <- (cbind(x[1,], x[2, ]));
-                                      colnames(d) <-  as.vector(t(outer(c('elevation', 'slope'),
-                                                                      c('m', 'cl', 'ch'),
-                                                                      paste0)));
+                 function(x){ d <- (cbind(x[1,], x[2, ]));
+                              colnames(d) <-  as.vector(t(outer(c('elevation',
+                                                                  'slope'),
+                                                                 c('m', 'cl',
+                                                                   'ch'),
+                                                                 paste0)));
                                       return(data.frame(d))}))
   df <- left_join(data.frame(location = rownames(table_coef),
                              table_coef,
                              pval = unlist(sm1$pval)),
                   data[!duplicated(data$location), c("location", "mat", "map")],
                   by = "location")
-  df$elevw <- 1/(df$elevationch - df$elevationcl)
-  df$slopw <- 1/(df$slopech - df$slopecl)
-  df$aet_turc <- df$map/sqrt(0.9 + df$map^2/(300 + 25 * df$mat + 0.05 * df$mat^3))*12
-  # TURC ANNUAL AET
   df <-  df[df$pval <= 0.05, ]
   df$mat_o_map<-  scale(df$mat/df$map)
   param <- data.frame(coef = c("inter", "slope"),
-                      elev = coef(lm(elevationm~mat_o_map,
-                                     data = df ,
-                                     weights = df$slopw)),
-                      slop = coef(lm(slopem~mat_o_map,
-                                     data = df ,
-                                     weights = df$slopw)))
+                      elev = coef(lm(elevationm~map,
+                                     data = df )),
+                      slop = coef(lm(slopem~map,
+                                     data = df )))
+  ## par(mfrow = c(1, 2))
+  ## plot(df$mat_o_map, df$elevationm,
+  ##      xlab = "T/P", ylab = "B_kl1")
+  ## lines(seq_stress, (param[1, 2] + seq_stress * param[2,2]), col = 'black')
+  ## abline(v=0, col = 'red')
+  ## plot(df$mat_o_map, df$slopem,
+  ##      xlab = "T/P", ylab = "B_kl2")
+  ## lines(seq_stress, (param[1, 3] + seq_stress * param[2,3]), col = 'black')
 
   seq_stress <- seq(from = -1, to = 1, length.out = 100)
   par(mfrow = c(1, 2))
-  plot(seq_stress,10^(param[1, 2] + seq_stress * param[2,2]),
+  plot(seq_stress, 10^(param[1, 2] + seq_stress * param[2,2]),
        xlab = "T/P", ylab = "B_kl1", type = "l")
-  plot(seq_stress,param[1, 3] + seq_stress * param[2,3],
+  abline(v=0, col = 'red')
+  plot(seq_stress, param[1, 3] + seq_stress * param[2,3],
        xlab = "T/P", ylab = "B_kl2", type = "l")
+  abline(v=0, col = 'red')
   print(param)
+}
+
+
+param_B_kl_climate<- function(data) {
+  require(dplyr)
+  data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
+                       & table(data[["location"]])[data[["location"]]] > 9)
+  location <- data[["location"]]
+  lma <- data[["lma"]]/0.1978791
+  leaf_turnover <- data[["leaf_turnover"]]
+  sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
+  table_coef <- do.call("rbind",lapply(sm1$coef,
+                 function(x){ d <- (cbind(x[1,], x[2, ]));
+                              colnames(d) <-  as.vector(t(outer(c('elevation',
+                                                                  'slope'),
+                                                                 c('m', 'cl',
+                                                                   'ch'),
+                                                                 paste0)));
+                                      return(data.frame(d))}))
+  df <- left_join(data.frame(location = rownames(table_coef),
+                             table_coef,
+                             pval = unlist(sm1$pval)),
+                  data[!duplicated(data$location), c("location", "mat", "map")],
+                  by = "location")
+  df <-  df[df$pval <= 0.05, ]
+  df$mat_o_map<-  scale(df$mat/df$map)
+  param <- data.frame(coef = c("a", "b"),
+                      LMAelev = coef(lm(elevationm~mat_o_map,
+                                     data = df )),
+                      LMAslope = coef(lm(slopem~mat_o_map,
+                                     data = df )))
+  write.csv(param, file = file.path('output', 'param_slope_ToP.csv'),
+            row.names = FALSE)
 }

@@ -41,7 +41,8 @@ plot_fitness_assembly <- function(list_assembly_lma, vec_site_prod) {
 }
 
 
-run_assembly_list<- function(vec_site_prod, disturbance_mean_interval=10) {
+run_assembly_list<- function(vec_site_prod,FUN = run_assembly,
+                             disturbance_mean_interval=10) {
 require(parallel)
 
 mclapply(vec_site_prod, run_assembly, disturbance_mean_interval, mc.cores = 7)
@@ -51,6 +52,20 @@ mclapply(vec_site_prod, run_assembly, disturbance_mean_interval, mc.cores = 7)
 run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+  sys0 <- community(p, bounds_infinite("lma"),
+                     fitness_approximate_control=list(type="gp"))
+# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
+
+  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
+  assembler_run(obj_m0, 20)
+}
+
+
+run_assembly_slope_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
+
+  p <- trait_gradients_slope_elev_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -78,6 +93,31 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$equilibrium_verbose <-  TRUE
 
   FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)
+  p <- FF16_Parameters(patch_area=1.0, control=ctrl,
+                   hyperpar=FF16_trait_gradient_hyperpar)
+      # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
+  p
+}
+
+##' Hopefully sensible set of parameters for use with the EBT.  Turns
+##' accuracy down a bunch, makes it noisy, sets up the
+##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAT over MAP
+##' @title Sensible, fast (ish) EBT parameters
+##' @author Georges Kunstler
+##' @export
+trait_gradients_slope_elev_parameters<- function(...) {
+  #plant_log_console()
+  ctrl <- equilibrium_verbose(fast_control())
+  ctrl$schedule_eps <- 0.002
+  ctrl$equilibrium_eps <- 1e-4
+
+  ctrl$equilibrium_nsteps  <- 40
+  ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
+  ctrl$equilibrium_verbose <-  TRUE
+
+  FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_slope_elev_hyperpar(...)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
       # neutralise reproduction
@@ -315,11 +355,11 @@ make_FF16_trait_gradient_hyperpar <- function(
 ##' @export
 ##' @rdname FF16_hyperpar
 make_FF16_trait_gradient_slope_elev_hyperpar <- function(
-                                lma_0=0.1978791,
-                                B_kl1_1_log10=0.4565855,
-                                B_kl1_2_log10= 0.1145339,
-                                B_kl2_1=1.71,
-                                B_kl2_2=0.5586961,
+                                lma_0 = 0.1978791,
+                                B_kl1_1_log10 = -0.3201652,
+                                B_kl1_2_log10 = 0.15443814,
+                                B_kl2_1 = -1.7341931,
+                                B_kl2_2 = 0.49731758,
                                 rho_0=608.0,
                                 B_dI1=0.01,
                                 B_dI2=0.0,
@@ -411,7 +451,8 @@ make_FF16_trait_gradient_slope_elev_hyperpar <- function(
       E <- seq(0, 1, by=0.02)
       ## Only integrate over half year, as solar path is symmetrical
       D <- seq(0, 365/2, length.out = 10000)
-      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D,
+                                                   latitude = abs(latitude)))
 
       Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
       theta <- B_lf2
