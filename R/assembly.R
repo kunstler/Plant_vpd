@@ -103,7 +103,7 @@ trait_gradients_base_parameters <- function(...) {
 
 ##' Hopefully sensible set of parameters for use with the EBT.  Turns
 ##' accuracy down a bunch, makes it noisy, sets up the
-##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAT over MAP
+##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAP
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
@@ -246,7 +246,7 @@ make_FF16_trait_gradient_hyperpar <- function(
       D <- seq(0, 365/2, length.out = 10000)
       I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
 
-      Amax <- (site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
+      Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
       theta <- B_lf2
       QY <- B_lf3
 
@@ -356,10 +356,10 @@ make_FF16_trait_gradient_hyperpar <- function(
 ##' @rdname FF16_hyperpar
 make_FF16_trait_gradient_slope_elev_hyperpar <- function(
                                 lma_0 = 0.1978791,
-                                B_kl1_1_log10 = -0.3201652,
-                                B_kl1_2_log10 = 0.15443814,
-                                B_kl2_1 = -1.7341931,
-                                B_kl2_2 = 0.49731758,
+                                B_kl1_1_log10 = log10(0.4565855),
+                                B_kl1_2_log10 = -0.2151,
+                                B_kl2_1 = 1.71,
+                                B_kl2_2 = 0,
                                 rho_0=608.0,
                                 B_dI1=0.01,
                                 B_dI2=0.0,
@@ -505,7 +505,6 @@ make_FF16_trait_gradient_slope_elev_hyperpar <- function(
       stop("Attempt to overwrite generated parameters: ",
            paste(overlap, collapse=", "))
     }
-
     ## Filter extra so that any column where all numbers are with eps
     ## of the default strategy are not replaced:
     if (filter) {

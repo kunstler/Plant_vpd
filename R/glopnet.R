@@ -281,7 +281,6 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
 
 figure_B_kl_climate<- function(data) {
   require(dplyr)
-    browser()
 
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
                        & table(data[["location"]])[data[["location"]]] > 9)
@@ -307,27 +306,32 @@ figure_B_kl_climate<- function(data) {
                   by = "location")
   df <-  df[df$pval <= 0.05, ]
   df$mat_o_map<-  scale(df$mat/df$map)
+  df$mat<-  scale(df$mat)
+  df$map<-  scale(df$map)
+
   param <- data.frame(coef = c("inter", "slope"),
                       elev = coef(lm(elevationm~map,
                                      data = df )),
                       slop = coef(lm(slopem~map,
                                      data = df )))
-  ## par(mfrow = c(1, 2))
-  ## plot(df$mat_o_map, df$elevationm,
-  ##      xlab = "T/P", ylab = "B_kl1")
-  ## lines(seq_stress, (param[1, 2] + seq_stress * param[2,2]), col = 'black')
-  ## abline(v=0, col = 'red')
-  ## plot(df$mat_o_map, df$slopem,
-  ##      xlab = "T/P", ylab = "B_kl2")
-  ## lines(seq_stress, (param[1, 3] + seq_stress * param[2,3]), col = 'black')
 
   seq_stress <- seq(from = -1, to = 1, length.out = 100)
+
+  ## par(mfrow = c(1, 2))
+  ## plot(df$map, df$elevationm,
+  ##      xlab = "P", ylab = "B_kl1")
+  ## lines(seq_stress, (param[1, 2] + seq_stress * param[2,2]), col = 'black')
+  ## abline(v=0, col = 'red')
+  ## plot(df$map, df$slopem,
+  ##      xlab = "P", ylab = "B_kl2")
+  ## lines(seq_stress, (param[1, 3] + seq_stress * param[2,3]), col = 'black')
+
   par(mfrow = c(1, 2))
   plot(seq_stress, 10^(param[1, 2] + seq_stress * param[2,2]),
-       xlab = "T/P", ylab = "B_kl1", type = "l")
+       xlab = "MAP", ylab = "B_kl1", type = "l")
   abline(v=0, col = 'red')
   plot(seq_stress, param[1, 3] + seq_stress * param[2,3],
-       xlab = "T/P", ylab = "B_kl2", type = "l")
+       xlab = "MAP", ylab = "B_kl2", type = "l")
   abline(v=0, col = 'red')
   print(param)
 }
@@ -335,11 +339,15 @@ figure_B_kl_climate<- function(data) {
 
 param_B_kl_climate<- function(data) {
   require(dplyr)
+
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
                        & table(data[["location"]])[data[["location"]]] > 9)
   location <- data[["location"]]
   lma <- data[["lma"]]/0.1978791
   leaf_turnover <- data[["leaf_turnover"]]
+
+  sm <- sma(leaf_turnover ~ lma, log="xy")
+  print(summary(sm))
   sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
   table_coef <- do.call("rbind",lapply(sm1$coef,
                  function(x){ d <- (cbind(x[1,], x[2, ]));
@@ -356,11 +364,14 @@ param_B_kl_climate<- function(data) {
                   by = "location")
   df <-  df[df$pval <= 0.05, ]
   df$mat_o_map<-  scale(df$mat/df$map)
+  df$mat<-  scale(df$mat)
+  df$map<-  scale(df$map)
+
   param <- data.frame(coef = c("a", "b"),
-                      LMAelev = coef(lm(elevationm~mat_o_map,
+                      LMAelev = coef(lm(elevationm~map,
                                      data = df )),
-                      LMAslope = coef(lm(slopem~mat_o_map,
+                      LMAslope = coef(lm(slopem~map,
                                      data = df )))
-  write.csv(param, file = file.path('output', 'param_slope_ToP.csv'),
+  write.csv(param, file = file.path('output', 'param_slope_P.csv'),
             row.names = FALSE)
 }

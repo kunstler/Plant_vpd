@@ -75,7 +75,7 @@ targets:
 
   param:
     depends:
-    - output/param_slope_ToP.csv
+    - output/param_slope_P.csv
 
 # Simulation results and figures ###################################################
 
@@ -149,7 +149,7 @@ targets:
     command: plot_wood_clim(zanne_clim)
     plot: wide
 
-  output/param_slope_ToP.csv:
+  output/param_slope_P.csv:
     command: param_B_kl_climate(leaf_traits)
 
   leaf_traits:
