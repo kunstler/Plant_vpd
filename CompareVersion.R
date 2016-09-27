@@ -135,7 +135,6 @@ res_b<- demo_ver_siteS_lmaS_lightS(fun_param =
                                    lightS = c(0.5, 1.0))
 
 
-
 ##
 par(mfrow = c(3, 3), mar = c(1, 1, 1, 1))
 plot_demo_site_lma_light(var = 'dhdt', res_SE,
