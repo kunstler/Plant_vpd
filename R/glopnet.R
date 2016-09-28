@@ -337,7 +337,7 @@ figure_B_kl_climate<- function(data) {
 }
 
 
-param_B_kl_climate<- function(data) {
+param_B_kl_climate_P<- function(data) {
   require(dplyr)
 
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
@@ -373,5 +373,44 @@ param_B_kl_climate<- function(data) {
                       LMAslope = coef(lm(slopem~map,
                                      data = df )))
   write.csv(param, file = file.path('output', 'param_slope_P.csv'),
+            row.names = FALSE)
+}
+
+param_B_kl_climate_TP<- function(data) {
+  require(dplyr)
+
+  data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
+                       & table(data[["location"]])[data[["location"]]] > 9)
+  location <- data[["location"]]
+  lma <- data[["lma"]]/0.1978791
+  leaf_turnover <- data[["leaf_turnover"]]
+
+  sm <- sma(leaf_turnover ~ lma, log="xy")
+  print(summary(sm))
+  sm1 <- sma(leaf_turnover ~ lma * location, log="xy")
+  table_coef <- do.call("rbind",lapply(sm1$coef,
+                 function(x){ d <- (cbind(x[1,], x[2, ]));
+                              colnames(d) <-  as.vector(t(outer(c('elevation',
+                                                                  'slope'),
+                                                                 c('m', 'cl',
+                                                                   'ch'),
+                                                                 paste0)));
+                                      return(data.frame(d))}))
+  df <- left_join(data.frame(location = rownames(table_coef),
+                             table_coef,
+                             pval = unlist(sm1$pval)),
+                  data[!duplicated(data$location), c("location", "mat", "map")],
+                  by = "location")
+  df <-  df[df$pval <= 0.05, ]
+  df$mat_o_map<-  scale(df$mat/df$map)
+  df$mat<-  scale(df$mat)
+  df$map<-  scale(df$map)
+
+  param <- data.frame(coef = c("a", "b"),
+                      LMAelev = coef(lm(elevationm~mat_o_map,
+                                     data = df )),
+                      LMAslope = coef(lm(slopem~mat_o_map,
+                                     data = df )))
+  write.csv(param, file = file.path('output', 'param_slope_TP.csv'),
             row.names = FALSE)
 }

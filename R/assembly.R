@@ -63,9 +63,22 @@ run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10) {
 }
 
 
-run_assembly_slope_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
 
-  p <- trait_gradients_slope_elev_parameters(site_prod=site_prod)
+  p <- trait_gradients_elev_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+  sys0 <- community(p, bounds_infinite("lma"),
+                     fitness_approximate_control=list(type="gp"))
+# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
+
+  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
+  assembler_run(obj_m0, 20)
+}
+
+run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10) {
+
+  p <- trait_gradients_slope_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -89,7 +102,8 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$equilibrium_eps <- 1e-4
 
   ctrl$equilibrium_nsteps  <- 40
-  ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
+  ctrl$equilibrium_solver_name <- "iteration"
+                                 #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
   FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)
@@ -103,11 +117,11 @@ trait_gradients_base_parameters <- function(...) {
 
 ##' Hopefully sensible set of parameters for use with the EBT.  Turns
 ##' accuracy down a bunch, makes it noisy, sets up the
-##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAP
+##' hyperparameterisation that we most often use. Include a variation of LMA LT elevation of the tradeoff changing with MAP
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
-trait_gradients_slope_elev_parameters<- function(...) {
+trait_gradients_elev_parameters<- function(...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.002
@@ -117,7 +131,8 @@ trait_gradients_slope_elev_parameters<- function(...) {
   ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
-  FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_slope_elev_hyperpar(...)
+  FF16_trait_gradient_hyperpar <-
+      make_FF16_trait_gradient_slope_elev_hyperpar(...)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
       # neutralise reproduction
@@ -125,6 +140,40 @@ trait_gradients_slope_elev_parameters<- function(...) {
   p$strategy_default$a_f2 <- 0
   p
 }
+
+##' Hopefully sensible set of parameters for use with the EBT.  Turns
+##' accuracy down a bunch, makes it noisy, sets up the
+##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAT over MAP for the slope
+##' @title Sensible, fast (ish) EBT parameters
+##' @author Georges Kunstler
+##' @export
+trait_gradients_slope_parameters<- function(...) {
+  #plant_log_console()
+  ctrl <- equilibrium_verbose(fast_control())
+  ctrl$schedule_eps <- 0.002
+  ctrl$equilibrium_eps <- 1e-4
+
+  ctrl$equilibrium_nsteps  <- 40
+  ctrl$equilibrium_solver_name <- "iteration"
+                                 #"hybrid" # in default this is "iteration"
+  ctrl$equilibrium_verbose <-  TRUE
+
+  FF16_trait_gradient_hyperpar <-
+      make_FF16_trait_gradient_slope_elev_hyperpar(...,
+                                B_kl1_1_log10 = log10(0.4565855),
+                                B_kl1_2_log10 = 0,
+                                B_kl2_1 = 1.71,
+                                B_kl2_2 = 0.4973 * (2/0.6) )
+  p <- FF16_Parameters(patch_area=1.0, control=ctrl,
+                   hyperpar=FF16_trait_gradient_hyperpar)
+      # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
+  p
+}
+
+
+
 
 ##' Hyperparameters for FF16 physiological model
 ##' @title Hyperparameters for FF16 physiological model
@@ -357,7 +406,7 @@ make_FF16_trait_gradient_hyperpar <- function(
 make_FF16_trait_gradient_slope_elev_hyperpar <- function(
                                 lma_0 = 0.1978791,
                                 B_kl1_1_log10 = log10(0.4565855),
-                                B_kl1_2_log10 = -0.2151,
+                                B_kl1_2_log10 = -0.2151*(2/0.6), # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
                                 B_kl2_1 = 1.71,
                                 B_kl2_2 = 0,
                                 rho_0=608.0,
@@ -532,3 +581,137 @@ make_FF16_trait_gradient_slope_elev_hyperpar <- function(
   }
 }
 
+demo_ver_site_lma_light <- function(fun_param, .site_prod = 1,  lma = 1,
+                                   light = 1.0){
+hyper <- fun_param(site_prod = .site_prod)
+s <- strategy(trait_matrix(lma, "lma"), hyper)
+env<- fixed_environment(light)
+p<- FF16_PlantPlus(s)
+p$compute_vars_phys(env)
+# compute demo
+tt <- seq(0, 70, length.out = 101)
+res<-  grow_plant_to_time(p, tt, env)
+dhdt<- sapply(res$plant, function(x) x$internals$height_dt)
+mat_demo <- res$state[, c('height', 'mortality', 'fecundity')]
+mat_demo <- cbind(time = tt, mat_demo, dhdt = dhdt)
+return(mat_demo)
+}
+
+demo_ver_siteS_lmaS_lightS<- function(fun_param,
+                                      site_prodS = c(0.8, 1, 1.2),
+                                      lmaS = c(0.5, 1 , 1.5),
+                                      lightS = c(0.2, 1.0)){
+names(site_prodS) <- paste0('site_prod', site_prodS)
+names(lmaS) <- paste0('lma', lmaS)
+names(lightS) <- paste0('light', lightS)
+res <- array(NA, dim = c(101, 5, length(site_prodS),
+                         length(lmaS), length(lightS)),
+             dimnames = list(NULL,
+                             c('time', 'height', 'mortality',
+                               'fecundity', 'dhdt'),
+                               names(site_prodS),
+                               names(lmaS),
+                               names(lightS)))
+for(site_prod in names(site_prodS)){
+    for(lma in names(lmaS)){
+        for(light in names(lightS)){
+           res[ , ,
+              site_prod,
+              lma,
+              light] <- demo_ver_site_lma_light(fun_param,
+                                            .site_prod = site_prodS[site_prod],
+                                            lma = lmaS[lma],
+                                            light = lightS[light])
+        }
+     }
+ }
+return(res)
+}
+
+plot_demo_var <- function(res, site_prod_n, var, lmaS_n, lightS_n){
+    require(RColorBrewer)
+    cols <- brewer.pal(3,'Blues')
+   plot(res[ , 'time', site_prod_n,
+               lmaS_n[1],
+               lightS_n[2]],
+        res[ , var, site_prod_n,
+               lmaS_n[2],
+               lightS_n[1]], type = "l", lwd = 2,
+        xlab = NA, ylab = NA,
+        ylim = range(res[ -1 , var, site_prod_n, , ]),
+        col = cols[2])
+   lines(res[ , 'time', site_prod_n,
+               lmaS_n[1],
+               lightS_n[1]],
+         res[ , var, site_prod_n,
+               lmaS_n[1],
+               lightS_n[1]], col = cols[1], lwd = 2)
+   lines(res[ , 'time', site_prod_n,
+               lmaS_n[3],
+               lightS_n[1]],
+         res[ , var, site_prod_n,
+               lmaS_n[3],
+               lightS_n[1]], col = cols[3], lwd = 2)
+# low light
+   lines(res[ , 'time', site_prod_n,
+               lmaS_n[1],
+               lightS_n[2]],
+         res[ , var, site_prod_n,
+               lmaS_n[1],
+               lightS_n[2]], col = cols[1], lty = 2, lwd = 2)
+   lines(res[ , 'time', site_prod_n,
+               lmaS_n[2],
+               lightS_n[2]],
+         res[ , var, site_prod_n,
+               lmaS_n[2],
+               lightS_n[2]], col = cols[2], lty = 2, lwd = 2)
+   lines(res[ , 'time', site_prod_n,
+               lmaS_n[3],
+               lightS_n[2]],
+         res[ , var, site_prod_n,
+               lmaS_n[3],
+               lightS_n[2]], col = cols[3], lty = 2, lwd = 2)
+}
+
+plot_demo_site_lma_light <- function(var, res, site_prodS, lmaS, lightS){
+site_prodS_n<- paste0('site_prod', site_prodS)
+lmaS_n<- paste0('lma', lmaS)
+lightS_n<- paste0('light', lightS)
+
+   for (site_prod_n in site_prodS_n){
+       plot_demo_var(res, site_prod_n, var, lmaS_n, lightS_n)
+
+   }
+}
+
+lcp_lma_site_prod_height<- function(fun_param, lmaS, .site_prod = 0,
+                                    height = 0.3920458){
+  hyper <- fun_param(site_prod = .site_prod)
+  lcp_vec <- rep(NA, length(lmaS))
+  for (i in seq_len(length(lmaS))){
+      s <- strategy(trait_matrix(lmaS[i], "lma"), hyper)
+      p<- FF16_PlantPlus(s)
+      p$height <- height
+      lcp_vec[i]<- lcp_whole_plant(p)
+  }
+ return(lcp_vec)
+}
+
+plot_lcp_version <- function(){
+ lmaS <- seq(from = 0.05, to = 0.3, length.out = 100)
+ par(mfrow = c(1, 3))
+ for (site in c(-0.3, 0, 0.3)){
+ lcp_base <- lcp_lma_site_prod_height(trait_gradients_base_parameters,
+                                     lmaS, .site_prod = site)
+ lcp_elev <- lcp_lma_site_prod_height(trait_gradients_elev_parameters,
+                                     lmaS, .site_prod = site)
+ lcp_slope <- lcp_lma_site_prod_height(trait_gradients_slope_parameters,
+                                     lmaS, .site_prod = site)
+ plot(lmaS, lcp_base, type = 'l',
+      xlab = 'lma',
+      ylab = 'Whole-plant light compensation point',
+      ylim = c(0, 1))
+ lines(lmaS, lcp_elev, col = 'red')
+ lines(lmaS, lcp_slope, col = 'green')
+ }
+}

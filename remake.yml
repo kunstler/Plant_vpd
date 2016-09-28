@@ -65,7 +65,8 @@ targets:
     - figures/data_lma_ll_trade_off_climate_lev_T_P.pdf
     - figures/data_lma_ll_trade_off_climate_lev_P.pdf
     - figures/data_lma_ll_trade_off_climate_lev_T.pdf
-    - figures/data_lma_ll_trade_off_climate_slope_elev.pdf
+    - figures/data_lma_ll_trade_off_climate_elev.pdf
+    - figures/data_lma_ll_trade_off_climate_slope.pdf
     - figures/data_B_kl_climate.pdf
     - figures/fitness_lma_single.pdf
     - figures/fitness_lma_multi.pdf
@@ -76,6 +77,7 @@ targets:
   param:
     depends:
     - output/param_slope_P.csv
+    - output/param_slope_TP.csv
 
 # Simulation results and figures ###################################################
 
@@ -87,12 +89,20 @@ targets:
     command: plot_fitness_assembly(list_assembly_lma_multi, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_single.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
+  figures/gradient_lma_single_elev.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_elev, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_multi.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+  figures/gradient_lma_multi_elev.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_elev, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: square
+
+  figures/gradient_lma_single_slope.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_slope, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
+    plot: square
+
+  figures/gradient_lma_multi_slope.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_slope, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
   list_assembly_lma_single:
@@ -105,13 +115,23 @@ targets:
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_single_slope_elev:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope_elev), disturbance_mean_interval = 5)
+  list_assembly_lma_single_elev:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev), disturbance_mean_interval = 5)
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_multi_slope_elev:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope_elev), disturbance_mean_interval = 40)
+  list_assembly_lma_multi_elev:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_single_slope:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_slope:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope), disturbance_mean_interval = 40)
     check: exists
     cleanup_level: purge
 
@@ -150,7 +170,10 @@ targets:
     plot: wide
 
   output/param_slope_P.csv:
-    command: param_B_kl_climate(leaf_traits)
+    command: param_B_kl_climate_P(leaf_traits)
+
+  output/param_slope_TP.csv:
+    command: param_B_kl_climate_TP(leaf_traits)
 
   leaf_traits:
     packages: xlsx
