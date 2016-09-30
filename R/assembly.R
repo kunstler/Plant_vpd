@@ -62,6 +62,19 @@ run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10) {
   assembler_run(obj_m0, 20)
 }
 
+run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10) {
+
+  p <- trait_gradients_base_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+  sys0 <- community(p, c(bounds_infinite("lma"), bounds_infinite('narea')),
+                     fitness_approximate_control=list(type="gp"))
+# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
+
+  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
+  assembler_run(obj_m0, 20)
+}
+
 
 run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
 
@@ -83,7 +96,6 @@ run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10) {
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
                      fitness_approximate_control=list(type="gp"))
-# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
   obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
   assembler_run(obj_m0, 20)
@@ -684,18 +696,76 @@ lightS_n<- paste0('light', lightS)
    }
 }
 
-lcp_lma_site_prod_height<- function(fun_param, lmaS, .site_prod = 0,
-                                    height = 0.3920458){
+lcp_lma_site_prod_height <- function(fun_param, lmaS, .site_prod = 0,
+                                    height = 0.3920458, narea=1.87e-3){
   hyper <- fun_param(site_prod = .site_prod)
   lcp_vec <- rep(NA, length(lmaS))
   for (i in seq_len(length(lmaS))){
-      s <- strategy(trait_matrix(lmaS[i], "lma"), hyper)
+      s <- strategy(trait_matrix(c(lmaS[i], narea), c("lma", "narea")), hyper)
       p<- FF16_PlantPlus(s)
       p$height <- height
       lcp_vec[i]<- lcp_whole_plant(p)
   }
  return(lcp_vec)
 }
+
+dhdt_lma_site_prod_height<- function(fun_param, lmaS, .site_prod = 0,
+                                     height = 0.3920458, narea=1.87e-3){
+  hyper <- fun_param(site_prod = .site_prod)
+  dhdt_vec <- rep(NA, length(lmaS))
+  for (i in seq_len(length(lmaS))){
+      s <- strategy(trait_matrix(c(lmaS[i], narea), c("lma", "narea")), hyper)
+      p<- FF16_PlantPlus(s)
+      p$height <- height
+      env <- fixed_environment(1)
+      p$compute_vars_phys(env)
+      dhdt_vec[i] <- p$internals$height_dt
+  }
+ return(dhdt_vec)
+}
+
+
+
+lcp_narea_site_prod_height <- function(fun_param, nareaS, .site_prod = 0,
+                                    height = 0.3920458, lma= 0.1978791){
+  hyper <- fun_param(site_prod = .site_prod)
+  lcp_vec <- rep(NA, length(nareaS))
+  for (i in seq_len(length(nareaS))){
+      s <- strategy(trait_matrix(c(lma, nareaS[i]), c("lma", "narea")), hyper)
+      p<- FF16_PlantPlus(s)
+      p$height <- height
+      lcp_vec[i]<- lcp_whole_plant(p)
+  }
+ return(lcp_vec)
+}
+
+dhdt_narea_site_prod_height<- function(fun_param, nareaS, .site_prod = 0,
+                                     height = 0.3920458, lma=0.1978791){
+  hyper <- fun_param(site_prod = .site_prod)
+  dhdt_vec <- rep(NA, length(nareaS))
+  for (i in seq_len(length(nareaS))){
+      s <- strategy(trait_matrix(c(lma, nareaS[i]), c("lma", "narea")), hyper)
+      p<- FF16_PlantPlus(s)
+      p$height <- height
+      env <- fixed_environment(1)
+      p$compute_vars_phys(env)
+      dhdt_vec[i] <- p$internals$height_dt
+  }
+ return(dhdt_vec)
+}
+
+
+lcp_dhdt_lma_site_prod_height<- function(fun_param, lmaS, .site_prod = 0,
+                                    height = 1, narea=1.87e-3){
+  dhdt_vec <- dhdt_lma_site_prod_height(fun_param, lmaS, .site_prod,
+                                        height, narea)
+  lcp_vec <- lcp_lma_site_prod_height(fun_param, lmaS, .site_prod,
+                                      height, narea)
+  return(data.frame(lcp = lcp_vec,
+                    dhdt = dhdt_vec))
+}
+
+
 
 plot_lcp_version <- function(){
  lmaS <- seq(from = 0.05, to = 0.3, length.out = 100)
