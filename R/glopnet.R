@@ -372,8 +372,7 @@ param_B_kl_climate_P<- function(data) {
                                      data = df )),
                       LMAslope = coef(lm(slopem~map,
                                      data = df )))
-  write.csv(param, file = file.path('output', 'param_slope_P.csv'),
-            row.names = FALSE)
+return(param)
 }
 
 param_B_kl_climate_TP<- function(data) {
@@ -411,6 +410,5 @@ param_B_kl_climate_TP<- function(data) {
                                      data = df )),
                       LMAslope = coef(lm(slopem~mat_o_map,
                                      data = df )))
-  write.csv(param, file = file.path('output', 'param_slope_TP.csv'),
-            row.names = FALSE)
+return(param)
 }

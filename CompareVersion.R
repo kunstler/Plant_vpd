@@ -8,105 +8,15 @@ source('R/assembly.R')
 ## Explore photosynthesis model and Leaf N
 
 
-
-
-photo_max_LeafN_Stress<- function(
-                                narea=1.87e-3,
-                                narea_0=1.87e-3,
-                                lma_0=0.1978791,
-                                B_kl1=0.4565855,
-                                B_kl2=1.71,
-                                rho_0=608.0,
-                                B_dI1=0.01,
-                                B_dI2=0.0,
-                                B_ks1=0.2,
-                                B_ks2=0.0,
-                                B_rs1=4012.0,
-                                B_rb1=2.0*4012.0,
-                                B_f1 =3.0,
-                                B_lf1=5120.738 * 1.87e-3 * 24 * 3600 / 1e+06,
-                                B_lf2=0.5,
-                                B_lf3=0.04,
-                                B_lf4=21000,
-                                B_lf5=1,
-                                k_I=0.5,
-                                latitude=0,
-                                site_prod=0) {
-
-    ## rho / sapwood respiration relationship:
-
-    ## Narea, photosynthesis, respiration
-
-    assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
-      x <- QY * I + Amax
-      (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
-    }
-
-    ## Photosynthesis  [mol CO2 / m2 / yr]
-    approximate_annual_assimilation <- function(narea, latitude) {
-      E <- seq(0, 1, by=0.02)
-      ## Only integrate over half year, as solar path is symmetrical
-      D <- seq(0, 365/2, length.out = 10000)
-      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D,
-                                                             latitude = abs(latitude)))
-
-      Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
-      theta <- B_lf2
-      QY <- B_lf3
-
-      AA <- NA * E
-
-      for (i in seq_len(length(E))) {
-        AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
-                                    k_I * I * E[i], Amax, theta, QY))
-      }
-      if(all(diff(AA) < 1E-8)) {
-        # line fitting will fail if all have are zero, or potentially same value
-        ret <- c(last(AA), 0)
-        names(ret) <- c("p1","p2")
-      } else {
-        fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA),
-                   start = list(p1 = 100, p2 = 0.2))
-        ret <- coef(fit)
-      }
-      ret
-    }
-
-    # This needed in case narea has length zero, in which case trapezium fails
-    a_p1 <- a_p2 <- 0 * narea
-    ## TODO: Remove the 0.5 hardcoded default for k_I here, and deal
-    ## with this more nicely.
-    if (length(narea) > 0 || k_I != 0.5) {
-      i <- match(narea, unique(narea))
-      y <- vapply(unique(narea), approximate_annual_assimilation,
-                  numeric(2), latitude)
-      a_p1  <- y["p1", i]
-      a_p2  <- y["p2", i]
-    }
-
-
-  y <- vapply(unique(narea), approximate_annual_assimilation,
-              numeric(2), latitude)
-  return(y["p1", 1])
-}
-
-nareaS <-  seq(from = 0.2, to = 10, length.out = 100)/1000
-# in Wright et al. 2004 N area vary roughly from 0.1 to 10 g per m2
-site_prodS <- seq(from = -0.6, to = 0.6, length.out = 100)
-res_photo <- matrix(NA, nrow = 100, ncol = 100)
-rownames(res_photo) <- paste0('narea', nareaS)
-colnames(res_photo) <- paste0('site_prod', site_prodS)
-
-for(narea in nareaS){
-  for(site_prod in site_prodS){
-   res <- photo_max_LeafN_Stress(narea = narea, site_prod = site_prod)
-   res_photo[paste0('narea', narea),
-             paste0('site_prod', site_prod)] <-  res
-  }
-}
-
-contour(nareaS, site_prodS, res_photo)
 ## That seems similar to Wright et al. 2003 Am. Nat.
+
+## FOR THE PRESENTATION
+
+## - SLA EFFECT ON SUCCESSIONAL COEXISTENCE
+## - Growth in high light vs light compensation point
+
+## - PLOT OF PREDICTION
+
 
 # IS the modle of Wright et al. 2003 already implemented in plant ?? increasing narea will compensate for decrease in lower prod in dryer site but will have a respiration cost
 
@@ -116,12 +26,27 @@ lcp_vec <- lcp_narea_site_prod_height(trait_gradients_base_parameters,
                            nareaS = nareaS)
 dhdt_vec <- dhdt_narea_site_prod_height(trait_gradients_base_parameters,
                            nareaS = nareaS)
+
+nareaS <-  seq(from = 0.2, to = 10, length.out = 3)/1000
+prodS <- seq(from = -0.3, to = 0.3, length = 20)
+list_t <-  vector('list')
+for (i in 1:20){
+
+list_t[[i]]<- dhdt_narea_site_prod_height(trait_gradients_base_parameters,
+                           nareaS = nareaS, .site_prod = prodS[i])
+}
+
 par(mfrow = c(1, 2))
 plot(nareaS, lcp_vec, type = 'l')
 plot(nareaS, dhdt_vec, type = 'l')
 
 
-lmaS <-  seq(from = 0.04, to = 0.3, length.out = 100)
+df_dhdt_lcp_sl<- lcp_dhdt_lma_site_prod_height(trait_gradients_base_parameters,
+                                             lmaS = lmaS, .site_prod = -0.3)
+
+
+
+lmaS <-  seq(from = 0.06, to = 0.27, length.out = 100)
 df_dhdt_lcp <- lcp_dhdt_lma_site_prod_height(trait_gradients_base_parameters,
                                              lmaS = lmaS)
 df_dhdt_lcp_hn<- lcp_dhdt_lma_site_prod_height(trait_gradients_base_parameters,
@@ -133,14 +58,21 @@ df_dhdt_lcp_hn_sl<- lcp_dhdt_lma_site_prod_height(
                                              lmaS = lmaS, .site_prod = -0.3,
                                              narea = 0.01)
 plot(df_dhdt_lcp$dhdt, 1 - df_dhdt_lcp$lcp, type = 'l',
-     xlab = 'Height growth in full light',
-     ylab = '1 -lcp', xlim = c(0.1, 1.8),
+     xlab = expression(Height~growth~'in'~full~light~(m~year^{-1})),
+     ylab = '1 - light compensation point (%)', xlim = c(0.1, 1.8),
      ylim = c(0.55, 0.9))
 lines(df_dhdt_lcp_hn$dhdt, 1 - df_dhdt_lcp_hn$lcp, lty = 2)
 lines(df_dhdt_lcp_hn_sl$dhdt, 1 - df_dhdt_lcp_hn_sl$lcp, lty = 2, col = 'red')
 lines(df_dhdt_lcp_sl$dhdt, 1 - df_dhdt_lcp_sl$lcp, col = 'red')
 
-#ask Daniel Why ?
+
+plot_lma_shade_tradeoff <-  function(lmaS = seq(from = 0.06, to = 0.27, length.out = 100)){
+df_dhdt_lcp <- lcp_dhdt_lma_site_prod_height(trait_gradients_base_parameters,
+                                             lmaS = lmaS)
+plot(df_dhdt_lcp$dhdt, 1 - df_dhdt_lcp$lcp, type = 'l',
+     xlab = expression(Height~growth~'in'~full~light~(m~year^{-1})),
+     ylab = '1 - light compensation point (%)')
+}
 
 ## TODO PLOT LCP in function of leaf N
 

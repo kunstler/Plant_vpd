@@ -1,5 +1,9 @@
 ## NOTE: This is copied from plant_paper; make sure any changes get
 ## reflected over there...
+xelatex_build_clean <- function(...) {
+  latex_build(..., clean=TRUE, engine=I("xelatex"))
+}
+
 latex_build <- function(filename, bibliography=NULL,
                         chdir=TRUE, interaction="nonstopmode",
                         max_attempts=5L, clean=FALSE, engine="pdflatex") {

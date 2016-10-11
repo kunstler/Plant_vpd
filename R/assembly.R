@@ -2,10 +2,9 @@
 plot_trait_gradient <- function(list_assembly_lma, vec_site_prod) {
   list_data <- list_assembly_lma
   grad <- vec_site_prod
-
   y <- lapply(list_data, function(x) x$community$traits[,"lma"])
 
-  plot(NA, type="n", log="y", las=1, xlim=c(0.6, 1.4), ylim= c(0.02,1),
+  plot(NA, type="n", log="y", las=1, xlim=c(-0.3, 0.3), ylim= c(0.02,1),
     ylab= expression(paste("Leaf-mass per area (kg ", m^-2,")")),
     xlab="Site productivity")
 
@@ -42,56 +41,56 @@ plot_fitness_assembly <- function(list_assembly_lma, vec_site_prod) {
 
 
 run_assembly_list<- function(vec_site_prod,FUN = run_assembly,
-                             disturbance_mean_interval=10) {
+                             disturbance_mean_interval=10, data_param = NA) {
 require(parallel)
-
-mclapply(vec_site_prod, run_assembly, disturbance_mean_interval, mc.cores = 7)
+mclapply(vec_site_prod,
+         FUN,
+         disturbance_mean_interval = disturbance_mean_interval,
+         data_param = data_param,
+         mc.cores = 7)
 }
 
 
-run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
                      fitness_approximate_control=list(type="gp"))
-# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
   obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
   assembler_run(obj_m0, 20)
 }
 
-run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
-  sys0 <- community(p, c(bounds_infinite("lma"), bounds_infinite('narea')),
+  sys0 <- community(p, bounds_infinite(c("lma","narea")),
                      fitness_approximate_control=list(type="gp"))
-# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
   obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
   assembler_run(obj_m0, 20)
 }
 
 
-run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
 
-  p <- trait_gradients_elev_parameters(site_prod=site_prod)
+  p <- trait_gradients_elev_parameters(data_param = data_param, site_prod = site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
                      fitness_approximate_control=list(type="gp"))
-# sys0 <- community(p, bounds(lma= c(-Inf, Inf), stc=c(0, 100)))
 
   obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
   assembler_run(obj_m0, 20)
 }
 
-run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
 
-  p <- trait_gradients_slope_parameters(site_prod=site_prod)
+  p <- trait_gradients_slope_parameters(data_param = data_param, site_prod = site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -133,7 +132,7 @@ trait_gradients_base_parameters <- function(...) {
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
-trait_gradients_elev_parameters<- function(...) {
+trait_gradients_elev_parameters<- function(data_param, ...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.002
@@ -144,7 +143,12 @@ trait_gradients_elev_parameters<- function(...) {
   ctrl$equilibrium_verbose <-  TRUE
 
   FF16_trait_gradient_hyperpar <-
-      make_FF16_trait_gradient_slope_elev_hyperpar(...)
+      make_FF16_trait_gradient_slope_elev_hyperpar(...,
+                                B_kl1_1_log10 = log10(0.4565855),
+                                B_kl1_2_log10 = data_param[2, 'LMAelev'] *(2/0.6),
+                                B_kl2_1 = 1.71,
+                                B_kl2_2 = 0 )
+    # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
       # neutralise reproduction
@@ -159,7 +163,7 @@ trait_gradients_elev_parameters<- function(...) {
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
-trait_gradients_slope_parameters<- function(...) {
+trait_gradients_slope_parameters<- function(data_param, ...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.002
@@ -175,7 +179,9 @@ trait_gradients_slope_parameters<- function(...) {
                                 B_kl1_1_log10 = log10(0.4565855),
                                 B_kl1_2_log10 = 0,
                                 B_kl2_1 = 1.71,
-                                B_kl2_2 = 0.4973 * (2/0.6) )
+                                B_kl2_2 = data_param[2, 'LMAslope']* (2/0.6) )
+    # this slope is for a gradient of Temp / precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
+
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
       # neutralise reproduction
@@ -418,7 +424,7 @@ make_FF16_trait_gradient_hyperpar <- function(
 make_FF16_trait_gradient_slope_elev_hyperpar <- function(
                                 lma_0 = 0.1978791,
                                 B_kl1_1_log10 = log10(0.4565855),
-                                B_kl1_2_log10 = -0.2151*(2/0.6), # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
+                                B_kl1_2_log10 = 0,
                                 B_kl2_1 = 1.71,
                                 B_kl2_2 = 0,
                                 rho_0=608.0,
@@ -784,4 +790,114 @@ plot_lcp_version <- function(){
  lines(lmaS, lcp_elev, col = 'red')
  lines(lmaS, lcp_slope, col = 'green')
  }
+}
+
+plot_lma_shade_tradeoff <-  function(lmaS = seq(from = 0.06, to = 0.27, length.out = 100)){
+df_dhdt_lcp <- lcp_dhdt_lma_site_prod_height(trait_gradients_base_parameters,
+                                             lmaS = lmaS)
+plot(df_dhdt_lcp$dhdt, 1 - df_dhdt_lcp$lcp, type = 'l',
+     xlab = expression(Height~growth~'in'~full~light~(m~year^{-1})),
+     ylab = '1 - light compensation point (%)')
+}
+
+
+photo_max_LeafN_Stress<- function(
+                                narea=1.87e-3,
+                                narea_0=1.87e-3,
+                                lma_0=0.1978791,
+                                B_kl1=0.4565855,
+                                B_kl2=1.71,
+                                rho_0=608.0,
+                                B_dI1=0.01,
+                                B_dI2=0.0,
+                                B_ks1=0.2,
+                                B_ks2=0.0,
+                                B_rs1=4012.0,
+                                B_rb1=2.0*4012.0,
+                                B_f1 =3.0,
+                                B_lf1=5120.738 * 1.87e-3 * 24 * 3600 / 1e+06,
+                                B_lf2=0.5,
+                                B_lf3=0.04,
+                                B_lf4=21000,
+                                B_lf5=1,
+                                k_I=0.5,
+                                latitude=0,
+                                site_prod=0) {
+
+    ## rho / sapwood respiration relationship:
+
+    ## Narea, photosynthesis, respiration
+
+    assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+      x <- QY * I + Amax
+      (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+    }
+
+    ## Photosynthesis  [mol CO2 / m2 / yr]
+    approximate_annual_assimilation <- function(narea, latitude) {
+      E <- seq(0, 1, by=0.02)
+      ## Only integrate over half year, as solar path is symmetrical
+      D <- seq(0, 365/2, length.out = 10000)
+      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D,
+                                                             latitude = abs(latitude)))
+
+      Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
+      theta <- B_lf2
+      QY <- B_lf3
+
+      AA <- NA * E
+
+      for (i in seq_len(length(E))) {
+        AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
+                                    k_I * I * E[i], Amax, theta, QY))
+      }
+      if(all(diff(AA) < 1E-8)) {
+        # line fitting will fail if all have are zero, or potentially same value
+        ret <- c(last(AA), 0)
+        names(ret) <- c("p1","p2")
+      } else {
+        fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA),
+                   start = list(p1 = 100, p2 = 0.2))
+        ret <- coef(fit)
+      }
+      ret
+    }
+
+    # This needed in case narea has length zero, in which case trapezium fails
+    a_p1 <- a_p2 <- 0 * narea
+    ## TODO: Remove the 0.5 hardcoded default for k_I here, and deal
+    ## with this more nicely.
+    if (length(narea) > 0 || k_I != 0.5) {
+      i <- match(narea, unique(narea))
+      y <- vapply(unique(narea), approximate_annual_assimilation,
+                  numeric(2), latitude)
+      a_p1  <- y["p1", i]
+      a_p2  <- y["p2", i]
+    }
+
+
+  y <- vapply(unique(narea), approximate_annual_assimilation,
+              numeric(2), latitude)
+  return(y["p1", 1])
+}
+
+data_contour  <- function(nareaS = seq(from = 0.2, to = 10, length.out = 100)/1000,
+                           site_prodS = seq(from = -0.6, to = 0.6, length.out = 100)){
+   res_photo <- matrix(NA, nrow = 100, ncol = 100)
+   rownames(res_photo) <- paste0('narea', nareaS)
+   colnames(res_photo) <- paste0('site_prod', site_prodS)
+   for(narea in nareaS){
+     for(site_prod in site_prodS){
+      res <- photo_max_LeafN_Stress(narea = narea, site_prod = site_prod)
+      res_photo[paste0('narea', narea),
+                paste0('site_prod', site_prod)] <-  res
+     }
+   }
+   return(res_photo)
+}
+
+plot_contour_waterStress_LeafN <- function(res_photo,
+                                           nareaS = seq(from = 0.2, to = 10, length.out = 100)/1000,
+                                           site_prodS = seq(from = -0.6, to = 0.6, length.out = 100)){
+contour(nareaS, site_prodS, res_photo, xlab = 'Leaf N', ylab = 'Water stress')
 }
