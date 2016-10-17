@@ -68,11 +68,38 @@ run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10, ...) 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
-  sys0 <- community(p, bounds_infinite(c("lma","narea")),
-                     fitness_approximate_control=list(type="gp"))
 
-  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
-  assembler_run(obj_m0, 20)
+  bounds_narea <- viable_fitness(bounds(narea=c(1E-5, 1E2)), p, x = 0.01)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+  sys0 <- community(p, bounds_narea,
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+assembler_run(obj_m0, 20)
+
+}
+
+run_assembly_narea_lma<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
+
+  p <- trait_gradients_base_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+
+  bounds_narea <- viable_fitness(bounds(narea=c(1E-5, 1E2)), p, x = 0.01)
+  bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+  sys0 <- community(p, rbind(bounds_narea, bounds_lma),
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+assembler_run(obj_m0, 20)
+
 }
 
 

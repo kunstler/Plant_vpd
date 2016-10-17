@@ -5,10 +5,12 @@ library(plant.assembly)
 source('R/assembly.R')
 
 
-## Explore photosynthesis model and Leaf N
+### TEST DANIEL
 
-
-## That seems similar to Wright et al. 2003 Am. Nat.
+### TODO
+# - RUN MODEL NAREA ALONE
+# - RUN MODEL NAREA AND LMA
+# - OTHER TRAITS for survival with respiration cost
 
 ## FOR THE PRESENTATION
 
@@ -21,6 +23,68 @@ source('R/assembly.R')
 # IS the modle of Wright et al. 2003 already implemented in plant ?? increasing narea will compensate for decrease in lower prod in dryer site but will have a respiration cost
 
 ## See Prentice to see if we can derive estimate of relative cost of leaf N and water
+
+# Do plots of tradeoffs for slides.
+
+
+library(plant)
+library(plant.assembly)
+source("R/assembly.R")
+
+p <- trait_gradients_base_parameters(site_prod=0.0)
+p$disturbance_mean_interval <- 40
+
+# Let's estimate the bounds for our trait before setting up the assembler
+bounds_narea <- viable_fitness(bounds(narea=c(1E-5, 1E2)), p, x = 0.01)
+bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+ sys0 <- community(p, rbind(bounds_narea, bounds_lma),
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+system.time(
+ret <- assembler_run(obj_m0, 20)
+)
+
+
+
+p <- trait_gradients_base_parameters(site_prod=0.0)
+p$disturbance_mean_interval <- 40
+
+# Let's estimate the bounds for our trait before setting up the assembler
+bounds_narea <- viable_fitness(bounds(narea=c(1E-5, 1E2)), p, x = 0.01)
+bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+ sys0 <- community(p, bounds_narea,
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+system.time(
+ret1 <- assembler_run(obj_m0, 20)
+)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+ sys0 <- community(p, bounds_lma,
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+system.time(
+ret2 <- assembler_run(obj_m0, 20)
+)
+
+## Explore photosynthesis model and Leaf N
+
+
+## That seems similar to Wright et al. 2003 Am. Nat.
+
 
 lcp_vec <- lcp_narea_site_prod_height(trait_gradients_base_parameters,
                            nareaS = nareaS)

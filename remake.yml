@@ -189,6 +189,16 @@ targets:
     check: exists
     cleanup_level: purge
 
+  list_assembly_lma_single_narea_lma:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_narea_lma:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
 # Data sources and figures  ###################################################
 
   figures/data_climate.pdf:
