@@ -8,8 +8,6 @@ source('R/assembly.R')
 ### TEST DANIEL
 
 ### TODO
-# - RUN MODEL NAREA ALONE
-# - RUN MODEL NAREA AND LMA
 # - OTHER TRAITS for survival with respiration cost
 
 ## FOR THE PRESENTATION
@@ -43,7 +41,8 @@ bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
                    fitness_approximate_control=list(type="gp"))
 
 # and also tell the assembler not to calculate the bounds
-obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5,
+                               compute_viable_fitness = FALSE))
 
 system.time(
 ret <- assembler_run(obj_m0, 20)
@@ -85,11 +84,6 @@ ret2 <- assembler_run(obj_m0, 20)
 
 ## That seems similar to Wright et al. 2003 Am. Nat.
 
-
-lcp_vec <- lcp_narea_site_prod_height(trait_gradients_base_parameters,
-                           nareaS = nareaS)
-dhdt_vec <- dhdt_narea_site_prod_height(trait_gradients_base_parameters,
-                           nareaS = nareaS)
 
 nareaS <-  seq(from = 0.2, to = 10, length.out = 3)/1000
 prodS <- seq(from = -0.3, to = 0.3, length = 20)

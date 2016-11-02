@@ -111,13 +111,44 @@ df_pred <- rbind(df_pred_A, df_pred_B, df_pred_C)
 return(df_pred)
 }
 
+plot_intro_fig_0a<- function(df_pred){
+library(ggplot2)
+df_pred$gradient <- 3.0001 - df_pred$gradient
+df_pred$Abund[df_pred$Abund<0] <- 0
+df <- df_pred[df_pred$Model != 'Shifting competitive hierarchy', ]
+
+ggplot(df, aes(x = gradient, y = Abund, colour = Species)) +
+  geom_line(aes(x = gradient, y = Abund, colour = Species), size = 1.5) +
+  facet_grid(Pred ~ .) +  theme_simple() +
+  ylab("Abundance")+xlab("Abiotic stess")+ylim(0, 0.75)
+ggsave(file.path('figures', 'resLV_0a.pdf'))
+
+}
+
+plot_intro_fig_0b<- function(df_pred){
+library(ggplot2)
+df_pred$gradient <- 3.0001 - df_pred$gradient
+df_pred$Abund[df_pred$Abund<0] <- 0
+
+df <- df_pred[df_pred$Model == 'Shifting competitive hierarchy', ]
+
+ggplot(df, aes(x = gradient, y = Abund, colour = Species)) +
+  geom_line(aes(x = gradient, y = Abund, colour = Species), size = 1.5) +
+  facet_grid(Pred ~ .) +  theme_simple() +
+  ylab("Abundance")+xlab("Abiotic stress")+ylim(0, 0.75)
+ggsave(file.path('figures', 'resLV_0b.pdf'))
+
+}
+
+
 plot_intro_fig_1<- function(df_pred){
 library(ggplot2)
+df_pred$Abund[df_pred$Abund<0] <- 0
 
 df_pred$Abund[df_pred$Model == 'Shifting competitive hierarchy'] <- NA
 
 ggplot(df_pred, aes(x = gradient, y = Abund, colour = Species)) +
-  geom_line(aes(x = gradient, y = Abund, colour = Species)) +
+  geom_line(aes(x = gradient, y = Abund, colour = Species), size = 1.5) +
   facet_grid(Pred ~ Model) +  theme_simple() +
   ylab("Abundance")+xlab("Abiotic gradient")+ylim(0, 0.75)
 ggsave(file.path('figures', 'resLV_1.pdf'))
@@ -127,13 +158,13 @@ ggsave(file.path('figures', 'resLV_1.pdf'))
 
 plot_intro_fig_2<- function(df_pred){
 library(ggplot2)
+df_pred$Abund[df_pred$Abund<0] <- 0
 
 ggplot(df_pred, aes(x = gradient, y = Abund, colour = Species)) +
-  geom_line(aes(x = gradient, y = Abund, colour = Species)) +
+  geom_line(aes(x = gradient, y = Abund, colour = Species), size = 1.5) +
   facet_grid(Pred ~ Model) +  theme_simple() +
   ylab("Abundance")+xlab("Abiotic gradient")+ylim(0, 0.75)
-ggsave(file.path('figures', 'resLV_2.pdf'))
-
+ggsave(file.path('figures', 'resLV_2.pdf'), width = 12, height = 7)
 }
 
 

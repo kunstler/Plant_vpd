@@ -8,6 +8,8 @@ packages:
   - raster
   - gtools
   - dplyr
+  - TheoTradeOff
+  - reldist
 
 sources:
   - R
@@ -57,6 +59,8 @@ targets:
       - ms/ms.sty
     command: latex_build("ms/abstract_sfe.tex", clean=TRUE)
 
+  slides.pdf:
+    command: xelatex_build_clean("slides.tex")
 
   figures:
     depends:
@@ -75,6 +79,8 @@ targets:
     - figures/wood_climate.pdf
     - figures/resLV_1.pdf
     - figures/resLV_2.pdf
+    - figures/resLV_0a.pdf
+    - figures/resLV_0b.pdf
 
   param:
     depends:
@@ -82,6 +88,13 @@ targets:
     - param_slope_TP
 
 # Simulation results and figures ###################################################
+
+#### LV for intro
+  figures/resLV_0a.pdf:
+    command: plot_intro_fig_0a(df_pred)
+
+  figures/resLV_0b.pdf:
+    command: plot_intro_fig_0b(df_pred)
 
   figures/resLV_1.pdf:
     command: plot_intro_fig_1(df_pred)
@@ -92,12 +105,36 @@ targets:
   df_pred:
     command: data_intro_fig()
 
+### TheoTradeOff
+
+  list_init:
+    command: generate_init()
+
+  l_res_K100:
+    command: run_K(list_init, I(K = 100))
+
+  l_res_K10:
+    command: run_K(list_init, I(K = 10))
+
+  l_res_K5:
+    command: run_K(list_init, I(K = 5))
+
+  l_res_K1:
+    command: run_K(list_init, I(K = 1))
+
+
+## Plant simuls
+
   figures/tradeoff_shade_light.pdf:
     command: plot_lma_shade_tradeoff()
     plot: square
 
   figures/WaterS_LeafN_contour.pdf:
     command: plot_contour_waterStress_LeafN(res_photo)
+    plot: square
+
+  figures/WaterS_LeafN.pdf:
+    command: plot_water_LeafN()
     plot: square
 
   res_photo:
@@ -135,14 +172,37 @@ targets:
     command: plot_trait_gradient(list_assembly_lma_multi_slope, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
-  figures/gradient_lma_single_narea.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
+  figures/gradient_lma_single_narea_lma.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_multi_narea.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+  figures/gradient_lma_multi_narea_lma.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
+  figures/gradient_narea_single.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
+    plot: square
+
+  figures/gradient_narea_multi.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
+    plot: square
+
+  figures/gradient_narea_single_narea_lma.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
+    plot: square
+
+  figures/gradient_narea_multi_narea_lma.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
+    plot: square
+
+  figures/gradient_narea_lma_multi_narea_lma.pdf:
+    command: plot_trait_gradient_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: square
+
+  figures/gradient_narea_lma_multi_narea_lma2.pdf:
+    command: plot_trait_gradient_narea_lma2(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: large_square
 
   list_assembly_lma_single:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
