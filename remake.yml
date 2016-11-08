@@ -122,6 +122,22 @@ targets:
   l_res_K1:
     command: run_K(list_init, I(K = 1))
 
+  figures/map_theo_K100.pdf:
+    command: plot_map(l_res_K100, list_init, I(val_K = 100))
+    plot: wide
+
+  figures/map_theo_K10.pdf:
+    command: plot_map(l_res_K10, list_init, I(val_K = 10))
+    plot: wide
+
+  figures/map_theo_K5.pdf:
+    command: plot_map(l_res_K5, list_init, I(val_K = 5))
+    plot: wide
+
+  figures/map_theo_K1.pdf:
+    command: plot_map(l_res_K1, list_init, I(val_K = 1))
+    plot: wide
+
 
 ## Plant simuls
 
