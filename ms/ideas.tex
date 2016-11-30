@@ -46,19 +46,62 @@
 
 \section{Background \& Motivation}
 
-Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity). In addition,  This pattern are the outcomes of long-term evolutionary adaptation. More than just intrinsic interest, as path towards understanding how vegetation may change as result of environmental change.
+Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity). In addition, these patterns are also the outcomes of long-term evolutionary adaptation. Understanding the drivers of these patterns is important not only for its intrinsic interest, but also as a path towards understanding how vegetation may change as result of environmental change.
 
-Several studies document gradient of key leaf and stem traits with precipitation
+Beyond species succession pattern along climatic gradients, several studies document gradient of key leaf and stem traits with precipitation (see literature.pdf for a in progress review of the literature), with consistent patterns of decreasing leaf mass per area \citep{Wright-2004,Onoda-2011,Moles-2014} and wood density \citep{Chave-2006} with increasing water availability.  One specificity of observed pattern of traits variation are generally weak with generally a higher variation within sites than along the climatic gradients \citep[see][]{Wright-2004}. 
 
-\begin{itemize}
-\item consistent patterns for LMA and WD
-\item Numerous empirical investigations, but mechanisms remain largely unknown / unexplored.
-\end{itemize}
+%% NEED TO ADD LINK TO OUR OWN FIGURES HERE!
 
-A promising approach for investigating causes of trait adaptation is via models capturing process of adaptation -- allow you to encode various rules and see how virtual system responds. Many abstract theoretical models, establish some basic principles. For example, Holt, Barton, Taper \& Case. ....
-Most of the abstract theoretical are based on strong assumption about how traits are link to the competition and the response to the environmental gradient (for instance a traits describing the local adaptation to the local environmental conditions also drives the competition through a normal competition kernel or function). Very few model start from the mechanisms of competition for resources and the physiology of the response to the environmental gradient to predict how local adaptation and competition will shape the community assembly.
+%% \begin{figure}[ht]
+%% \centering
+%% \includegraphics{../figures/leaf_climate.pdf}
+%% \caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per area along mean annual temperature (a and c) and sum of annual precipitation (b and c).} 
+%% Data are from glopnet \citep{Wright-2004}.
+%% \label{fig:leafpattern}}
+%% \end{figure}
 
-Yet few connect with real gradients and real traits.    (What is missing to explain observed empirical patterns). Observed trait gradients are present but weak, majority of variation within sites / climate zones. Need to explain both range (coexistence) and change in mean. There are some optimisation (cost-benefit) models seek to explain changes in traits along gradients  (Sterck?, ask Mark). Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
+%% \begin{figure}[ht]
+%% \centering
+%% \includegraphics{../figures/wood_density_climate.pdf}
+%% \caption{\textbf{Pattern in wood density along mean annual temperature (a) and sum of annual precipitation (b).} 
+%% Data are from \citep{CHave-2009} and species mean climate were extracted from worldclim based on species records from gbif.
+%% \label{fig:WDpattern}}
+%% \end{figure}
+
+
+%% \begin{figure}[ht]
+%% \centering
+%% \includegraphics{../figures/vessel_climate.pdf}
+%% \caption{\textbf{Pattern in wood anatomy (vessel area a and b, lumen fraction c and d, vessel number per area e and f) along mean annual temperature (a, c, and e) and sum of annual precipitation (b, c, and f).} 
+%% Data are from \citep{Zanne-2010} and species mean climate were extracted from worldclim based on species records from gbif.
+%% \label{fig:vesselpattern}}
+%% \end{figure}
+
+
+
+Documenting empirical patterns of variation of plant traits along climatic gradient represents a key first step to understand the mechanisms explaining changes in vegetation composition, but so far very few studies have proposed mechanisms. These mechanisms need to explain the variation among sites with different climate but also the large variation within site resulting from the coexistence of interacting species with a range of trait values. A key element is thus any mechanisms proposed need to account for the effect of the climate on the species traits but also on the effect of traits on species interaction and coexistence.
+
+A promising approach for investigating causes of trait adaptation is via models capturing process of adaptation -- allow you to encode various rules and see how virtual system responds. Many abstract theoretical models, explored how species local climate adaptation, competitive interactions, and limited gene flow can drive species evolution and changes in traits composition along theoretical gradients \citep{Case-2000,Doebeli-2003,Goldberg-2006,Leimar-2008}. These studies generally showed that competition can limit species range and results in non continuous variation of traits value along the gradient. Most of abstract theoretical models are based on strong assumption about how traits are link to the competition and the response to the environmental gradient. Generally, one single traits determines both the local adaption to the abiotic conditions -- through the distance to an optimal trait value varying along the gradients -- and the competitive interaction -- through a normal competition kernel based on trait value of the species and its competitors. 
+
+The overall dominance of this classical view is surprising because other views about the link between traits and response to climate constrains and competition has been proposed in the literature. A common alternative view -- which can be traced back to Keddy's shifting competitive hierarchy \citep{Keddy-1989}-- proposes that all plant species have their physiological optima at the high productivity end of the gradient (low frost and drought stresses) but they differs in their tolerance to climate stresses and in term of their competitive abilities\citep{Keddy-1989}. Central to this view are the traits that underpin a tradeoff between species tolerance to climate stress \textit{vs.} their competitive abilities which shape species distributions along the gradient. Surprisingly, the number of theoretical models developed based on this alternative view of the effect of traits is extremely limited in comparison with the classical view (NEED TO CITE THE STUDIES WHO DID THAT \citep{Smith-1989,Leinard-2016} WHAT ABOUT MORE THEORETICAL WORK around the CC trade off see Case).
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/resLV_2.pdf}
+\caption{\textbf{Two alternative view about the how response to abiotic gradients and competition interact to drive species distribution.} Left column: where species have different physiological optimum along the abiotic gradient and interact via symmetric competition. Right column:  species have all their physiological optima at the high productivity end of the gradient (low frost and drought stresses)and interaction via asymmetric competition.
+\label{fig:theointro}}
+\end{figure}
+
+
+(TODO ADD THE FACT THAT THIS VIEW IS CENTRAL IN THE DEVELOPMENT OF OUR UNDERSTANDING OF THE PHYSIOLOGICAL EFFECT OF TRAITS, SLOW-FAST CONTINUUM TRAIT MANIFESTO REICH)
+One of the key reason that limit our progress on this question is that very few model start from the mechanisms of competition for resources and the physiology of the response to the environmental gradient to predict how traits will drive species joint response to climatic gradient and competition. Thus very few of these models are able to connect with real gradients,
+real traits and the underlying physiological mechanisms. Several model
+analyze how traits influence the physiological performance of single
+plant in function of the local abiotic conditions \citep{Sterck-2011}
+(need to look also at optimisation cost-benefit models seek, ask Mark
+and see other Sterck publications READ GIVNISH PAPERS TODO) to explain how traits explain changes in individual performances along gradients. These \textit{physiological models} have been focused on effect of climate on growth, but much less is understood in term of effect on mortality or recruitment precluding our ability to translate these effects on population dynamics or community assembly. 
+WE NEED TO DISCUSS \citep{Sakschewski-2015,Scheiter-2013} WHAT IS THEIR MAIN RESULTS? WHAT IS MISSING?
+Have been largely unsuccessful at explaining large-scale gradients because fail to explain (which??) observed patterns (because wrong traits, wrong directions).
 % We need to organise more clearly this section as optimisation model
 % can also be viewed as adaptation model. The two mains points would
 % be (i) model and their limitations and (ii) the observed gradients
@@ -69,9 +112,10 @@ Yet few connect with real gradients and real traits.    (What is missing to expl
 % model need to include interplay between mechanisms allowing
 % coexistence and abiotic effect. It may be also interesting to have
 % few lines one abiotic filtering debate.
-In addition, most of \textit{physiological models} have been focused on effect of climate on growth, but much less is understood in term of effect on mortality or recruitment.
 
-Here we use a new model -- \plant\ \citep{Falster-2016} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Driven by competition for light in size-structured meta-populations. Outcomes of competition moderated by environmental factors such as site productivity and disturbance regime.
+Here we propose to first compare theoretical prediction of a model based on the classical view vs a model based on the shifting competitive hierarchy. And then explore alternative physiological mechanisms of leaf and stem traits distribution along climatic gradients.
+
+To do this we use a new model -- \plant\ \citep{Falster-2016} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Driven by competition for light in size-structured meta-populations. Outcomes of competition moderated by environmental factors such as site productivity and disturbance regime.
 
 \section{Key questions}
 
@@ -86,7 +130,7 @@ trade-off between LMA and LLS). Then the trait controlling competition
 for light may interact with other traits controlling the effect of the
 gradients on either growth as in the two previous points, or through
 mortality. Effects on growth or survival may have different effects as
-they may interact in different way with competition for light). Our knowledge of the traits and potential mechanisms that
+they may interact in different way with competition for light. Our knowledge of the traits and potential mechanisms that
 may determine species response to different abiotic gradient is still
 limited. Here we will explore two traits for which our understanding
 is more advanced Leaf N along precipitation gradients affecting growth
@@ -100,23 +144,83 @@ survival.
 Coexistence across a successional gradient requires demographic trade-off between growth in high-light and shade-tolerance. Possible via trade-offs in either LMA or wood density (height at maturation - will decrease difference in LMA). Then the question is how environmental gradients affect this fundamental process of coexistence in forest and we will explore different assumption about how environmental gradients
 affect the dynamics.
 
+In a first set of assumption we could consider models where there is only one traits LMA.
 
+\clearpage
 
-1. In the most simple version environmental gradients changes productivity (photosynthesis) and
+1. In the most simple version environmental gradients changes productivity (photosynthesis $A{max}_{area}$ through a linear effect of a theoretical productivity gradient $p$) and
 thus competition for light and selection on LMA (this is already presented in \citet{Falster-2016}) (high LMA as adaptation to both log light and low productivity).
 
-2. In second version, the environmental gradient affect the productivity ($A{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
+The figure \ref{fig:lma} represents how the evolved community mixture of LMA change along a productivity gradient. This is essentially representing the results of \citet{Falster-2016} only over LMA (leaving out size at maturity). Low LMA strategies are only possible in productive sites.
 
-\begin{itemize}
-\item \citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_lma_multi.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient by 'Plant' as in \citep{Falster-2016}}
+\label{fig:lma}}
+\end{figure}
+
+\clearpage
+
+2. In second version, the environmental gradient affect the productivity ($A{max}_{area}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
+
+\citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.
+
+In Glopnet there is two main strong patterns related to aridity (i) the elevation of the LTR \textit{vs.} LMA is changing with mean annual precipitation (MAP) (see Figure \ref{fig:MAP}) and (ii) the slope of the LTR \textit{vs.} LMA is changing with the ratio MAT/MAP (see Figure \ref{fig:MAT_MAP}). To implement these two distinct options in `plant` we first regressed the elevation or the slope of the site level LTR \textit{vs.} LMA relationship against MAP or MAT/MAP and then included this variation `plant` (see Figure \ref{fig:elev_slope}). One key issue here is how to scale the theoretical productivity gradient we used in the previous model ($A{max}_{area}$ is a linear function with slope one of this gradient) with MAP or MAT/MAP. So far I have just assumed that the range of MAP or MAT/MAP analysed was restricted to the part of the theoretical gradient was positive (above -0.3) and thus rescaled the range of MAP or MAT/MAP to a variation of $p$ from -0.3 to 0.3. This is clearly not perfect.
+%% Need to explore possibility to predict directly $A{max}_area}$ from MAP.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/data_lma_ll_trade_off_climate_lev_T_P.pdf}
+\caption{\textbf{LTR vs LMA tradeoff per classes of MAT/MAP}
+\label{fig:MAT_MAP}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/data_lma_ll_trade_off_climate_lev_P.pdf}
+\caption{\textbf{LTR vs LMA tradeoff per classes of MAP}
+\label{fig:MAP}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/data_lma_ll_trade_off_climate_slope_elev.pdf}
+\caption{\textbf{Regression of site level elevation and slope parameters of the LTR \textit{vs.} LMA relationship (estimated with smatr::sma) against MAP or MAT/MAP. }
+\label{fig:elev_slope}}
+\end{figure}
+
 
 %% In contrast, the change in the trade-off between $A_{mass}$ and LMA results in lower $A_{mass}$ at given LMA in sites with higher precipitation. This variation may be related to a change in Leaf N, with species from lower precipitation sites having higher leaf $N_{mass}$ resulting in lower tissue toughness but higher $A_{mass}$ \citep{Wright-2002}. In term in $A_{area}$ this would translate in higher $A_{area}$ at low precipitation sites...  This is a change in optimum $A_{area}$ the $A_{area}$ integrated over the year (as implemented in \plant\ ) is probably higher in site with high precipitation.
 
-\item We could explore the effect of changes in elevation of the LLS-LMA trade-off along a precipitation gradient as this is one the stronger pattern in the Glopnet data. One issue here is that I think that the results will be strongly influenced by the relative effect of precipitation on $A_{area}$ vs precipitation on the elevation of the trade-off. What kind of slope of precipitation vs $A_{area}$ should we used?
+%% \item We could explore the effect of changes in elevation of the LLS-LMA trade-off along a precipitation gradient as this is one the stronger pattern in the Glopnet data. One issue here is that I think that the results will be strongly influenced by the relative effect of precipitation on $A_{area}$ vs precipitation on the elevation of the trade-off. What kind of slope of precipitation vs $A_{area}$ should we used?
 
-\end{itemize}
+\clearpage
 
-Then the second step would be to explore how LMA interact with a second trait controlling the response to the environmental gradient. This second trait could either affect the response of growth ($A_{max}$) or the survival or both. In the literature there is several traits that have been proposed to act in that way but there is relatively few consensus on that. We will start with two traits for which the pattern and mechanisms are better understood.
+The figure \ref{fig:lma_map} represents how the evolved community mixture of LMA change along a productivity gradient when the elevation was changing with precipitation MAP.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_lma_multi_elev.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient by 'Plant' with a variation of LTR \textit{vs.} LMA elevation.}
+\label{fig:lma_map}}
+\end{figure}
+
+The figure \ref{fig:lma_mat_o_map} represents how the evolved community mixture of LMA change along a productivity gradient when the elevation was changing with MAT/MAP.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_lma_multi_slope.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient by 'Plant' with a variation of LTR \textit{vs.} LMA slope.}
+\label{fig:lma_mat_o_map}}
+\end{figure}
+
+\textcolor{red}{THIS NEED TO BE RERUN THIS IS GOING IN THE WRONG DIRECTION WHY???}
+
+\clearpage
+
+A second set of models could explore how LMA interact with a second trait controlling the response to the environmental gradient. This second trait could either affect the response of growth ($A_{max}$) or the survival or both. In the literature there is several traits that have been proposed to act in that way but there is relatively few consensus on that. We will start with two traits for which the pattern and mechanisms are better understood.
 
 3. Aridity gradients affect productivity (photosynthesis) but a
 high leaf N allow for an adaptation in term of photosynthesis to low water availability but with a cost (higher leaf N comes at both a respiration cost and higher leaf turnover cost). This may results in LMA shifting less than would have been otherwise, but  instead differentiate species in N (with flow on effect to shade tolerance).
@@ -125,8 +229,34 @@ high leaf N allow for an adaptation in term of photosynthesis to low water avail
 \begin{itemize}
 \item \citet{Wright-2003} explore how N can substitute for water. $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N is in its respiration cost with higher dark leaf respiration per area for higher $N_{area}$.
 
-\item \citet{Prentice-2014} expanded this prediction in term of more details Farquhar model for C3 plant, but this is probably not needed for the \plant\ model. However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and response to water stress.
+\item \citet{Prentice-2014} expanded this prediction in term of more details Farquhar model for C3 plant, but this is probably not needed for the \plant\ model. However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and response to water stress. \textcolor{red}{I DON'T THINK SO BUT NEED TO DOUBLE CHECK}
 \end{itemize}
+
+The current implementation of Leaf nitrogen per area in `plant already captures some of the effect proposed by \citet{Wright-2003} as presented in the variation of $A{max}_{area}$ in the figure \ref{fig:leafN_water}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/WaterS_LeafN_contour.pdf}
+\caption{\textbf{Variation of $A{max}_{area}$ with leaf nitrogen per area and water availability (productivity theoretical graident $p$) predicted by `plant`.}
+\label{fig:leafN_water}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient by 'Plant'.}
+\label{fig:lma_mat_o_map}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient by 'Plant'. The size of the point represent the variation of LMA.}
+\label{fig:lma_mat_o_map}}
+\end{figure}
+
+\clearpage
 
 4. Frost gradients affect survival but
 short vessel size allow for an adaptation to lower temperature in term
@@ -148,9 +278,38 @@ $A_{max}$ \citep{Poorter-2010}, we know that vessel diameter scale with scale wi
 
 
 
+\clearpage
+
+\section{Theoretical Cellular Automaton of Competition vs. climate stress tolerance tradeoff}
+
+It is surprising that few theoretical models have been developed on alternative view on the link between traits and species response to the joint effect of climate gradient and competition. 
+Here we propose to explore the effect of alternative view arising from the 'shifting competitive hierarchy' based on a 
+Based on the few field studies that have documented such tradeoff for tree, it seems that such tradeoff might occurs for two key dimension of tree competitive ability. Loehle (1998) proposed the existence of a tradeoff between tree maximum height growth – a key determinant of competitive ability in early successional stage – and frost tolerance, but this has been tested in only in two studies (Koehler et al. 2012; Savage \& Cavender- Bares 2013). A few studies also explored trade-off with tree’ shade-tolerance –a key component of competitive ability in late successional stage (Rees et al. 2001)– and frost tolerance (Lusk et al. 2013) or drought tolerance (see Smith \& Huston 1989, Niinemets \& Valladares 2006, but see Sack 2004; Markesteijn et al. 2011).
+
+
+Present briefly model TODO
+
+\subsection{Triangular tradeoffs}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/ternplot.pdf}
+\caption{\textbf{Triangular tradeoff between early- or late-successional competitive ability \textit{vs.} climate stress tolerance.}
+\label{fig:triangtrade}}
+\end{figure}
+
+\subsection{Results}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/map_theo_K100.pdf}
+\caption{\textbf{Simulation of species distribution along a abiotic stress gradient.}
+\label{fig:mapK100}}
+\end{figure}
 
 
 \clearpage
+
 
 \bibliographystyle{amnat}
 \bibliography{references}

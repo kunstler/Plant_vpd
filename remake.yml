@@ -76,16 +76,24 @@ targets:
     - figures/fitness_lma_multi.pdf
     - figures/gradient_lma_single.pdf
     - figures/gradient_lma_multi.pdf
-    - figures/wood_climate.pdf
+    - figures/vessel_climate.pdf
+    - figures/wood_density_climate.pdf
     - figures/resLV_1.pdf
     - figures/resLV_2.pdf
     - figures/resLV_0a.pdf
     - figures/resLV_0b.pdf
-
-  param:
-    depends:
-    - param_slope_P
-    - param_slope_TP
+    - figures/map_theo_K100.pdf
+    - figures/map_theo_K10.pdf
+    - figures/map_theo_K5.pdf
+    - figures/map_theo_K1.pdf
+    - figures/mean_ce_theo_K100.pdf
+    - figures/mean_ce_theo_K10.pdf
+    - figures/mean_ce_theo_K5.pdf
+    - figures/mean_ce_theo_K1.pdf
+    - figures/range_theo_K100.pdf
+    - figures/range_theo_K10.pdf
+    - figures/range_theo_K5.pdf
+    - figures/range_theo_K1.pdf
 
 # Simulation results and figures ###################################################
 
@@ -101,6 +109,10 @@ targets:
 
   figures/resLV_2.pdf:
     command: plot_intro_fig_2(df_pred)
+
+  figures/ternplot.pdf:
+    command: TernPlotSp(add_text = TRUE)
+    plot: square
 
   df_pred:
     command: data_intro_fig()
@@ -138,9 +150,53 @@ targets:
     command: plot_map(l_res_K1, list_init, I(val_K = 1))
     plot: wide
 
+  figures/mean_ce_theo_K100.pdf:
+    command: plot_mean_param(l_res_K100, list_init)
+    plot: wide
+
+  figures/mean_ce_theo_K10.pdf:
+    command: plot_mean_param(l_res_K10, list_init)
+    plot: wide
+
+  figures/mean_ce_theo_K5.pdf:
+    command: plot_mean_param(l_res_K5, list_init)
+    plot: wide
+
+  figures/mean_ce_theo_K1.pdf:
+    command: plot_mean_param(l_res_K1, list_init)
+    plot: wide
+
+  data_range_K100:
+    command: generate_data_sp_ranges(l_res_K100)
+
+  figures/range_theo_K100.pdf:
+    command: plot_range(data_range_K100)
+    plot: wide
+
+  data_range_K10:
+    command: generate_data_sp_ranges(l_res_K10)
+
+  figures/range_theo_K10.pdf:
+    command: plot_range(data_range_K10)
+    plot: wide
+
+  data_range_K5:
+    command: generate_data_sp_ranges(l_res_K5)
+
+  figures/range_theo_K5.pdf:
+    command: plot_range(data_range_K5)
+    plot: wide
+
+  data_range_K1:
+    command: generate_data_sp_ranges(l_res_K1)
+
+  figures/range_theo_K1.pdf:
+    command: plot_range(data_range_K1)
+    plot: wide
 
 ## Plant simuls
 
+#### plots of physological models
   figures/tradeoff_shade_light.pdf:
     command: plot_lma_shade_tradeoff()
     plot: square
@@ -149,13 +205,14 @@ targets:
     command: plot_contour_waterStress_LeafN(res_photo)
     plot: square
 
+  res_photo:
+    command: data_contour()
+
   figures/WaterS_LeafN.pdf:
     command: plot_water_LeafN()
     plot: square
 
-  res_photo:
-    command: data_contour()
-
+#### plots of community assembly
   figures/fitness_lma_single.pdf:
     command: plot_fitness_assembly(list_assembly_lma_single, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
@@ -260,11 +317,6 @@ targets:
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_multi_narea_short:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.15, 0.0, 0.15, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
   list_assembly_lma_single_narea_lma:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 5)
     check: exists
@@ -275,11 +327,7 @@ targets:
     check: exists
     cleanup_level: purge
 
-# Data sources and figures  ###################################################
-
-  figures/data_climate.pdf:
-    command: figure_lma_climate(leaf_traits)
-    plot: large_square
+# Data sources and figures for traits patterns  ###################################################
 
   figures/data_lma_ll_trade_off.pdf:
     command: figure_lma_tradeoff(leaf_traits)
@@ -298,16 +346,24 @@ targets:
     plot: tall
 
   figures/data_lma_ll_trade_off_climate_slope_elev.pdf:
-    command: figure_lma_tradeoff_climate_slope(leaf_traits)
+    command: figure_lma_tradeoff_climate_slope_elev(leaf_traits)
     plot: tall
 
   figures/data_B_kl_climate.pdf:
     command: figure_B_kl_climate(leaf_traits)
     plot: wide
 
-  figures/wood_climate.pdf:
-    command: plot_wood_clim(zanne_clim)
-    plot: wide
+  figures/leaf_climate.pdf:
+    command: figure_lma_climate(leaf_traits)
+    plot: large_square
+
+  figures/vessel_climate.pdf:
+    command: plot_vessel_clim(zanne_clim)
+    plot: tall
+
+  figures/wood_density_climate.pdf:
+    command: plot_wood_density_clim(chave_clim)
+    plot: tall
 
   param_slope_P:
     command: param_B_kl_climate_P(leaf_traits)
@@ -328,6 +384,13 @@ targets:
       - rgbif
       - dismo
 
+  chave_clim:
+    command: get_climate_niche(chave, worldclim)
+    packages:
+      - parallel
+      - rgbif
+      - dismo
+
   zanne:
     packages: xlsx
     command: process_zanne_2010("download/zanne-2010.xls")
@@ -335,6 +398,10 @@ targets:
   olson:
     packages: xlsx
     command: process_olson_2010("download/olson-2014.xls")
+
+  chave:
+    packages: xlsx
+    command: process_chave_2009("download/chave-2009.xls")
 
   worldclim:
     command: getData(I('worldclim'), var = I('bio'), res = 2.5, path=I("download"))
@@ -348,3 +415,6 @@ targets:
 
   download/olson-2014.xls:
     download: "http://api.onlinelibrary.wiley.com/asset/v1/doi/10.1111%2Fele.12302/asset/supinfo%2Fele12302-sup-0001-AppendixS1.xls?l=j6%2BNsqLlmq%2FUmTwPXEFuIHuWIDkoh16bdSPkBsbx1JqrIriGYfLAO23oVGh0yhC%2B91BwN0ZWzMJL%0Amf%2BX2bFUKS64r5EDpuQ9"
+
+  download/chave-2009.xls:
+    download: "http://datadryad.org/bitstream/handle/10255/dryad.235/GlobalWoodDensityDatabase.xls?sequence=1"

@@ -21,14 +21,14 @@ plot_trait_gradient_narea_lma<- function(list_assembly_lma,
                                          var = "narea",
                varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))) {
   list_data <- list_assembly_lma
-  grad <- -1*vec_site_prod
+  grad <- vec_site_prod
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
   z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
 
   plot(NA, type="n", log="y", las=1, xlim=c(-0.33, 0.33),
        ylim= range(unlist(y)),
     ylab= varlab,
-    xlab="Water stress ")
+    xlab="Site productivity")
 
   for(i in seq_along(list_data)) {
     points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black",
@@ -41,7 +41,7 @@ plot_trait_gradient_narea_lma2<- function(list_assembly_lma,
                                          var = "narea",
                varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))) {
   list_data <- list_assembly_lma
-  grad <- -1*vec_site_prod
+  grad <- vec_site_prod
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
   z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
 
@@ -66,7 +66,7 @@ plot_trait_gradient_narea_lma2<- function(list_assembly_lma,
            pch=16)
   }
 
-title(xlab = "Water stress",
+title(xlab = "Site productivity",
       outer = TRUE, line = 3)
 }
 
@@ -263,7 +263,7 @@ trait_gradients_slope_parameters<- function(data_param, ...) {
                                 B_kl1_1_log10 = log10(0.4565855),
                                 B_kl1_2_log10 = 0,
                                 B_kl2_1 = 1.71,
-                                B_kl2_2 = data_param[2, 'LMAslope']* (2/0.6) )
+                                B_kl2_2 = -data_param[2, 'LMAslope']* (2/0.6) )
     # this slope is for a gradient of Temp / precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
 
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,

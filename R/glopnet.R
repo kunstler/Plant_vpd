@@ -223,7 +223,6 @@ plot_coef_sma <- function(df, var){
          col = 'gray')
 }
 
-
 figure_lma_tradeoff_climate_slope_elev<- function(data) {
   require(dplyr)
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
@@ -258,11 +257,10 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   df$mat <-  scale(df$mat)
   df$aet_turc<-  scale(df$aet_turc)
 
-  par(mfrow = c(3,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+  par(mfrow = c(2,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
   #MAP
   plot_coef_sma(df, "map")
   # MAT
-  plot_coef_sma(df, "mat")
   #MAT/MAP
   plot_coef_sma(df, "mat_o_map")
   #MAT/MAP

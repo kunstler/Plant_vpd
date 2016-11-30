@@ -22,9 +22,9 @@ plot_map <- function(l_res, list_init, val_K){
      arrows(250, -200, 10000, -200)
 }
 
-plot_mean_param <- function(l_res, list_init, sp_param = 'c_l',
-                            y_lab = "Mean late successional competitive ability"){
-mean_c_l <- mean_landscape_l(l_res, list_init[['sp_param']])
+plot_mean_param <- function(l_res, list_init, sp_param = 'c_e',
+                            y_lab = "Mean early successional competitive ability"){
+mean_c_l <- mean_landscape_l(l_res, list_init[[sp_param]])
 x <- seq_len(length(mean_c_l))
 lo <- loess(mean_c_l~x, span = 0.4)
 plot(x, mean_c_l,  pch = 16, cex = 0.5,
@@ -48,7 +48,7 @@ data_ranges <- data.frame(sp = sp,
 for (i in sp){
 sp_obs <- apply(sp_mat == i & !is.na(sp_mat), MARGIN = 2, FUN = sum)
 sp_obs[is.na(sp_obs)] <-  0
-vec_pos <- seq_len(Nlandscape*NN)
+vec_pos <- seq_len(max(dim(l_res$sp)))
 q_l <- wtd.quantile(vec_pos, q = 0.1, weight = sp_obs)
 q_h <- wtd.quantile(vec_pos, q = 0.9, weight = sp_obs)
 q_m <- wtd.quantile(vec_pos, q = 0.5, weight = sp_obs)
