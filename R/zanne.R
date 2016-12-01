@@ -28,49 +28,7 @@ process_olson_2014 <- function(filename) {
   df
 }
 
-
-## get climatic niche of the species
-get_climate_niche_sp <- function(sp, wc) {
-  require(dismo)
-  require(rgbif)
-  ## data cleaning TODO IMPROVE JUST A FIRST GUESS
-  sup_lim <- NA
-  dat <- NA
-  d <- tryCatch(occ_data(scientificName = sp, minimal = FALSE,
-                         hasCoordinate = TRUE,
-                         limit = 200000, hasGeospatialIssue = FALSE),
-                error = function(err) NA)
-  ret <- data.frame(Binomial = sp, MAT = NA, MAP = NA, TMAX = NA,
-          PDRY = NA, nobs = 0, sup_lim = NA, stringsAsFactors = FALSE)
-  if (is.data.frame(d$data)) {
-    dat <- d$data
-    if(sum(names(dat) %in% "locality") == 0) dat$locality <- NA
-    if(dim(dat)[1]>199999) sup_lim <- "sup"
-    dat <- dat %>% filter(!issues %in% c("cdout", "cdrepf", "cucdmis", "preswcd", "zerocd",
-                               "bri", "ccm", "conti", "cdreps", "cuiv", "cum",
-                               "gdativ", "preneglat", "preneglon",
-                               "txmatnon"),
-                          !is.na(decimalLatitude) & decimalLatitude != 0,
-                          !is.na(decimalLongitude) & decimalLongitude != 0,
-                          !is.na(locality))
-    dat <- dplyr::filter(dat, basisOfRecord %in% c("HUMAN_OBSERVATION", "OBSERVATION",
-                                            "LIVING_SPECIMEN", "PRESERVED_SPECIMEN"))
-
-   # TRY TO REMOVE BOTANICAL GARDENS see https://github.com/ropensci/rgbif/issues/110
-    loc_to_remove <- c("Jardín", "Jardin", "Jardí", "Jardim", "Garden",
-                       "Garten", "Orto", "Hortu", "Tuin", "Giardino", "Ogród",
-                       "Musée", "Museum", "Muséum", "Museo", "Museu",
-                       "Arboretum", "Arboreto", "Arboretos",
-                       "Herbarium", "Herbario", "Herbier", "Erbario", "Erbario",
-                       "Herbário", "Herbários",
-                       "Yale Natural",
-                       "University", "Université", "Universität", "Universidad",
-                       "Università", "Universidade","Universiteit")
-
-    remove_obs <- unique(grep(paste(loc_to_remove,collapse="|"),
-                        dat$locality, ignore.case = TRUE))
-    if(length(remove_obs) > 0) dat <- dat[-remove_obs, ]
-    if (nrow(dat) > 0) {
+xy_extract_wc <- function(dat, wc, sup_lim, sp){
       # TODO BJOERN COMMENT ACCOUNT FOR SAPLING BIAS IN GBIF, for one simple example see http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0055158 use densitylist to get teh sampling density
       df_clim <- GetClimate(dat$decimalLatitude, dat$decimalLongitude, wc)
       if (nrow(df_clim) > 0) {
@@ -82,14 +40,63 @@ get_climate_niche_sp <- function(sp, wc) {
       } else {
         print(paste("species ", sp, " error in wc no data with climate"))
       }
-    } else {
+return(ret)
+}
+
+clean_gbif_data <- function(dat){
+ if(sum(names(dat) %in% "locality") == 0) dat$locality <- NA
+ dat <- dat %>% filter(!issues %in% c("cdout", "cdrepf", "cucdmis", "preswcd", "zerocd",
+                            "bri", "ccm", "conti", "cdreps", "cuiv", "cum",
+                            "gdativ", "preneglat", "preneglon",
+                            "txmatnon"),
+                       !is.na(decimalLatitude) & decimalLatitude != 0,
+                       !is.na(decimalLongitude) & decimalLongitude != 0,
+                       !is.na(locality))
+ dat <- dplyr::filter(dat, basisOfRecord %in% c("HUMAN_OBSERVATION", "OBSERVATION",
+                                         "LIVING_SPECIMEN", "PRESERVED_SPECIMEN"))
+
+# TRY TO REMOVE BOTANICAL GARDENS see https://github.com/ropensci/rgbif/issues/110
+ loc_to_remove <- c("Jardín", "Jardin", "Jardí", "Jardim", "Garden",
+                    "Garten", "Orto", "Hortu", "Tuin", "Giardino", "Ogród",
+                    "Musée", "Museum", "Muséum", "Museo", "Museu",
+                    "Arboretum", "Arboreto", "Arboretos",
+                    "Herbarium", "Herbario", "Herbier", "Erbario", "Erbario",
+                    "Herbário", "Herbários",
+                    "Yale Natural",
+                    "University", "Université", "Universität", "Universidad",
+                    "Università", "Universidade","Universiteit")
+
+ remove_obs <- unique(grep(paste(loc_to_remove,collapse="|"),
+                     dat$locality, ignore.case = TRUE))
+ if(length(remove_obs) > 0) dat <- dat[-remove_obs, ]
+return(dat)
+}
+
+## get climatic niche of the species
+get_climate_niche_sp <- function(sp, wc) {
+  require(dismo)
+  require(rgbif)
+  ret <- data.frame(Binomial = sp, MAT = NA, MAP = NA, TMAX = NA,
+          PDRY = NA, nobs = 0, sup_lim = NA, stringsAsFactors = FALSE)
+  sup_lim <- NA
+  dat <- NA
+  try({dat <- occ_data(scientificName = sp, minimal = FALSE,
+                      hasCoordinate = TRUE,
+                      limit = 200000, hasGeospatialIssue = FALSE)$data}
+      )
+  if (is.data.frame(dat)) {
+    try(if(nrow(dat)>199999) sup_lim <- "sup")
+    try(dat <- clean_gbif_data(dat))
+      if (nrow(dat) > 0) {
+       try(ret <- xy_extract_wc(dat, wc, sup_lim, sp))
+      } else {
       print(paste("species ", sp, " error in gbif no data with coordinates"))
-    }
-  } else {
+      }
+   } else {
     print(paste("species ", sp, " error in gbif no data"))
-  }
+   }
   ## Sys.sleep(2)
-  ret
+  return(ret)
 }
 
 #################
@@ -120,8 +127,6 @@ get_climate_niche_sp <- function(sp, wc) {
 ##                                             "LIVING_SPECIMEN", "PRESERVED_SPECIMEN"))
 
 get_climate_niche <- function(df, wc) {
-  ## cl <- makeCluster(detectCores()-2)
-  ## on.exit(stopCluster(cl))
   list_res <- lapply(df$Binomial, get_climate_niche_sp, wc = wc)
   print("gbif extraction done")
   res <- dplyr::bind_rows(list_res)
