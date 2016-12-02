@@ -359,11 +359,11 @@ targets:
 
   figures/vessel_climate.pdf:
     command: plot_vessel_clim(zanne_clim)
-    plot: tall
+    plot:
 
   figures/wood_density_climate.pdf:
     command: plot_wood_density_clim(chave_clim)
-    plot: tall
+    plot: wide
 
   param_slope_P:
     command: param_B_kl_climate_P(leaf_traits)

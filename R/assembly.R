@@ -193,11 +193,12 @@ run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10, data
 trait_gradients_base_parameters <- function(...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.002
-  ctrl$equilibrium_eps <- 1e-4
+  ctrl$schedule_eps <- 0.001
+  ctrl$equilibrium_eps <- 1e-5
 
-  ctrl$equilibrium_nsteps  <- 40
-  ctrl$equilibrium_solver_name <- "iteration"
+  ctrl$equilibrium_nsteps  <- 80
+  ## ctrl$equilibrium_solver_name <- "iteration"
+  ctrl$equilibrium_solver_name <- "hybrid"
                                  #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
@@ -219,10 +220,10 @@ trait_gradients_base_parameters <- function(...) {
 trait_gradients_elev_parameters<- function(data_param, ...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.002
-  ctrl$equilibrium_eps <- 1e-4
+  ctrl$schedule_eps <- 0.001
+  ctrl$equilibrium_eps <- 1e-5
 
-  ctrl$equilibrium_nsteps  <- 40
+  ctrl$equilibrium_nsteps  <- 80
   ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
@@ -250,10 +251,10 @@ trait_gradients_elev_parameters<- function(data_param, ...) {
 trait_gradients_slope_parameters<- function(data_param, ...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.002
-  ctrl$equilibrium_eps <- 1e-4
+  ctrl$schedule_eps <- 0.001
+  ctrl$equilibrium_eps <- 1e-5
 
-  ctrl$equilibrium_nsteps  <- 40
+  ctrl$equilibrium_nsteps  <- 80
   ctrl$equilibrium_solver_name <- "iteration"
                                  #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
