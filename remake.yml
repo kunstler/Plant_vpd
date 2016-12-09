@@ -277,6 +277,10 @@ targets:
     command: plot_trait_gradient_narea_lma2(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: large_square
 
+  figures/cor_narea_lma_multi.pdf:
+    command: plot_cor_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: square
+
   list_assembly_lma_single:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
     check: exists
@@ -359,7 +363,7 @@ targets:
 
   figures/vessel_climate.pdf:
     command: plot_vessel_clim(zanne_clim)
-    plot:
+    plot: wide
 
   figures/wood_density_climate.pdf:
     command: plot_wood_density_clim(chave_clim)

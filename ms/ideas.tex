@@ -218,7 +218,6 @@ The figure \ref{fig:lma_mat_o_map} represents how the evolved community mixture 
 \label{fig:lma_mat_o_map}}
 \end{figure}
 
-\textcolor{red}{THIS NEED TO BE RERUN THIS IS GOING IN THE WRONG DIRECTION WHY???}
 
 \clearpage
 
@@ -232,6 +231,8 @@ high leaf N allow for an adaptation in term of photosynthesis to low water avail
 \item \citet{Wright-2003} explore how N can substitute for water. $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N is in its respiration cost with higher dark leaf respiration per area for higher $N_{area}$.
 
 \item \citet{Prentice-2014} expanded this prediction in term of more details Farquhar model for C3 plant, but this is probably not needed for the \plant\ model. However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and response to water stress. \textcolor{red}{I DON'T THINK SO BUT NEED TO DOUBLE CHECK}
+ 
+NEED TO LOOK AT Sakschewski for Leaf N effect!!!
 \end{itemize}
 
 The current implementation of Leaf nitrogen per area in `plant already captures some of the effect proposed by \citet{Wright-2003} as presented in the variation of $A{max}_{area}$ in the figure \ref{fig:leafN_water}

@@ -127,7 +127,6 @@ figure_lma_tradeoff <- function(data) {
 
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]])
     & table(data[["location"]])[data[["location"]]] > 9)
-
   location <- data[["location"]]
   lma <- data[["lma"]]
   leaf_turnover <- data[["leaf_turnover"]]

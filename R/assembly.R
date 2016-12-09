@@ -25,6 +25,7 @@ plot_trait_gradient_narea_lma<- function(list_assembly_lma,
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
   z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
 
+
   plot(NA, type="n", log="y", las=1, xlim=c(-0.33, 0.33),
        ylim= range(unlist(y)),
     ylab= varlab,
@@ -35,6 +36,26 @@ plot_trait_gradient_narea_lma<- function(list_assembly_lma,
            pch=1, cex = 0.5+10*z[[i]])
   }
 }
+
+
+plot_cor_narea_lma<- function(list_assembly_lma,
+                                         vec_site_prod,
+                                         var = "narea") {
+  list_data <- list_assembly_lma
+  y <- lapply(list_data, function(x) x$community$traits[ ,var])
+  z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
+
+  plot(unlist(y), unlist(z), type="n", log="y", las=1,
+    xlab = expression(paste("Nitrogen per area (kg ", m^-2,")")),
+    ylab = expression(paste("Leaf-mass per area (kg ", m^-2,")")))
+colfunc <- colorRampPalette(c("red", "green"))
+cols <- colfunc(length(list_data))
+  for(i in seq_along(list_data)) {
+    points(y[[i]] , z[[i]], type='p', col=cols[i],
+           pch=16)
+  }
+}
+
 
 plot_trait_gradient_narea_lma2<- function(list_assembly_lma,
                                          vec_site_prod,
@@ -197,8 +218,8 @@ trait_gradients_base_parameters <- function(...) {
   ctrl$equilibrium_eps <- 1e-5
 
   ctrl$equilibrium_nsteps  <- 80
-  ## ctrl$equilibrium_solver_name <- "iteration"
-  ctrl$equilibrium_solver_name <- "hybrid"
+  ctrl$equilibrium_solver_name <- "iteration"
+  ## ctrl$equilibrium_solver_name <- "hybrid"
                                  #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
