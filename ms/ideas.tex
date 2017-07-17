@@ -250,8 +250,121 @@ high leaf N allow for an adaptation in term of photosynthesis to low water avail
  
 %% NEED TO LOOK AT Sakschewski for Leaf N effect!!!
 \item The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003} as presented in the variation of $A{max}_{area}$ in the figure \ref{fig:leafN_water}. However one of the limitation is that the we have no explicit modeling of how water stress influence $A_{max}$. 
-
 \end{itemize}
+
+\paragraph{Photosynthesis model, water stress, and Leaf N}
+
+\subparagraph{\citet{Collatz-1991}, photosynthesis and water stress model}
+
+  
+Leaf photosynthesis is described, based on Farquhar model, as the minimum of three potential rates $J_E$ the light limited rate, $J_C$ the CO2 rubisco limited rate, and $J_S$ the starch export limitation.
+
+\begin{equation}
+\label{eq:An}
+A_n= min(J_E, J_C, J_s) - R_d.
+\end{equation}
+
+  
+\begin{equation}
+\label{eq:JC}
+J_E= I \frac{a \alpha Q_p (p_i - \Gamma_*}{p_i + 2 \Gamma_*}.
+\end{equation}
+
+with $\Gamma_* = \frac{[O_2]}{2\tau}$
+with $Q_p$ the incident flux of phtosynthetically active photon.
+
+\begin{equation}
+\label{eq:JE}
+J_C= \frac{V_m (p_i - \Gamma_*)}{p_i + K_c (1+[o_2]/K_o)}.
+\end{equation}
+
+\begin{equation}
+\label{eq:JS}
+J_S= V_m/2.
+\end{equation}
+
+To have more gradual transition than the min function, Collatz et al. propose to use the smaller roots of two quadratics functions:
+
+\begin{equation}
+\label{eq:Q1}
+\theta J_p^2 - J_p(J_E+J_C) + J_E J_C= 0.
+\end{equation}
+
+where $J_P$ is the min of $J_C$ and $J_E$.
+
+\begin{equation}
+\label{eq:Q2}
+\beta A^2 - A(J_P+J_S) + J_P J_S= 0.
+\end{equation}
+
+where $\theta$ and $\beta$ are constant describing the transition between limitation.
+
+Ball Berry model and Fick Law.
+
+\begin{equation}
+\label{eq:gs}
+g_s= m \frac{A_n h_s}{c_s}+b.
+\end{equation}
+
+where $h_s$ relative humidity, and $c_s$ modle fraction of the air at leaf surface.
+
+Fick's law:
+\begin{equation}
+\label{eq:fick}
+g_s=\frac{A_d}{c_a - c_i}.
+\end{equation}
+
+$p_i = P c_i$
+
+The models are combined by solving simultaneously for $P_i$ ($c_i$) and $g_s$.
+
+TODO add kinetic parameters function temperature.
+
+TODO check light stauration effect in $J$ ($Q_p$) see http://ac.els-cdn.com/S1573521409000025/1-s2.0-S1573521409000025-main.pdf?_tid=4902d674-6af2-11e7-a556-00000aab0f26&acdnat=1500297629_b9cbd0ef1f08b4aa3684fe6bca115067
+
+TODO add and discuss why a lot of model do not include $J_S$.
+
+
+\subparagraph{\citet{Haxeltine-1996}, photosynthesis model assuming optimal allocation of Leaf N and then all LPJ models}
+
+In LPJ no $J_S$ and $V_{cmax}$ is optimised to maximise photosynthesis (thus optimum allocation of Leaf N). This optimum allocation results in equation 14 of \citet{Sitch-2008}.
+
+Water stress is tracked by a water balaence model with a demand evapotranspiration $E_d$ and a supply determined $E_s$ by the water availability. Water stress occurs when $E_d > E_s$.
+
+Then if non water stress conductance is given by the photosynthesis equation by:
+
+\begin{equation}
+\label{eq:fickLPJ}
+g_s=g_{min} + \frac{1.6A_d}{c_a - c_i}.
+\end{equation}
+
+ which then give $E_{d}$ by 
+
+\begin{equation}
+\label{eq:12Sitch}
+E_d=E_p \alpha_m [1 - exp(\frac{- g_s}{g_m})].
+\end{equation}
+
+If water stress all solve simultaneoulsly to get $A$ and $g_s$. 
+
+\subparagraph{\citet{Sakschewski-2015}, add Leaf N in LPG photosynthesis deacreasing below optimal Leaf N}
+
+$V_{cmax}$ is a power function of Leaf N (a function of SLA , even if not the case in Wright et al. 2004). This is somehow strange as the photosynthesis model of LPJ is based on optimum allocation to Leaf N so they have a kind of decrease from this optimum if leaf N is below the optimum of LPJ.
+
+\subparagraph{\citet{Prentice-2014}, optimal $c_i/c_a$ for $V_{cmax}$ vs $g_s$}
+
+Predict optimal $c_i/c_a$ to optimise $V_{cmax}$ and $G_s$ (evaporation) for different $D$ vapour pressure deficit.
+
+What we need is to have a Farqhar model with $J_C$ $J_E$ (and a proper light response) and a water stress reducing $g_s$ and thus $A$ in function of water stress AET/PET. If we derive this model this give use for each AET a prediction $A$ at different leaf N $predicting $V_{cmax}$ as in \citet{Sakschewski-2015}.
+
+How to simplify that ??? we can
+
+
+Check correspondance to Plant photsynthesis model which is based on Johnson, I. R. and Thornley, J. H. M. 1984. A model of instantaneous and daily canopy photosynthesis. - Journal of Theoretical Biology 107: 531–545.
+ and is a non-rectangular hyperbola response to light where we could assume that $A_{max}$ is related to $V_{cmax}$ and thus leaf N.
+
+
+
 
 
 \begin{figure}[ht]
@@ -349,7 +462,7 @@ following equation \citep[as in][]{Law-1997}:
 
 \begin{equation}
 \label{eq:Law}
-P(i win over j)=\left(\frac{1}{1+e^{-K(c_{e,i}-c_{e,j})}}\right).
+P(i \, win \, over \, j)=\left(\frac{1}{1+e^{-K(c_{e,i}-c_{e,j})}}\right).
 \end{equation}
 
 Where the parameter $K$ controls the asymmetry of the competition
