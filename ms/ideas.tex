@@ -128,7 +128,7 @@ and see other Sterck publications READ GIVNISH}) to explain how traits explain c
 % coexistence and abiotic effect. It may be also interesting to have
 % few lines one abiotic filtering debate.
 
-Here we propose to first compare theoretical prediction of a model based on the classical view \textit{vs.} a model based on the shifting competitive hierarchy. 
+Here we propose to first compare theoretical prediction of a model based on the classical view \textit{vs.} a model based on the shifting competitive hierarchy.
 
 Then we propose to explore alternative physiological mechanisms of leaf and stem traits that could underpin physiological trade-off explaining shift in traits composition along climatic gradients. To do this we use a new model -- \plant\ \citep{Falster-2016,Falster-2017} -- that connects directly with leaf and stem traits and simultaneously allows for coexistence within sites and variation across sites.  Coexistence is driven by competition for light in size-structured meta-populations and the outcomes of competition is moderated by environmental factors such as site productivity and disturbance regime.
 
@@ -247,36 +247,38 @@ high leaf N allow for an adaptation in term of photosynthesis to low water avail
 
 \item \citet{Prentice-2014} expanded this prediction in term of more details Farquhar model for C3 plant, but this is probably not needed for the \plant\ model.
 %%  However we need to check if this is providing more numerical estimate of the relation between $N_{area}$ and response to water stress. \textcolor{red}{I DON'T THINK SO BUT NEED TO DOUBLE CHECK}
- 
+
 %% NEED TO LOOK AT Sakschewski for Leaf N effect!!!
-\item The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003} as presented in the variation of $A{max}_{area}$ in the figure \ref{fig:leafN_water}. However one of the limitation is that the we have no explicit modeling of how water stress influence $A_{max}$. 
+\item The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003} as presented in the variation of $A{max}_{area}$ in the figure \ref{fig:leafN_water}. However one of the limitation is that the we have no explicit modeling of how water stress influence $A_{max}$.
 \end{itemize}
 
 \paragraph{Photosynthesis model, water stress, and Leaf N}
 
-\subparagraph{\citet{Collatz-1991}, photosynthesis and water stress model}
+\subparagraph{\citet{Collatz-1991}, photosynthesis and water stress model.}
 
-  
-Leaf photosynthesis is described, based on Farquhar model, as the minimum of three potential rates $J_E$ the light limited rate, $J_C$ the CO2 rubisco limited rate, and $J_S$ the starch export limitation.
+
+Leaf photosynthesis is described, based on Farquhar model, as the minimum of three potential rates $J_E$ the light limited rate, $J_C$ the CO2 rubisco limited rate, and $J_S$ the starch export limitation rate. The last limitation by starch export (or triose phosphate utilization) limitation is generally neglected as it come into play only at very high level of $CO_2$.
 
 \begin{equation}
 \label{eq:An}
 A_n= min(J_E, J_C, J_s) - R_d.
 \end{equation}
 
-  
+
 \begin{equation}
 \label{eq:JC}
-J_E= I \frac{a \alpha Q_p (p_i - \Gamma_*}{p_i + 2 \Gamma_*}.
+J_E = Q_p \frac{a \alpha (p_i - \Gamma_*)}{p_i + 2 \Gamma_*}.
 \end{equation}
 
-with $\Gamma_* = \frac{[O_2]}{2\tau}$
-with $Q_p$ the incident flux of phtosynthetically active photon.
+with $\Gamma_* = \frac{[O_2]}{2\tau}$ ($\tau$ is a ratio of kinetic parameters describing the partitioning of RuNP to the carboxylase or oxygenase), and $Q_p$ is the incident flux of photosynthetically active photon.
 
 \begin{equation}
 \label{eq:JE}
 J_C= \frac{V_m (p_i - \Gamma_*)}{p_i + K_c (1+[o_2]/K_o)}.
 \end{equation}
+
+where $K_c$ and $K_o$ are the Michaelis constant for $CO_2$ and the competitive inhibition constant for $O_2$, and $V_m$ is the maximum catalytic capacity of Rubisco per leaf area.
+$p_i$ is given by $p_i = P c_i$ and $c_i$ is given by Fick's law.
 
 \begin{equation}
 \label{eq:JS}
@@ -297,18 +299,20 @@ where $J_P$ is the min of $J_C$ and $J_E$.
 \beta A^2 - A(J_P+J_S) + J_P J_S= 0.
 \end{equation}
 
-where $\theta$ and $\beta$ are constant describing the transition between limitation.
+where $\theta$ and $\beta$ are constant describing the transition between limitation (in this ref respectively 0.98 abd 0.95).
 
-Ball Berry model and Fick Law.
+The kenetic parameters $K_c$, $K_o$, $V_m$, and $\tau$ change with temperature according to a $Q_{10}$ function ($k = k_{25} Q_{10}^{(T-25)/10}$).
+
+Then the apporach of \citet{Collatz-1991} is to connect this photosynthesis model with the Ball Berry model which predict $g_s$  as follow
 
 \begin{equation}
 \label{eq:gs}
-g_s= m \frac{A_n h_s}{c_s}+b.
+g_s= m \frac{A_n h_a}{c_a}+b.
 \end{equation}
 
-where $h_s$ relative humidity, and $c_s$ modle fraction of the air at leaf surface.
+where $h_s$ relative humidity, and $c_a$ modle fraction of the air (at leaf surface).
 
-Fick's law:
+The Fick's law close the system of equation:
 \begin{equation}
 \label{eq:fick}
 g_s=\frac{A_d}{c_a - c_i}.
@@ -316,13 +320,25 @@ g_s=\frac{A_d}{c_a - c_i}.
 
 $p_i = P c_i$
 
-The models are combined by solving simultaneously for $P_i$ ($c_i$) and $g_s$.
+The models are combined by solving simultaneously for $c_i$ and $g_s$.
 
-TODO add kinetic parameters function temperature.
+\citet{Scheiter-2009} use this photsynthesis model (with a min function).
 
-TODO check light stauration effect in $J$ ($Q_p$) see http://ac.els-cdn.com/S1573521409000025/1-s2.0-S1573521409000025-main.pdf?_tid=4902d674-6af2-11e7-a556-00000aab0f26&acdnat=1500297629_b9cbd0ef1f08b4aa3684fe6bca115067
+Other version of the model consider that instead a of $Q_p$ the light incidence, $J_E$ is a function $J$ the electron transport rate which is it self a function of incident light (with non rectangular hyperbola) \citep{Sharkey-2007}.
 
-TODO add and discuss why a lot of model do not include $J_S$.
+\begin{equation}
+\label{eq:JCb}
+J_E = J \frac{ c_i - \Gamma_*}{4c_i + 8 \Gamma_*}.
+\end{equation}
+
+where
+
+\begin{equation}
+\label{eq:Jlight}
+J = \frac{ \alpha I + J_{max} - \sqrt{(\alpha I + J_{max})^2 - 4 \theta \alpha I J_{max}}}{2\theta}.
+\end{equation}
+
+see for instance \citet{Bernacchi-2009}.
 
 
 \subparagraph{\citet{Haxeltine-1996}, photosynthesis model assuming optimal allocation of Leaf N and then all LPJ models}
@@ -338,24 +354,93 @@ Then if non water stress conductance is given by the photosynthesis equation by:
 g_s=g_{min} + \frac{1.6A_d}{c_a - c_i}.
 \end{equation}
 
- which then give $E_{d}$ by 
+and for C3 plant the ratio $c_i / c_a$ is set to 0.7.
+
+The eqution \ref{eq:fickLPJ} provides non water stressed $g_s$ which then gives $E_{d}$ by
 
 \begin{equation}
 \label{eq:12Sitch}
-E_d=E_p \alpha_m [1 - exp(\frac{- g_s}{g_m})].
+E=E_p \alpha_m [1 - exp(\frac{- g_s}{g_m})].
 \end{equation}
 
-If water stress all solve simultaneoulsly to get $A$ and $g_s$. 
+If the condition are water stressed ($E_{supply} < E_{demand}$ value
+of $g_s$ is given by the equation \ref{eq:12Sitch} (assuming $E$ is
+equal to $_{supply}$. Then $g_s$ can be used to solve Fick law and the
+photosynthesis model.
 
 \subparagraph{\citet{Sakschewski-2015}, add Leaf N in LPG photosynthesis deacreasing below optimal Leaf N}
 
-$V_{cmax}$ is a power function of Leaf N (a function of SLA , even if not the case in Wright et al. 2004). This is somehow strange as the photosynthesis model of LPJ is based on optimum allocation to Leaf N so they have a kind of decrease from this optimum if leaf N is below the optimum of LPJ.
+$V_{cmax}$ is a power function of Leaf N (a function of SLA , even if
+not the case in Wright et al. 2004). The photosynthesis model of LPJ
+is based on optimum allocation to Leaf N (so optimal $V_{cmax opt}$) so
+the actual $V_{cmax}$ is the munimum between the optimum and the one
+predicted by leaf N. This is some how strange as the effect of leaf N
+on $V_{cmax}$ is limited by the optimal value.
 
 \subparagraph{\citet{Prentice-2014}, optimal $c_i/c_a$ for $V_{cmax}$ vs $g_s$}
 
 Predict optimal $c_i/c_a$ to optimise $V_{cmax}$ and $G_s$ (evaporation) for different $D$ vapour pressure deficit.
 
-What we need is to have a Farqhar model with $J_C$ $J_E$ (and a proper light response) and a water stress reducing $g_s$ and thus $A$ in function of water stress AET/PET. If we derive this model this give use for each AET a prediction $A$ at different leaf N $predicting $V_{cmax}$ as in \citet{Sakschewski-2015}.
+\subparagraph{\citet{Johnson-1984}, model and its use in more recent model}
+
+In this alternative model of photosynthesis, only the response to
+light is considered (and this match the euqation of the light effect
+on $J$). This is the model used in 'Plant'.
+
+\begin{equation}
+\label{eq:Johnson}
+A_{N,PAR} = \frac{ \alpha I + A_{max} - \sqrt{(\alpha I + A_{max})^2 - 4 \theta \alpha I A_{max}}}{2\theta}.
+\end{equation}
+
+\subparagraph{\citet{Farrior-2013}}
+
+Use a simpler version of the light response curve (instead of using
+\citet{Johnson-1984}) they use a simpled staturantion function
+($A_L = min(AL, A_{max})$). Then water demande is linearly related to
+$A_L$ and water supply is related to soil water potential with a two
+step function no supply if below a treshold, above this treshold
+increase with soil water potential (see Fig. A2). Soil water content
+is lenearly related to soil water potential.
+
+TODO \citet{Zavala-2005} based on \citet{leuning-1995} for stomatial
+conductance (a new version of \citet{Collatz-1991}).
+
+\subparagraph{Summary and what to do next}
+
+There is two different approaches. In the first one, a water budget model
+predict when soil water is limiting the value of $g_s$ that match
+evapotranspiration allowed by the supply. (PhD of Lohier differ in the
+sens that transpiration is not computed as a function of PET).
+
+In the second one there is a direct effect of $A$, $c_a$ and the
+relative humidity on the $g_s$ but not effect of soil water stress.
+
+What we need is to have a Photosynthesis model with light effect and
+$A_{max}$ related to Leaf N as it is currently the case that would be
+$A_L$ and then add an effectof water stress that would limit to
+$A_W$. The $A = min(A_L , A_N)$ thus this is different than affecting
+directly $A_{max}$ as at low light level $A$ will not be affected.
+
+Then we need to have a link between Leaf N and the way plant tolerate
+water stress
+
+
+One approach is to say that there two A one for non water stressed
+conditions $A_L$ and one for water stressed conditions $A_W$. The
+water availability variable is $E_S$ evapotransipiration supply
+(daily, monthly ???) per unit area of leaf. Assuming non water
+stressed condition we can
+compute $A_L = f(V_{cmax}, c_i, I)$ assuming $c_i/c_a = 0.7$ (not
+perfect as Leaf N shouild affect that and thus when water stress
+occurs). Based on $A_L$ compute $g_{s pot}$ and $E_S$ per unit area of
+leaf. Then compute $\omega = min(1, E_S/E_D)$. If $\omega = 1$ then $A
+= A_L$. If $\omega < 1$ then compute $g_s$ from $E_S$ and then for
+$c_i$ giving the lowest $A$.
+
+
+
+I don't think that is necessarely need to have $J_C$ $J_E$ (and a
+proper light response). Weed need water stress reducing $g_s$ and thus $A$ in function of water stress AET/PET. If we derive this model this give use for each AET a prediction $A$ at different leaf N predicting $V_{cmax}$ as in \citet{Sakschewski-2015}.
 
 How to simplify that ??? we can
 
@@ -421,13 +506,13 @@ Here we propose to explore these alternative building on the 'shifting competiti
 
 \subsection{Theoretical model description}
 
-The model is implemented in Cpp vi RCpp in the following R package 
-TheoTradeOff \url{https://github.com/kunstler/TheoTradeOff}. The 
-model build on \citet{Pacala-1998} to represents the succession 
-dynamics but in cellular automaton rather than through 
-differential equation. We assume that species are defined by three 
-traits $c_e$, $c_l$, and $c_s$ describing 
-respectively their competitive ability in early and late successional stage and their 
+The model is implemented in Cpp vi RCpp in the following R package
+TheoTradeOff \url{https://github.com/kunstler/TheoTradeOff}. The
+model build on \citet{Pacala-1998} to represents the succession
+dynamics but in cellular automaton rather than through
+differential equation. We assume that species are defined by three
+traits $c_e$, $c_l$, and $c_s$ describing
+respectively their competitive ability in early and late successional stage and their
 tolerance to abiotic stress.
 
 The model describe a large meta-community structured in discrete cell
@@ -437,7 +522,7 @@ produces one seed per time step which is dispersed in the moore
 neighborhood.  The cell  are structured along a  gradient of
 abiotic stress. The meta-community is organized in rectangle of
 256 x 256*N cells  and the abiotic stress  gradient run along the
-largest side of the rectangle. 
+largest side of the rectangle.
 
 Individual are subject to two
 types of mortality random perturbation controlled by
@@ -458,7 +543,7 @@ ability (early or late successional stage). For instance the
 probability of a seed of species $i$ to colonize a
 early-successional cell occupied by the species $j$  is
 controlled by their traits $c_{e,i}$ and $c_{e,j}$ by the
-following equation \citep[as in][]{Law-1997}: 
+following equation \citep[as in][]{Law-1997}:
 
 \begin{equation}
 \label{eq:Law}
@@ -470,7 +555,7 @@ Where the parameter $K$ controls the asymmetry of the competition
 late-successional stage but with $c_l$. The species ability
 mortality to tolerate abiotic stress is controlled by $c_s$, with
 species with higher value of $c_s$ having a lower mortality rate
-at a given level of stress $a$. 
+at a given level of stress $a$.
 
 \begin{equation}
 \label{eq:MortaStress}
@@ -515,7 +600,7 @@ which impose that $c_e + c_l + c_s = 1$ (see figure \ref{fig:triangtrade}).
     dispersion is within the 8 neighboring cells. Species are
     defined by three traits defining a triangular tradeoff
     between early- or late-successional competitive ability
-    \textit{vs.} climate stress tolerance.} 
+    \textit{vs.} climate stress tolerance.}
 \label{fig:triangtrade}}
 \end{figure}
 
