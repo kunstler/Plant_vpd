@@ -48,6 +48,13 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/ideas.tex", "ms/references.bib", clean=TRUE)
 
+  ms/Plant_WaterStress.pdf:
+    depends:
+      - ms/ms.sty
+      - ms/amnat.bst
+    command: latex_build("ms/Plant_WaterStress.tex", "ms/references.bib", clean=TRUE)
+
+
   ms/literature.pdf:
     depends:
       - ms/ms.sty
