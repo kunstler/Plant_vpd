@@ -1,4 +1,4 @@
-process_wright_2004 <- function(filename, sitevars_file) {
+process_wright_2004 <- function(filename, sitevars_file, AridityIndex) {
 
   ## There are several strategies for reading in an excel file, but
   ## this one works quite well.
@@ -53,6 +53,9 @@ process_wright_2004 <- function(filename, sitevars_file) {
   # add location info
   sitevars <- read.csv(sitevars_file, stringsAsFactors = FALSE,
                        encoding = "UTF-8")
+  ## add aridity index
+  sitevars$AI <- extract_aridty(sitevars$latitude, sitevars$longitude,AridityIndex)
+
   data <- merge(d, sitevars, by.x = 'Dataset', by.y = 'dataset_location',
                 all.x = TRUE, all.y = FALSE, sort = FALSE)
 
@@ -77,23 +80,25 @@ process_wright_2004 <- function(filename, sitevars_file) {
 }
 
 figure_lma_climate <- function(data) {
+browser()
+  data$mat_o_map<-  (data$mat+100)/data$map
 
   lma <- data[["lma"]]
   narea <- data[["n.area"]]
-  map <- data[["map"]]
-  mat <- data[["mat"]]
+  map <- data[["mat_o_map"]]
+  ai <- data[["ai"]]
 
   grey <- make_transparent("grey", 0.3)
-  blues <- rev(brewer.pal(8, "Blues"))
-  greens <- rev(brewer.pal(8, "Greens"))
+  blues <- brewer.pal(6, "Blues")
+  greens <- brewer.pal(6, "Greens")
 
   bins <- seq_log_range(range(map), 6)
   map_bin <- as.numeric(
-              cut(map, bins, seq_len(length(bins)-1), include.lowest = TRUE))
+              cut(map,breaks = bins, labels = seq_len(length(bins)-1), include.lowest = TRUE)) +1
 
-  bins <- seq_range(range(mat), 6)
-  mat_bin <- as.numeric(
-              cut(mat, bins, seq_len(length(bins)-1), include.lowest = TRUE))
+  bins <- seq_log_range(range(ai), 6)
+  ai_bin <- as.numeric(
+              cut(ai, bins, seq_len(length(bins)-1), include.lowest = TRUE))+1
 
 
   myplot <- function(...,  xlabel=FALSE,  ylabel=FALSE) {
@@ -106,19 +111,19 @@ figure_lma_climate <- function(data) {
 
   par(mfrow=c(2,2), mar=c(1,1,1,1), oma=c(4,5,0,0))
 
-  myplot(mat, lma, log ="y", col=greens[map_bin], xlabel=FALSE, ylabel=TRUE)
+  myplot(ai, lma, log ="xy", col=greens[ai_bin], xlabel=FALSE, ylabel=TRUE)
   mtext(expression(paste("Leaf-mass per area (kg ", m^-2,")")), 2, line=4)
-  mylabel("a")
+  mylabel("a", log.x=TRUE)
 
-  myplot(map, lma, log ="xy", col=blues[mat_bin], xlabel=FALSE)
+  myplot(map, lma, log ="xy", col=blues[map_bin], xlabel=FALSE)
   mylabel("b", log.x=TRUE)
 
-  myplot(mat, narea, log ="y", col=greens[map_bin], xlabel=TRUE, ylabel=TRUE)
-  mtext("Av. Temperature (deg C)",1, line=4)
+  myplot(ai, narea, log ="xy", col=greens[ai_bin], xlabel=TRUE, ylabel=TRUE)
+  mtext("Aridity Index",1, line=4)
   mtext(expression(paste("Leaf-nitrogen per area (kg ", m^-2,")")), 2, line=4)
-  mylabel("c")
+  mylabel("c", log.x=TRUE)
 
-  myplot(map, narea, log ="xy", col=blues[mat_bin], xlabel=TRUE)
+  myplot(map, narea, log ="xy", col=blues[map_bin], xlabel=TRUE)
   mtext("Precipitation (mm)", 1, line=4)
   mylabel("d", log.x=TRUE)
 }
@@ -171,8 +176,14 @@ figure_lma_tradeoff_climate <- function(data,
                      breaks = c(150, 300, 600, 1200, 2400, 4800) ,
                      labels = FALSE, ordered_result = TRUE)
 }else{
-  data$levels <- cut(data[[var_clim]], breaks = 5, labels = FALSE,
-                     ordered_result = TRUE)
+   if(var_clim == 'ai'){
+    data$levels <- cut(data[[var_clim]],
+                     breaks = c(0, 0.6, 1, 1.4, 2, 4) ,
+                     labels = FALSE, ordered_result = TRUE)
+    }else{
+      data$levels <- cut(data[[var_clim]], breaks = 5, labels = FALSE,
+                         ordered_result = TRUE)
+    }
 }
 
   groups<- data[['levels']]
@@ -180,6 +191,7 @@ figure_lma_tradeoff_climate <- function(data,
 
   colfunc <- colorRampPalette(c("blue", "red"))
   cols <- colfunc(length(unique(data[['levels']])))
+  if(var_clim == "ai") cols <- rev(cols)
 
   col_sm1 <- cols[data[["levels"]][match(sm1[["groups"]], groups)]]
 

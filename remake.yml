@@ -386,7 +386,8 @@ targets:
     packages: xlsx
     command: >
       process_wright_2004("download/wright-2004.xls",
-                          "data/wright_2004_locations.csv")
+                          "data/wright_2004_locations.csv",
+                          AridityIndex)
 
   zanne_clim:
     command: get_climate_niche(zanne, worldclim)
@@ -413,6 +414,11 @@ targets:
   chave:
     packages: xlsx
     command: process_chave_2009("download/chave-2009.xls")
+
+  AridityIndex:
+    command: download_aridity_index()
+    packages: raster
+
 
   worldclim:
     command: getData(I('worldclim'), var = I('bio'), res = 2.5, path=I("download"))

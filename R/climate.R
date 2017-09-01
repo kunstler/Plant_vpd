@@ -32,4 +32,50 @@ GetClimate <-function(lats,lons, wc) {
 } #GetClimate
 
 
+#get aridity index
+
+download_aridity_index<- function(dir_temp = "download"){
+require(raster)
+require(R.utils)
+# download raster
+
+url_clim <- "https://www.dropbox.com/sh/e5is592zafvovwf/AACSS163OQ2nm5m1jmlZk4Gva/Global%20PET%20and%20Aridity%20Index/Global%20Aridity%20-%20Annual.zip?dl=1"
+raster_name_zip <- "Global Aridity - Annual.zip"
+if(!dir.exists(file.path(dir_temp, "AI_annual"))){
+    dir.create(dir_temp)
+    download.file(url_clim, file.path(dir_temp, raster_name_zip))
+    unzip(zipfile = file.path(dir_temp, raster_name_zip),
+          exdir = dir_temp)
+}
+
+raster_aridity <- raster(file.path(dir_temp, "AI_annual",
+                                   "ai_yr",  "w001001x.adf"))
+
+return(raster_aridity)
+}
+
+extract_aridty <- function(lats,lons,raster_aridity){
+plot_aridity <- raster::extract(raster_aridity, cbind(lons, lats))/10000
+nas <- which(is.na(plot_aridity))
+    if (length(nas)>0) {
+      good <- which(!is.na(plot_aridity))
+      near <- NearestPlot(lons[nas],lats[nas],lons[good],lats[good])
+      plot_aridity[nas] <- plot_aridity[good[near]]
+    }
+return(plot_aridity)
+}
+
+#Returns the index of the nearest plot(x2,y2) to each of the target plots (x1,y1)
+NearestPlot <- function(x1,y1,x2,y2) {
+
+  res = numeric(length(x1))
+
+  for (i in 1:length(x1)) {
+    dists = sqrt((x1[i] - x2)^2 + (y1[i] - y2)^2)
+    res[i] = which.min(dists)
+    }
+  return(res)
+
+} #NearestPlot
+
 
