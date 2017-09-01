@@ -80,26 +80,12 @@ process_wright_2004 <- function(filename, sitevars_file, AridityIndex) {
 }
 
 figure_lma_climate <- function(data) {
-browser()
   data$mat_o_map<-  (data$mat+100)/data$map
 
   lma <- data[["lma"]]
   narea <- data[["n.area"]]
-  map <- data[["mat_o_map"]]
+  map_o_mat <- 1/data[["mat_o_map"]]
   ai <- data[["ai"]]
-
-  grey <- make_transparent("grey", 0.3)
-  blues <- brewer.pal(6, "Blues")
-  greens <- brewer.pal(6, "Greens")
-
-  bins <- seq_log_range(range(map), 6)
-  map_bin <- as.numeric(
-              cut(map,breaks = bins, labels = seq_len(length(bins)-1), include.lowest = TRUE)) +1
-
-  bins <- seq_log_range(range(ai), 6)
-  ai_bin <- as.numeric(
-              cut(ai, bins, seq_len(length(bins)-1), include.lowest = TRUE))+1
-
 
   myplot <- function(...,  xlabel=FALSE,  ylabel=FALSE) {
     plot(..., ann=FALSE, xaxt='n', yaxt='n', pch=16, cex=0.9)
@@ -111,20 +97,20 @@ browser()
 
   par(mfrow=c(2,2), mar=c(1,1,1,1), oma=c(4,5,0,0))
 
-  myplot(ai, lma, log ="xy", col=greens[ai_bin], xlabel=FALSE, ylabel=TRUE)
+  myplot(ai, lma, log ="xy",  xlabel=FALSE, ylabel=TRUE)
   mtext(expression(paste("Leaf-mass per area (kg ", m^-2,")")), 2, line=4)
   mylabel("a", log.x=TRUE)
 
-  myplot(map, lma, log ="xy", col=blues[map_bin], xlabel=FALSE)
+  myplot(map_o_mat, lma, log ="xy", xlabel=FALSE)
   mylabel("b", log.x=TRUE)
 
-  myplot(ai, narea, log ="xy", col=greens[ai_bin], xlabel=TRUE, ylabel=TRUE)
+  myplot(ai, narea, log ="xy",xlabel=TRUE, ylabel=TRUE)
   mtext("Aridity Index",1, line=4)
   mtext(expression(paste("Leaf-nitrogen per area (kg ", m^-2,")")), 2, line=4)
   mylabel("c", log.x=TRUE)
 
-  myplot(map, narea, log ="xy", col=blues[map_bin], xlabel=TRUE)
-  mtext("Precipitation (mm)", 1, line=4)
+  myplot(map_o_mat, narea, log ="xy", xlabel=TRUE)
+  mtext("Precipitation (mm) over Temperature (C)", 1, line=4)
   mylabel("d", log.x=TRUE)
 }
 

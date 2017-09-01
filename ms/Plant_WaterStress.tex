@@ -56,12 +56,11 @@ Beyond species succession pattern along climatic gradients, several studies docu
 
 
 Plot of pattern for leaf traits extracted from \citep{Wright-2004}.
-TODO CHANGE FIGURE TO PLOT IN FUNCTION OF $E_p - E_a$ or PET/MAP as this is more directly related to aridity..
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/leaf_climate.pdf}
-\caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per area along mean annual temperature (a and c) and sum of annual precipitation (b and c).}%% Data are from glopnet \citep{Wright-2004}.
+\caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per area along water availability index (a and c) and MAp over MAT (b and c).} Data are from glopnet \citep{Wright-2004}.
 \label{fig:leafpattern}}
 \end{figure}
 
@@ -109,7 +108,7 @@ In a first set of assumption we could consider models where there is only one tr
 
 \clearpage
 
-1. In the most simple version environmental gradients changes productivity (photosynthesis $A_{max}_{area}$ through a linear effect of a theoretical productivity gradient $p$) and
+1. In the most simple version environmental gradients changes productivity (photosynthesis $A_{max}$ through a linear effect of a theoretical productivity gradient $p$) and
 thus competition for light and selection on LMA (this is already presented in \citet{Falster-2017}) (high LMA as adaptation to both log light and low productivity).
 
 The figure \ref{fig:lma} represents how the evolved community mixture of LMA change along a productivity gradient. This is essentially representing the results of \citet{Falster-2017} only over LMA (leaving out size at maturity). Low LMA strategies are only possible in productive sites.
@@ -123,7 +122,7 @@ The figure \ref{fig:lma} represents how the evolved community mixture of LMA cha
 
 \clearpage
 
-2. In second version, the environmental gradient affect the productivity ($A_{max}_{area}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope. TO KEEP ??
+2. In second version, the environmental gradient affect the productivity ($A_{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope. TO KEEP ??
 
 \citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.
 
@@ -186,7 +185,8 @@ high leaf N allow for an adaptation in term of photosynthesis to low water avail
 
  \citet{Wright-2003} explore how N can substitute for water. $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N is in its respiration cost with higher dark leaf respiration per area for higher $N_{area}$. \citet{Prentice-2014} expanded this prediction in term of an optimization with a details Farquhar model for C3 plant, but focusing directly on $V_{cmax}$ rather than $N_{area}$.
 
- The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003}. This is build on an empirical relationship between $A_{max}_{area}$ and $N_{area}$ ($A_{max} = b_{lf1} \over{N_{area}}{N^0_{area}}^{b_{lf5}}$ \citep(Falster-2015}). There is however no quantitative prediction of how water stress influence $A_{max}_{area}$ for different level of $N_{area}$. A first option would be to simply consider that $A_{max}$ is linearly influenced by a water stress index  as follow $A_{max} = WS * b_{lf1} \over{N_{area}}{N^0_{area}}^{b_{lf5}}$ ($WS$ is an aridity index ranging between 0.3 high aridty to 1.7 low aridty). This model is presented in the figure \ref{fig:leafN_water}. This could allow a first exploration of this assumption. 
+ The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003}. This is build on an empirical relationship between $A_{max}$ and $N_{area}$ 
+($A_{max} = b_{lf1} \times \over{N_{area}}{N^0_{area}}^{b_{lf5}}$ \citep{Falster-2015}). There is however no quantitative prediction of how water stress influence $A_{max}$ for different level of $N_{area}$. A first option would be to simply consider that $A_{max}$ is linearly influenced by a water stress index  as follow $A_{max} = WS * b_{lf1} \over{N_{area}}{N^0_{area}}^{b_{lf5}}$ ($WS$ is an aridity index ranging between 0.3 high aridty to 1.7 low aridty). This model is presented in the figure \ref{fig:leafN_water}. This could allow a first exploration of this assumption. 
 
 It would howver also be interesting to explore if using a more mechanistic model for photosynthesis and water stress could lead quantitatve prediction. I have strated to explore this below.
 
