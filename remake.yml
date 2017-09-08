@@ -74,7 +74,7 @@ targets:
     - figures/tradeoff_shade_light.pdf
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
-    - figures/data_lma_ll_trade_off_climate_elev_T_P.pdf
+    - figures/data_lma_ll_trade_off_climate_elev_P_T.pdf
     - figures/data_lma_ll_trade_off_climate_elev_P.pdf
     - figures/data_lma_ll_trade_off_climate_elev_T.pdf
     - figures/data_lma_ll_trade_off_climate_slope_elev.pdf

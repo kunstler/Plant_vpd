@@ -11,12 +11,15 @@ require(plantecophys)
 plot(1:150, Photosyn(PPFD=1:150)$ALEAF) # pb with light response at low level (check in code with ci set at ca) (OK pb in numerical issue in limitation
 
 ##
+par(mfrow = c(2,2))
 plot(seq(0, 5, length.out = 100),
      Photosyn(VPD = seq(0, 5, length.out = 100), PPFD = 1500,
-                          gsmodel = "BBOpti")$ALEAF)
+                          gsmodel = "BBOpti")$ALEAF,
+     type = "l")
 plot(seq(0, 5, length.out = 100),
      Photosyn(VPD = seq(0, 5, length.out = 100), PPFD = 1500,
-                          gsmodel = "BallBerry")$ALEAF)
+                          gsmodel = "BallBerry")$ALEAF,
+     type = "l")
 
 
 plot(seq(0, 10, length.out = 100),
