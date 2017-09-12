@@ -1,14 +1,149 @@
 
 #plantecophys
-photo_model <- function(){
-
-
-
-}
 
 plot_photosyn <-  function(){
 require(plantecophys)
-plot(1:150, Photosyn(PPFD=1:150)$ALEAF) # pb with light response at low level (check in code with ci set at ca) (OK pb in numerical issue in limitation
+plot(1:1500, Photosyn(PPFD=1:1500)$ALEAF) # pb with light response at low level (check in code with ci set at ca) (OK pb in numerical issue in limitation
+
+############################
+#### Estimate Plant model based on Farquah and look at fit
+
+## original plant
+library(plant)
+
+## compare original Plant mopdel vs Farquhar
+library(plantecophys)
+x <- 10:1500
+## value for alpha and theta used in plant ?? in plantecophys alpha = 0.24 in plant B_lf3 = 0.04, theta = 0.85 in plant => B_lf2 = 0.5
+library(plant)
+B_lf1<-5120.738 * 1.87e-3 * 24 * 3600 / 1e+06
+B_lf2<-0.5 # too match the shape of the default FvC
+B_lf3<-0.04 # too match the shape of the default FvC
+k_I <-  0.5
+# Potential CO_2 photosynthesis at average leaf nitrogen [mol / d / m2]
+# For comparison, convert Amax to ymol / m2 /s
+Amax <- B_lf1 * 1e6 /(24*3600)
+
+assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+  x <- QY * I + Amax
+  (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+}
+
+plot(x,
+     assimilation_rectangular_hyperbolae(
+       x*k_I, Amax, theta = B_lf2, QY = B_lf3),
+     type = "l", ylim = c(0, 12),
+     xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
+     ylab = expression(paste(A,"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )))
+
+V <- 30
+df_pred <- Photosyn(PPFD=x,Vcmax  = V,
+                    Jmax  = V*1.67,
+                    alpha = 0.1, theta = 0.6) # Jmax ~1.67 Vcmax in Medlyn et al. 2002
+lines(x,df_pred$ALEAF + df_pred$Rd,
+      lty = 2)
+
+## par(mfrow = c(1,2))
+## plot(x, df_pred$ALEAF + df_pred$Rd, type = "l", ylim = c(0, 12),
+##      xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
+##      ylab = expression(paste(A,"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )))
+## plot(x,
+##      assimilation_rectangular_hyperbolae(
+##        x*k_I, Amax, theta = B_lf2, QY = B_lf3), type = "l", ylim = c(0, 12),
+##      xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
+##      ylab = expression(paste(A,"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )))
+
+#######################
+## fit annual A model
+
+narea<- 1.87e-3
+narea_0<-1.87e-3
+B_lf1<-5120.738 * 1.87e-3 * 24 * 3600 / 1e+06
+Amax <- B_lf1 * (narea/narea_0) ^  B_lf5
+theta <- B_lf2
+QY <- B_lf3
+k_I <-  0.5
+latitude <- 0
+assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+  x <- QY * I + Amax
+  (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+}
+
+## Photosynthesis  [mol CO2 / m2 / yr]
+approximate_annual_assimilation <- function(narea, latitude) {
+  E <- seq(0, 1, by=0.02)
+  ## Only integrate over half year, as solar path is symmetrical
+  D <- seq(0, 365/2, length.out = 10000)
+  I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D,
+                                                         latitude = abs(latitude)))
+  Amax <- B_lf1 * (narea/narea_0) ^  B_lf5
+  theta <- B_lf2
+  QY <- B_lf3
+  AA <- NA * E
+  for (i in seq_len(length(E))) {
+    AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
+                                k_I * I * E[i], Amax, theta, QY))
+  }
+  if(all(diff(AA) < 1E-8)) {
+    # line fitting will fail if all have are zero, or potentially same value
+    ret <- c(last(AA), 0)
+    names(ret) <- c("p1","p2")
+  } else {
+    fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA),
+               start = list(p1 = 100, p2 = 0.2))
+    ret <- coef(fit)
+  }
+  ret
+}
+
+y <- approximate_annual_assimilation(narea, latitude)
+a_p1  <- y["p1"]
+a_p2  <- y["p2"]
+
+
+### FvB
+
+
+assimilation_rectangular_hyperbolae <- function(I, V) {
+df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
+                    Vcmax  = V,
+                    Jmax  = V*1.67) # Jmax ~1.67 Vcmax in Medlyn et al. 20
+
+return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
+}
+
+## Photosynthesis  [mol CO2 / m2 / yr]
+approximate_annual_assimilation <- function(narea, latitude) {
+  E <- seq(0, 1, by=0.02)
+  ## Only integrate over half year, as solar path is symmetrical
+  D <- seq(0, 365/2, length.out = 10000)
+  I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+  Amax <- B_lf1 * (narea/narea_0) ^  B_lf5
+  theta <- B_lf2
+  QY <- B_lf3
+  AA <- NA * E
+  for (i in seq_len(length(E))) {
+    AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
+                                k_I * I * E[i], Amax, theta, QY))
+  }
+  if(all(diff(AA) < 1E-8)) {
+    # line fitting will fail if all have are zero, or potentially same value
+    ret <- c(last(AA), 0)
+    names(ret) <- c("p1","p2")
+  } else {
+    fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA),
+               start = list(p1 = 100, p2 = 0.2))
+    ret <- coef(fit)
+  }
+  ret
+}
+
+y <- approximate_annual_assimilation(narea, latitude)
+a_p1  <- y["p1"]
+a_p2  <- y["p2"]
+
+###########################
+#### LOOK AT CONDUCTANCE VS Vcmax effect
 
 ##
 par(mfrow = c(2,2))
@@ -154,47 +289,11 @@ for (i in 2:length(V_seq)) lines(D, df_V[, i], col = cols[i])
 
 # why ##' @param k_I light extinction coefficient [dimensionless] in light model ?
 
-                                lma_0=0.1978791
-                                B_kl1=0.4565855
-                                B_kl2=1.71
-                                rho_0=608.0
-                                B_dI1=0.01
-                                B_dI2=0.0
-                                B_ks1=0.2
-                                B_ks2=0.0
-                                B_rs1=4012.0
-                                B_rb1=2.0*4012.0
-                                B_f1 =3.0
-                                narea=1.87e-3
-                                narea_0=1.87e-3
-                                B_lf1=5120.738 * 1.87e-3 * 24 * 3600 / 1e+06
-                                B_lf2=0.5
-                                B_lf3=0.04
-                                B_lf4=21000
-                                B_lf5=1
-                                k_I=0.5
-                                latitude=0
-
 
 library(plantecophys)
 df_pred <- Photosyn(PPFD=10:1500,Vcmax  = 75,
                           Jmax  = 75*1.67) # Jmax ~1.67 Vcmax in Medlyn et al. 2002
-library(plant)
-B_lf1<-5120.738 * 1.87e-3 * 24 * 3600 / 1e+06
-B_lf2<-0.5
-B_lf3<-0.04
-B_lf5<-1
-narea<- 1.87e-3
-narea_0<-1.87e-3
-B_lf1<-5120.738 * 1.87e-3 * 24 * 3600 / 1e+06
-Amax <- B_lf1 * (narea/narea_0) ^  B_lf5
-theta <- B_lf2
-QY <- B_lf3
-k_I <-  0.5
-assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
-  x <- QY * I + Amax
-  (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
-}
+
 
 par(mfrow = c(1,2))
 plot(10:1500, df_pred$ALEAF + df_pred$Rd, type = "l",
@@ -208,47 +307,6 @@ plot(seq(0, 216, length.out = 100),
 
 ## UNIT ??
 
-
-    ## Photosynthesis  [mol CO2 / m2 / yr]
-    approximate_annual_assimilation <- function(narea, latitude) {
-      E <- seq(0, 1, by=0.02)
-      ## Only integrate over half year, as solar path is symmetrical
-      D <- seq(0, 365/2, length.out = 10000)
-      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
-
-      Amax <- B_lf1 * (narea/narea_0) ^  B_lf5
-      theta <- B_lf2
-      QY <- B_lf3
-
-      AA <- NA * E
-
-      for (i in seq_len(length(E))) {
-        AA[i] <- 2 * plant:::trapezium(D, assimilation_rectangular_hyperbolae(
-                                    k_I * I * E[i], Amax, theta, QY))
-      }
-      if(all(diff(AA) < 1E-8)) {
-        # line fitting will fail if all have are zero, or potentially same value
-        ret <- c(last(AA), 0)
-        names(ret) <- c("p1","p2")
-      } else {
-        fit <- nls(AA ~ p1 * E/(p2 + E), data.frame(E = E, AA = AA),
-                   start = list(p1 = 100, p2 = 0.2))
-        ret <- coef(fit)
-      }
-      ret
-    }
-
-    # This needed in case narea has length zero, in which case trapezium fails
-    a_p1 <- a_p2 <- 0 * narea
-    ## TODO: Remove the 0.5 hardcoded default for k_I here, and deal
-    ## with this more nicely.
-    if (length(narea) > 0 || k_I != 0.5) {
-      i <- match(narea, unique(narea))
-      y <- vapply(unique(narea), approximate_annual_assimilation,
-                  numeric(2), latitude)
-      a_p1  <- y["p1", i]
-      a_p2  <- y["p2", i]
-    }
 
 }
 # TODO LINK Vcmax and Jmax (according to Medlyn et al. 2002 Jmax = 1.67 Vcmax)
