@@ -393,6 +393,16 @@ legend(x = 0.2, y = max(data_a$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, 
 
 ## plot_photosyn_annual_FvC(vpd = 0, alpha = 0.3, theta = 0.7)
 
+## to change in C++ code function assimilation_leaf in ff16_strategy.cpp and default param
+
+## // [Appendix S6] Per-leaf photosynthetic rate.
+## // Here, `x` is openness, ranging from 0 to 1.
+## double FF16_Strategy::assimilation_leaf(double x) const {
+##   return a_p1 * x / (x + a_p2);
+## }
+
+
+
 # Sperry model of stomatal conductance TODO ADD (WHAT full model or just an approximation based on only on cavitation curve ? see Sterck for similar idea)
 
 # cavitation curve
