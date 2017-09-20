@@ -19,8 +19,8 @@ plot_options:
     height: 6.5
     width: 5.5
   wide:
-    height: 3.5
-    width: 7
+    height: 5
+    width: 10
   skinny:
     height: 4.5
     width: 3
@@ -54,7 +54,6 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/Plant_WaterStress.tex", "ms/references.bib", clean=TRUE)
 
-
   ms/literature.pdf:
     depends:
       - ms/ms.sty
@@ -69,12 +68,12 @@ targets:
   slides.pdf:
     command: xelatex_build_clean("slides.tex")
 
-  figures:
+  figures_plant:
     depends:
     - figures/tradeoff_shade_light.pdf
     - figures/data_climate.pdf
     - figures/data_lma_ll_trade_off.pdf
-    - figures/data_lma_ll_trade_off_climate_elev_P_T.pdf
+    - figures/data_lma_ll_trade_off_climate_elev_T_P.pdf
     - figures/data_lma_ll_trade_off_climate_elev_P.pdf
     - figures/data_lma_ll_trade_off_climate_elev_T.pdf
     - figures/data_lma_ll_trade_off_climate_slope_elev.pdf
@@ -83,6 +82,18 @@ targets:
     - figures/fitness_lma_multi.pdf
     - figures/gradient_lma_single.pdf
     - figures/gradient_lma_multi.pdf
+    - figures/FcV_stomatal.BBLeuning.pdf
+    - figures/FcV_stomatal.BBOpti.pdf
+    - figures/FcV_stomatal.BallBerry.pdf
+
+
+  figures_wood:
+    depends:
+    - figures/vessel_climate.pdf
+    - figures/wood_density_climate.pdf
+
+  figures_theo:
+    depends:
     - figures/vessel_climate.pdf
     - figures/wood_density_climate.pdf
     - figures/resLV_1.pdf
@@ -218,6 +229,39 @@ targets:
   figures/WaterS_LeafN.pdf:
     command: plot_water_LeafN()
     plot: square
+
+  figures/FcV_stomatal.BBLeuning.pdf:
+    command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
+    plot: wide
+
+  figures/FcV_stomatal.BBOpti.pdf:
+    command: plot_FvC_stomatal(I(gs_type = "BBOpti"))
+    plot: wide
+
+  figures/FcV_stomatal.BallBerry.pdf:
+    command: plot_FvC_stomatal(I(gs_type = "BallBerry"))
+    plot: wide
+
+  figures/FcVstomatal.pdf:
+    command: VPD_response()
+    plot: square
+
+  figures/Photo_Plant_FcV.pdf:
+    command: Compare_Photo_Plant_FcV()
+    plot: square
+
+  figures/Annual_Photo_Plant.pdf:
+    command: plot_photosyn_annual_plant()
+    plot: wide
+
+  figures/Annual_Photo_FvC_vpd0.pdf:
+    command: plot_photosyn_annual_FvC()
+    plot: wide
+
+  figures/Annual_Photo_FvC_vpd3.pdf:
+    command: plot_photosyn_annual_FvC(I(vpd = 3))
+    plot: wide
+
 
 #### plots of community assembly
   figures/fitness_lma_single.pdf:
