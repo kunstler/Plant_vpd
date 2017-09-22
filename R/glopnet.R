@@ -72,14 +72,14 @@ process_wright_2004 <- function(filename, sitevars_file, AridityIndex) {
   data$leaflifespan <- data$leaflifespan/12 ## convert LL from months to years
   data$leaf_turnover <- 1/data$leaflifespan ## per year
 
-  data$mat_o_map<-  data$mat/data$map
+  data$mat_o_map<-  (data$mat+18)/data$map
 
   names(data)[names(data) %in%
               c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
 
-  ## return(subset(data,   data[["map"]] > 400 & #why did you subset the data to have more than 400m of MAP ??
-  ##    data[["growthform"]] %in% c("S","T")))
-  return(data)
+  return(subset(data,   data[["map"]] < 4000 & #why did you subset the data to have more than 400m of MAP ??
+     data[["growthform"]] %in% c("S","T")))
+  ## return(data)
 }
 
 figure_lma_climate <- function(data) {
@@ -87,6 +87,8 @@ figure_lma_climate <- function(data) {
   narea <- data[["n.area"]]
   mat_o_map <- data[["mat_o_map"]]
   map <- data[["map"]]
+  ai <- data[["ai"]]
+
 
   myplot <- function(...,  xlabel=FALSE,  ylabel=FALSE) {
     plot(..., ann=FALSE, xaxt='n', yaxt='n', pch=16, cex=0.9)
@@ -96,7 +98,7 @@ figure_lma_climate <- function(data) {
 
   mylabel <- function(lab, ...) label(0.05, 0.95, lab, log.y=TRUE, ...)
 
-  par(mfrow=c(2,2), mar=c(1,1,1,1), oma=c(4,5,0,0))
+  par(mfrow=c(2,3), mar=c(1,1,1,1), oma=c(4,5,0,0))
 
   myplot(map, lma, log ="xy",  xlabel=FALSE, ylabel=TRUE)
   mtext(expression(paste("Leaf-mass per area (kg ", m^-2,")")), 2, line=4)
@@ -105,13 +107,20 @@ figure_lma_climate <- function(data) {
   myplot(mat_o_map, lma, log ="xy", xlabel=FALSE)
   mylabel("b", log.x=TRUE)
 
+  myplot(ai, lma, log ="xy", xlabel=FALSE)
+  mylabel("c", log.x=TRUE)
+
   myplot(map, narea, log ="xy",xlabel=TRUE, ylabel=TRUE)
   mtext("Annual precipitation (mm)",1, line=4)
   mtext(expression(paste("Leaf-nitrogen per area (kg ", m^-2,")")), 2, line=4)
-  mylabel("c", log.x=TRUE)
+  mylabel("d", log.x=TRUE)
 
   myplot(mat_o_map, narea, log ="xy", xlabel=TRUE)
-  mtext("Precipitation (mm) over Temperature (C)", 1, line=4)
+  mtext("Temperature (C) over Precipitation (mm)", 1, line=4)
+  mylabel("e", log.x=TRUE)
+
+  myplot(ai, narea, log ="xy", xlabel=TRUE)
+  mtext("Aridity Index MAP/PET", 1, line=4)
   mylabel("d", log.x=TRUE)
 }
 

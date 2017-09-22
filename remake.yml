@@ -82,9 +82,17 @@ targets:
     - figures/fitness_lma_multi.pdf
     - figures/gradient_lma_single.pdf
     - figures/gradient_lma_multi.pdf
-    - figures/FcV_stomatal.BBLeuning.pdf
-    - figures/FcV_stomatal.BBOpti.pdf
-    - figures/FcV_stomatal.BallBerry.pdf
+
+  figures_plant_FvC:
+    depends:
+    - figures/FvC_stomatal_BBLeuning.pdf
+    - figures/FvC_stomatal_BBOpti.pdf
+    - figures/FvC_stomatal_BallBerry.pdf
+    - figures/FvCstomatal.pdf
+    - figures/Photo_Plant_FvC.pdf
+    - figures/Annual_Photo_Plant.pdf
+    - figures/Annual_Photo_FvC_vpd0.pdf
+    - figures/Annual_Photo_FvC_vpd3.pdf
 
 
   figures_wood:
@@ -230,24 +238,24 @@ targets:
     command: plot_water_LeafN()
     plot: square
 
-  figures/FcV_stomatal.BBLeuning.pdf:
+  figures/FvC_stomatal_BBLeuning.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
     plot: wide
 
-  figures/FcV_stomatal.BBOpti.pdf:
+  figures/FvC_stomatal_BBOpti.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBOpti"))
     plot: wide
 
-  figures/FcV_stomatal.BallBerry.pdf:
+  figures/FvC_stomatal_BallBerry.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BallBerry"))
     plot: wide
 
-  figures/FcVstomatal.pdf:
+  figures/FvCstomatal.pdf:
     command: VPD_response()
     plot: square
 
-  figures/Photo_Plant_FcV.pdf:
-    command: Compare_Photo_Plant_FcV()
+  figures/Photo_Plant_FvC.pdf:
+    command: Compare_Photo_Plant_FvC()
     plot: square
 
   figures/Annual_Photo_Plant.pdf:
@@ -410,7 +418,7 @@ targets:
 
   figures/leaf_climate.pdf:
     command: figure_lma_climate(leaf_traits)
-    plot: large_square
+    plot: wide
 
   figures/vessel_climate.pdf:
     command: plot_vessel_clim(zanne_clim)

@@ -1,9 +1,9 @@
-#Look at use of FcV model with plantecophys in Plant
+#Look at use of FvC model with plantecophys in Plant
 
-# Default param for FcV for forest tree ??
+# Default param for FvC for forest tree ??
 # In plantecophys  alpha = 0.24, theta = 0.85, Jmax = 100, Vcmax = 50
 # in Medlyn et al. 2002 alpha = 0.3 theta 0.9
-# In Plant theta = 0.5 alpha is not on the same unite (mol of CO2 per mol of photon wherease in FcV in mol electron per mol photon) = 0.04 (conversion see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP 4*0.04 = 0.16 but we also probably need to correct for leaf absorbance 0.8 in Medlyn et al. 2002)
+# In Plant theta = 0.5 alpha is not on the same unite (mol of CO2 per mol of photon wherease in FvC in mol electron per mol photon) = 0.04 (conversion see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP 4*0.04 = 0.16 but we also probably need to correct for leaf absorbance 0.8 in Medlyn et al. 2002)
 # Sterck et al. 2011 theta = 0.5 alpha = 0.25 (not exactly the same alpha ...)
 # Valladares et al. 1997 tropicla shrub theta between 0.51 and 0.8 and alpha (in mol CO2) between 0.048 and 0.066
 # In TROLL Marechau & Chave Ecol. Monogr. in press alpha = 0.075*4 = 0.3 and theta = 0.7 based on von Caemmerer 2000
@@ -55,31 +55,31 @@ colfunc <- colorRampPalette(c("grey", "red"))
 cols <- colfunc(length(V_seq))
 
 list_df_PPFD_V_VPD0<- vector("list")
-list_df_PPFD_V_VPD1.9<- vector("list")
+list_df_PPFD_V_VPD1.5<- vector("list")
 for (i in seq_len(length(V_seq))){
   list_df_PPFD_V_VPD0[[i]]<- Photosyn(VPD = 0, PPFD = 1:1500,
                             Vcmax  = V_seq[i],
                             Jmax  = V_seq[i]*1.67,
                             gsmodel = gs_type)$ALEAF
-  list_df_PPFD_V_VPD1.9[[i]]<- Photosyn(VPD = 1.9, PPFD = 1:1500,
+  list_df_PPFD_V_VPD1.5[[i]]<- Photosyn(VPD = 1.5, PPFD = 1:1500,
                             Vcmax  = V_seq[i],
                             Jmax  = V_seq[i]*1.67,
                             gsmodel = gs_type)$ALEAF
 }
 
 df_PPFD_V_VPD0<- as.data.frame(list_df_PPFD_V_VPD0)
-df_PPFD_V_VPD1.9<- as.data.frame(list_df_PPFD_V_VPD1.9)
+df_PPFD_V_VPD1.5<- as.data.frame(list_df_PPFD_V_VPD1.5)
 plot(1:1500, df_PPFD_V_VPD0[,1],
-     ylim = range(list_df_PPFD_V_VPD0, list_df_PPFD_V_VPD1.9),
+     ylim = range(list_df_PPFD_V_VPD0, list_df_PPFD_V_VPD1.5),
      xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
      ylab = expression(paste(A[n],"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )),
      type = "l", col = cols[1], lty = 1)
 for (i in 2:length(V_seq)) lines(1:1500, df_PPFD_V_VPD0[, i], col = cols[i], lty = 1, lwd = 2)
-for (i in 1:length(V_seq)) lines(1:1500, df_PPFD_V_VPD1.9[, i], col = cols[i], lty = 2, lwd = 2)
+for (i in 1:length(V_seq)) lines(1:1500, df_PPFD_V_VPD1.5[, i], col = cols[i], lty = 2, lwd = 2)
 legend(x = 0, y = max(df_PPFD_V_VPD0)*0.9, lwd = 2, lty = c(1, 2, rep(1,4)),
        col = c("black", "black", cols),
-       legend = c("VPD = 0", "VPD = 1.9", paste("Vcmax", round(V_seq))),
-       bty = "n", cex = 0.5)
+       legend = c("VPD = 0", "VPD = 1.5", paste("Vcmax", round(V_seq))),
+       bty = "n", cex = 0.7)
 }
 
 VPD_response <- function(V = 50){
@@ -127,7 +127,7 @@ legend(x = 0.1, y = 0.8, lty = 1:3,
 }
 
 ## compare original Plant model vs Farquhar
-Compare_Photo_Plant_FcV <- function(){
+Compare_Photo_Plant_FvC <- function(){
 require(plantecophys)
 require(plant)
 x <- 10:1500
@@ -185,12 +185,12 @@ legend(x = 400, y = max(assimilation_rectangular_hyperbolae(
        x*k_I, Amax, theta = B_lf2, QY = B_lf3))*0.6,
        lwd = 2, lty = c(1, 1, 2, 3, 1, 1), cex = 0.8,
        col = c("black", "red", "red", "red", "blue", "green"),
-       legend = c("Plant", "FcV_plantecophys", "FcV_plantecophys V = 50 J = 1.67 V",
-                  "FcV Plant and V =32.5 J = 1.67 J", "FcV Troll = von Caemmerer 2000", "Sterck et al. 2011" ),
+       legend = c("Plant", "FvC_plantecophys", "FvC_plantecophys V = 50 and J = 1.67 V",
+                  "FvC Plant and V =32.5 and J = 1.67 V", "FvC Troll = von Caemmerer 2000", "Sterck et al. 2011" ),
        bty = "n")
 }
 
-Photo_Plant_match_FcV <- function(){
+Photo_Plant_match_FvC <- function(){
 require(plantecophys)
 require(plant)
 x <- 10:1500
@@ -223,7 +223,7 @@ lines(x,df_pred$ALEAF + df_pred$Rd,
       lty = 1, col = "red", lwd = 2)
 legend(x = 1100, y = 2, lwd = c(2,2),
        col = c("black", "red"),
-       legend = c("Plant", "FcV_plantecophys"),
+       legend = c("Plant", "FvC_plantecophys"),
        bty = "n")
 }
 
@@ -297,7 +297,31 @@ E <- seq(0, 1, by=0.02)
 plot(y$df$E, y$df$AA,
      xlab = "Percentage full light",
      ylab = expression(paste(A,"(mol", " ", m^-2, " ",y^-1, ")" )))
-lines(E, a_p1*E/(a_p2+E))
+lines(E, a_p1*E/(a_p2+E), col = "red")
+#exponential model
+# see https://dl.sciencesocieties.org/publications/aj/pdfs/107/2/786
+# https://www.csusm.edu/terl/publications1/Lobo_13_Photo.pdf
+# http://www.sciencedirect.com/science/article/pii/S002251938080004X
+fit <- nls(AA ~ p1 *(1-exp(-p2* E/p1)), y$df,
+           start = list(p1 = 120, p2 = 1000))
+lines(E, coef(fit)[["p1"]]*(1-exp(-E*coef(fit)[["p2"]]/coef(fit)[["p1"]])),
+      col = "green", lwd = 2)
+# see http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2435.2009.01630.x/epdf
+# non-rectangular hyperbola
+fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), y$df,
+           start = list(p1 = 120, p2 = 400, p3 = 0.9),
+           lower=c(10,2, 0.2), upper=c(200,800, 1),
+           algorithm = "port")
+lines(E, (coef(fit)[["p1"]] +coef(fit)[["p2"]]*E -
+          sqrt((coef(fit)[["p1"]]+coef(fit)[["p2"]]*E)^2-
+               4*coef(fit)[["p3"]]*coef(fit)[["p2"]]*E*coef(fit)[["p1"]]))/
+         (2*coef(fit)[["p3"]]),
+      col = "blue", lwd = 2)
+legend(x = 0.2, y = max(y$df$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, NA),
+       col = c("black", "red", "green", "blue"),
+       legend = c("Data Integrated", "Michealis Menten", "Exponential", "Non Rectangular Hyperbola"),
+       bty = "n", cex = 0.75)
+
 }
 
 ### FvC
@@ -377,7 +401,8 @@ lines(E, coef(fit)[["p1"]]*(1-exp(-E*coef(fit)[["p2"]]/coef(fit)[["p1"]])),
 # see http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2435.2009.01630.x/epdf
 # non-rectangular hyperbola
 fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data_a,
-           start = list(p1 = 120, p2 = 400, p3 = 0.9))
+           start = list(p1 = 120, p2 = 400, p3 = 0.9),
+           lower=c(10,2, 0.2), upper=c(200,800, 1), algorithm = "port")
 lines(E, (coef(fit)[["p1"]] +coef(fit)[["p2"]]*E -
           sqrt((coef(fit)[["p1"]]+coef(fit)[["p2"]]*E)^2-
                4*coef(fit)[["p3"]]*coef(fit)[["p2"]]*E*coef(fit)[["p1"]]))/
