@@ -1,10 +1,11 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[osf]{mathpazo}
-\usepackage{ms}
+\usepackage{ms}                 
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{hyperref}
+%% \usepackage{authblk}
 \usepackage[labelfont=bf]{caption} % make label for figure bold
 
 % Allow referencing into the supporting information, once that exists.
@@ -21,13 +22,13 @@
 \makeatother
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
-\title{Leaf N along water stress gardient}
+\title{Leaf N along water stress gradient}
 
 \author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
 \date{}
-\affiliation{Irstea Grenoble France}
-\affiliation{Department of Biological Sciences, Macquarie University,
+\affiliation{Irstea, Grenoble, France and Department of Biological Sciences, Macquarie University,
   Sydney, Australia}
+\date{}
 \runninghead{}
 \keywords{}
 
@@ -38,7 +39,7 @@
 \begin{document}
 
 \mstitleshort
-%\mstitlepage
+%% \mstitlepage
 \parindent=1.5em
 \addtolength{\parskip}{.3em}
 
@@ -50,12 +51,20 @@
 
 Understanding changes in vegetation composition across large biogeographic gradients is fundamental because vegetation is key to control ecosystem functioning, such as net primary production, and carbon storage. These changes in composition are also fundamental to understand biodiversity, as turnover in species composition explain a large proportion of the global diversity ($\beta$ diversity). In addition, these patterns are also the outcomes of long-term evolutionary adaptation. Understanding the drivers of these patterns is important not only for its intrinsic interest, but also as a path towards understanding how vegetation may change as result of environmental change.
 
-Beyond species succession pattern along climatic gradients, several studies document gradient of functional traits along climatic gradients. One specificity of observed pattern of traits variation is that they are generally weak with generally a higher variation within sites than along the climatic gradients \citep[see][]{Wright-2004}. A classical example is the variation of leaf mass per area ($LMA$) and leaf nitrogen per area ($N_{area}$) with aridity (see literature.pdf for a in progress review of the literature). $LMA$ \citep{Wright-2004,Onoda-2011,Moles-2014} and $N_{area}$ \citep{Wright-2005,Maire-2015} both increase with aridity. 
+Beyond species succession pattern along climatic gradients, several
+studies document gradient of functional traits along climatic
+gradients. One specificity of observed pattern of traits variation is
+that they are generally weak with generally a higher variation within
+sites than along the climatic gradients \citep[see][]{Wright-2004}. A
+classical example is the variation of leaf mass per area ($LMA$) and
+leaf nitrogen per area ($N_{area}$) with aridity (see literature.pdf
+for a in progress review of the literature). $LMA$
+\citep{Wright-2004,Onoda-2011,Moles-2014} and $N_{area}$
+\citep{Wright-2005,Maire-2015} both increase with aridity, but these
+patterns are very weak. 
 
-\clearpage
 
-
-Plot of pattern for leaf traits extracted from \citep{Wright-2004}.
+Plot of pattern for leaf traits extracted from glopnet \citep{Wright-2004}.
 
 \begin{figure}[ht]
 \centering
@@ -68,52 +77,102 @@ Plot of pattern for leaf traits extracted from \citep{Wright-2004}.
 
 \section{Potential mechanisms for these patterns}
 
-Documenting empirical patterns of variation of plant traits along climatic gradient represents a key first step to understand changes in vegetation composition, but we also need to propose mechanisms to explain these traits patterns. There is along history of studies proposing adaptative arguments to explain the observed variation of mean trait value along climatic gradients. This is largely based on quantitative optimisation approach building on ecophysiological representation of plant functioning \citep{Makela-2002}. For instance, \citet{Wright-2003} proposed that to maximize photosynthesis $N_{area}$ should increase with aridity. These approaches make a key first step (we will discuss the main arguments and models proposed for $LMA$ and $N_{area}$ below). But they provide no explanation to the large trait variation within site resulting from the coexistence of interacting species with different trait values. They fail to account for the fact that these traits are also involved in species coexistence. A much more abstract approach have used theoretical models to explore how species local climate adaptation and competitive interactions drive species evolution and changes in traits composition along theoretical gradients \citep{Case-2000,Doebeli-2003,Goldberg-2006,Leimar-2008}. These studies have shown that competition can affect the range of traits value found in a given community and make the traits deviate from the theoretical climatic optimum.  Generally, one single traits determines both the local adaption to the abiotic conditions -- through the distance to an optimal trait value varying along the gradients -- and the competitive interaction -- through a normal competition kernel based on trait value of the species and its competitors\citep[see][]{Case-2000}. The problem is that as these studies are based on abstract traits, they lack the physiological mechanisms underpinning climate response and competitive interactions. They are thus of limited use to explain observed patterns in traits variation in the field.  
+Documenting empirical patterns of variation of plant traits along
+climatic gradient represents a key first step to understand changes in
+vegetation composition, but we also need to propose mechanisms to
+explain these traits patterns. Several approach have been proposed to
+understand these mechanisms. First, there is along history of studies
+proposing adaptative arguments based on an optimization approach with
+ecophysiological models of plant functioning \citep{Makela-2002}. For
+instance, \citet{Wright-2003} proposed that to maximize
+photosynthesis, $N_{area}$ should increase with aridity. These
+approaches represent a key first step (we will discuss the main
+arguments and models proposed for $LMA$ and $N_{area}$ below), but
+they provide no explanation to the large trait variation within site
+resulting from the coexistence of interacting species with different
+trait values. They fail to account for the fact that these traits are
+also involved in species coexistence. A much more abstract approach
+have used theoretical models to explore how species local climate
+adaptation and competitive interactions drive species evolution and
+changes in traits composition along theoretical gradients
+\citep{Case-2000,Doebeli-2003,Goldberg-2006,Leimar-2008}. These
+studies have shown that competition can affect the range of traits
+value found in a given community and make the traits deviate from the
+theoretical climatic optimum.  Generally, one single traits determines
+both the local adaption to the abiotic conditions -- through the
+distance to an optimal trait value varying along the gradients -- and
+the competitive interaction -- through a normal competition kernel
+based on trait value of the species and its competitors \citep[see][]{Case-2000}. The problem is that as these studies are based on abstract traits, they are thus of limited use to explain observed patterns in traits variation in the field.  
 
-Recently a few studies have nevertheless started to connect physiological approach and the theoretical approach to build trait-based models of full communities dynamics either at local \citep{Farrior-2013} or global scale \citep[see][]{Sakschewski-2015,Scheiter-2013} representing key elements of plant ecophysiological functioning. But they have been largely unsuccessful at explaining the wide range of traits fund in a single community as these models generally failed to model the process promoting species coexistence.
+Recently a few studies have started to connect physiological approach
+and the theoretical approach to build trait-based models of full
+communities dynamics either at local \citep{Farrior-2013} or global
+scale \citep[see][]{Sakschewski-2015,Scheiter-2013}. They represent key elements of plant ecophysiological functioning. But they have been largely unsuccessful at explaining the wide range of traits fund in a single community as these models generally failed to capture the processes promoting species coexistence.
 
-It is thus key to develop mechanistic models where traits are related to both the direct climate effect and to species coexistence. To do this for $LMA$ and $N_{area}$ we use a new model -- \plant\ \citep{Falster-2016,Falster-2017} -- that connects directly with leaf traits and simultaneously allows for coexistence within sites and variation across sites. Coexistence is driven by competition for light in size-structured meta-populations and the outcomes of competition is moderated by environmental factors such as site productivity and disturbance regime.
+It is thus key to develop mechanistic models where traits are related
+to both the direct climate effect and to species coexistence. To do
+this for $LMA$ and $N_{area}$ we use a new model -- \plant\
+\citep{Falster-2016,Falster-2017} -- that connects directly with leaf
+traits and simultaneously allows for coexistence within sites and
+variation across sites. Coexistence is driven by competition for light
+in size-structured meta-populations and the outcomes of competition is
+moderated by environmental factors such as site productivity and
+disturbance regime. In \plant\ the coexistence between tree is mainly related to difference in successional niche underpinned by $LMA$ through competition for light. In \plant\ the coordination between $LMA$ and $LSS$ discriminate different strategies of resource use. Species with low $LMA$ have a greater potential maximum growth and are thus favored in high light condition, whereas high $LMA$ species have longer leaf life span and thus are more conservative of their resource and are favored in low light condition.  
 
 \section{Key questions}
 
-In \plant\ the coexistence between tree is mainly related to difference in successional niche underpinned by $LMA$ through competition for light. In \plant\ the coordination between $LMA$ and $LSS$ discriminate different strategies of resource use. Species with low $LMA$ have a greater potential maximum growth and are thus favored in high light condition, whereas high $LMA$ species have longer leaf life span and thus are more conservative of their resource and are favored in low light condition.  We will explore how the predicted mixture of traits changes along aridity gradient exploring three different assumptions about how aridity
+We will explore how the predicted mixture of traits changes along aridity gradient exploring three different assumptions about how aridity
 affect the dynamics and competition for light. 
 
 First the aridity gradient can simply affect
 the productivity with consequence on the process of light
-competition thus changing the evolved mixture of $LMA$ (as already shown by \citep{Falster-2017}. This would allow to explore the idea that high $LMA$ is favoured at high aridity because it lead to slow leaf turnover \citep{Wright-2002b}. 
+competition thus changing the evolved mixture of $LMA$ (as already shown by \citep{Falster-2017}). This would allow to explore the idea that high $LMA$ is favoured at high aridity because it lead to slow leaf turnover \citep{Wright-2002b}. 
 
 
 Secondly, the environmental gradient can affect the
 trade-off underpinning the strategy of light use (so changing the
-trade-off between LMA and LLS). For instance, it has been reported that the coordination between $LLS$ and $LMA$ is changing along aridity gradient both in regional \citep{Wright-2002b} and global studies \citep{Wright-2004}. The elevation of the relation between $LMA$ and $LLS$ was decreasing with aridity resulting in a lower leaf life span for a give $LMA$. Some studies have also reported potential effect on the slope of the relationship. This could be due to a higher investment in leaf nitrogen per area $N_{area}$ at higher aridity \citep{Wright-2002b}. 
+trade-off between LMA and LLS). For instance, it has been reported
+that the coordination between $LLS$ and $LMA$ is changing along
+aridity gradient both in regional \citep{Wright-2002b} and global
+studies \citep{Wright-2004}. The elevation of the relation between
+$LMA$ and $LLS$ decreases with aridity resulting in a lower leaf life span for a given $LMA$. Some studies have also reported potential effect on the slope of the relationship. This could be due to a higher investment in leaf nitrogen per area $N_{area}$ at higher aridity \citep{Wright-2002b}. 
 
-Thirdly, we could directly explore the role of $N_{area}$, which can have direct influence on the species tolerance to aridity as proposed by \citet{Wright-2003}. Briefly, $N_{area}$ is strongly related to the abundance of photosynthetic apparatus in the leaf and allow the plant to achieve higher photosynthesis for a given stomatal conductance. A higher $N_{area}$ thus allow the leaf to achive a higher photosynthesis at a given stomatal conductance. We will do this both with an empirical photosynthesis model and with a coupled model of photosynthesis and stomatal conductance (see \citet{Prentice-2014,Wang-2017} for optimization approach using this type of models).
-
-
-\subsection{Reviwe of optimal appraoch for $LMA$ and $N_{area}$ response to aridity}
-
-Optimization literature of $N_{area}$ predict that $N_{area}$ should increase with aridity \citep{Wright-2003}.  
-The general approach is based on the idea that plant are minimizing the summed cost of water loss and carbon gain \citet{Medlyn-2002,Wright-2003,Prentice-2014,Wolf-2016,Lu-2016,Wang-2017,Sperry-2017,Dong-2017}. As higher $N_{area}$ translate into higher $V_{cmax}$ this allow the plant to achieve a high $A_{area}$ even at low stomatal conductance $g_s$. Recently \citet{Prentice-2014,Dong-2017} provided quantitative predictions for the effect of key climatic variable (including VPD) based on an optimized Farquhar photosynthesis model. A key point that have been raised by \citet{Dong-2017} is that $N_{area}$ could be divided in structural and rubisco related N (using the relationship of \citet{Onoda-2004}).  
-
-High $LMA$ has been proposed as an advantage in dry climate because stiffer leaves can have a higher resistance to dehydration \citep{Wright-2002a,Wright-2002b} or the need to avoid overheating under condition of low transpiration \citep{Leigh-2012}.
-
-{\color{red}TO DISCUSS WITH DANIEL SPLIT in $N_{STRUCT}$ VS $N_{RUBISCO}$ AND HAVE N STRUCT LINK TO LMA??}
+Thirdly, we could explore the role of $N_{area}$, which can have direct influence on the species tolerance to aridity as proposed by \citet{Wright-2003}. Briefly, $N_{area}$ is strongly related to the abundance of photosynthetic apparatus in the leaf and allow the plant to achieve higher photosynthesis for a given stomatal conductance. We will do this both with an empirical photosynthesis model and with a coupled model of photosynthesis and stomatal conductance (see \citet{Prentice-2014,Wang-2017} for optimization approach using this type of models).
 
 
-\section{Conceptual overview of analysis and first results}
+\subsection{Review of optimal approach for $LMA$ and $N_{area}$ response to aridity}
+
+High $LMA$ has been proposed as an advantage in dry climate because
+stiffer leaves can have a higher resistance to dehydration
+\citep{Wright-2002a,Wright-2002b} or the need to avoid overheating
+under condition of low transpiration \citep{Leigh-2012}. (Other refs ?)
+
+Optimization literature of $N_{area}$ predict that $N_{area}$ should
+increase with aridity \citep{Wright-2003}. The general approach is
+based on the idea that plant are minimizing the summed cost of water
+loss and carbon gain
+\citep{Medlyn-2002,Wright-2003,Prentice-2014,Lu-2016,Wang-2017,Dong-2017}. As
+higher $N_{area}$ translate into higher $V_{cmax}$ this allow the
+plant to achieve a high $A_{area}$ even at low stomatal conductance
+$g_s$. Recently \citet{Prentice-2014} and \citet{Dong-2017} provided
+quantitative predictions for the effect of key climatic variable
+(including VPD) based on an optimized Farquhar photosynthesis
+model. Several authors have challenged the idea of summing the cost of
+water and carbon gain on the ground that competition should favor
+carbon gain optimization only \citep{Wolf-2016} and the idea that the
+main effect of carbon stress come through cavitation \citep{Sperry-2016,Sperry-2017}. 
+
+A key point that have been raised by \citet{Dong-2017} is that
+$N_{area}$ could be divided in structural and rubisco related N (using
+the relationship of \citet{Onoda-2004}). {\color{red}TO DISCUSS WITH DANIEL SPLIT in $N_{STRUCT}$ VS $N_{RUBISCO}$ AND HAVE N STRUCT LINK TO LMA??}
 
 
-Coexistence across a successional gradient requires demographic trade-off between growth in high-light and shade-tolerance. Thius occure via trade-off in $LMA$. Then the question is how environmental gradients affect this fundamental process of coexistence in forest and we will explore different assumption about how environmental gradients affect the dynamics.
-
-\clearpage
-
-\subsection{$LMA$ only}
-
-In a first set of assumption we could consider models where there is only one trait LMA.
+\section{Overview of analysis and first results}
 
 
-1. In the most simple version environmental gradients changes productivity (photosynthesis $A_{max}$ through a linear effect of a theoretical productivity gradient $p$) and
+\subsection{$LMA$ only and productivity gradient}
+
+In a first set of assumption we consider a model where there is only one trait LMA. In the most simple version environmental gradients changes productivity (photosynthesis $A_{max}$ through a linear effect of a theoretical productivity gradient $p$) and
 thus competition for light and selection on LMA (this is already presented in \citet{Falster-2017}) (high LMA as adaptation to both log light and low productivity).
 
 The figure \ref{fig:lma} represents how the evolved community mixture of LMA change along a productivity gradient. This is essentially representing the results of \citet{Falster-2017} only over LMA (leaving out size at maturity). Low LMA strategies are only possible in productive sites.
@@ -127,11 +186,13 @@ The figure \ref{fig:lma} represents how the evolved community mixture of LMA cha
 
 \clearpage
 
-2. In second version, the aridity gradient affect the productivity ($A_{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
+\subsection{$LMA$ only and changes in $LMA$ \textit{vs.} $LTR$}
 
-\citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.
+In second version, the aridity gradient affect the productivity ($A_{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
 
-In Glopnet there is two main strong patterns related to aridity (i) the elevation of the LTR \textit{vs.} LMA is changing with mean annual precipitation (MAP) (see Figure \ref{fig:MAP}) and (ii) the slope of the LTR \textit{vs.} LMA is changing with the ratio MAT/MAP (see Figure \ref{fig:MAT_MAP}). To implement these two distinct options in `plant` we first regressed the elevation and the slope of the site level LTR \textit{vs.} LMA relationship against MAP or MAT/MAP and then included this in `plant` (see Figure \ref{fig:elev_slope}). One key issue here is how to scale the theoretical aridity gradient we used in the previous model ($A{max}_{area}$ is a linear function with slope one of this gradient) with MAP or MAT/MAP. So far I have just assumed that the range of MAP or MAT/MAP analysed was restricted to the part of the theoretical gradient where growth was positive (above -0.3) and thus rescaled the range of MAP or MAT/MAP to a variation of $p$ from -0.3 to 0.3. This is clearly not perfect.
+\citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. \footnote{There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.}
+
+This can be seen In Glopnet as (i) the elevation of the LTR \textit{vs.} LMA is changing with mean annual precipitation (MAP) (see Figure \ref{fig:MAP}) and (ii) the slope of the LTR \textit{vs.} LMA is changing with the ratio MAT/MAP (see Figure \ref{fig:MAT_MAP}). To implement these two distinct options in `plant` we first regressed the elevation and the slope of the site level LTR \textit{vs.} LMA relationship against MAP or MAT/MAP and then included this in `plant` (see Figure \ref{fig:elev_slope}). One key issue here is how to scale the theoretical aridity gradient we used in the previous model ($A{max}_{area}$ is a linear function with slope one of this gradient) with MAP or MAT/MAP. \footnote{So far I have just assumed that the range of MAP or MAT/MAP analyzed was restricted to the part of the theoretical gradient where growth was positive (above -0.3) and thus re-scaled the range of MAP or MAT/MAP to a variation of $p$ from -0.3 to 0.3. This is clearly not perfect.}
 
 \begin{figure}[ht]
 \centering
@@ -160,21 +221,35 @@ In Glopnet there is two main strong patterns related to aridity (i) the elevatio
 %% This variation may be related to a change in Leaf N, with species from lower precipitation sites having higher leaf $N_{mass}$ resulting in lower tissue toughness but higher $A_{mass}$ \citep{Wright-2002a}. In term in $A_{area}$ this would translate in higher $A_{area}$ at low precipitation sites.  This is a change in optimum $A_{area}$ the $A_{area}$ integrated over the year (as implemented in \plant\ ) is probably higher in site with high precipitation.
 
 
-The figure \ref{fig:lma_map} represents how the evolved community mixture of LMA change along a productivity gradient when the elevation and slope (but mainly elevation) of LMA vs LTR were changing with precipitation MAP.
+The figure \ref{fig:lma_map} represents how the evolved community
+mixture of LMA change along a productivity gradient when the elevation
+and slope (but mainly elevation) of LMA vs LTR were changing with
+precipitation MAP.  
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/gradient_lma_multi_elev.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient controlled by aridity by 'Plant' with a variation of LTR \textit{vs.} LMA elevationwith precipitation (mainly elevation).}
+\caption{\textbf{Predicted community assembly of leaf mass per area
+    along a productivity gradient controlled by aridity by 'Plant'
+    with a variation of LTR \textit{vs.} LMA relationship with precipitation (mainly elevation).}
 \label{fig:lma_map}}
 \end{figure}
 
-The figure \ref{fig:lma_mat_o_map} represents how the evolved community mixture of LMA change along a productivity gradient when the elevation and slope of LMA vs LTR were changing with MAT/MAP.
+The figure \ref{fig:lma_mat_o_map} represents how the evolved
+community mixture of LMA change along a productivity gradient when the
+elevation and slope of LMA vs LTR were changing with MAT/MAP. In both case the gradient of $LMA$ is steeper than
+with a constant $LMA$ \textit{vs.} $LTR$ relationship. With MAP (Figure \ref{fig:lma_map}) the $LMA$ is
+higher at low productivity and lower at high productivity than with a
+constant $LMA$ \textit{vs.} $LTR$ relationship. With MAT over MAP this
+is mainly lower value at high productivity.
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/gradient_lma_multi_slope.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient controlled by aridity by 'Plant' with a variation of LTR \textit{vs.} LMA with MAt/MAP.}
+\caption{\textbf{Predicted community assembly of leaf mass per area
+    along a productivity gradient controlled by aridity by 'Plant'
+    with a variation of LTR \textit{vs.} LMA relationship with MAT/MAP
+    (mainly slope).}
 \label{fig:lma_mat_o_map}}
 \end{figure}
 
@@ -184,10 +259,12 @@ The figure \ref{fig:lma_mat_o_map} represents how the evolved community mixture 
 \subsection{$LMA$ and $N_{area}$}
 
 A third set of models could explore how LMA interact with Leaf N, a second trait controlling the response to the environmental gradient. Aridity gradients affect productivity (photosynthesis) but a
-high leaf N allow to maintain a high photosynthesis even at low stomatal conductance (so in condition of high aridity). This however coming with a cost of higher respiration cost (potentially also a higher leaf turnover \citep{Wright-2002a,Wright-2002b}, bust this is not modelled in plant). This may results in LMA shifting less than would have been otherwise, but instead differentiate species in N (with flow on effect to shade tolerance).
+high leaf N allow to maintain a high photosynthesis even at low
+stomatal conductance (so in condition of high aridity). This is
+however coming with a higher respiration cost (potentially also a higher leaf turnover \citep{Wright-2002a,Wright-2002b}, but this is not modelled in plant). This may results in LMA shifting less than would have been otherwise, but instead differentiate species in N (with flow on effect to shade tolerance).
 
 
- \citet{Wright-2003} explore how N can substitute for water. Assuming that $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance, and $N_{area}$ being related to $V_{cmax}$ and thus $c_a - c_i = c(1-\chi)$). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N comes from the higher dark leaf respiration per area for higher $N_{area}$ and is already include in \plant\ . \citet{Prentice-2014} expanded this prediction in term of an optimization with a details Farquhar model for C3 plant, but focusing directly on $V_{cmax}$ rather than $N_{area}$.
+ \citet{Wright-2003} explore how N can substitute for water. Assuming that $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance, and $N_{area}$ being related to $V_{cmax}$ and thus $c_a - c_i = c(1-\chi)$). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N comes from the higher dark leaf respiration per area for higher $N_{area}$ and is already include in \plant\ . \footnote{Prentice et al. 2014 expanded this prediction in term of an optimization with a details Farquhar model for C3 plant, but focusing directly on $V_{cmax}$ rather than $N_{area}$.}
 
  The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003}. This is build on an empirical relationship between $A_{max}$ and $N_{area}$ 
 ($A_{max} = b_{lf1} \times \frac{N_{area}}{N^0_{area}}^{b_{lf5}}$ \citep{Falster-2016}). There is however no quantitative prediction of how water stress influence $A_{max}$ for different level of $N_{area}$. A first option would be to simply consider that $A_{max}$ is linearly influenced by a water stress index  as follow $A_{max} = (1+WS) * b_{lf1} \frac{N_{area}}{N^0_{area}}^{b_{lf5}}$ ($WS$ is an aridity index ranging between -0.6 high aridity to 0.6 low aridity). This model is presented in the figure \ref{fig:leafN_water}. This could allow a first exploration of the implication of this assumption on community assembly. 
@@ -196,11 +273,12 @@ high leaf N allow to maintain a high photosynthesis even at low stomatal conduct
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/WaterS_LeafN_contour.pdf}
-\caption{\textbf{Variation of $A{max}_{area}$ with leaf nitrogen per area and water availability (productivity theoretical gradient $p$) predicted by `plant`.}
+\caption{\textbf{Variation of $A{max}_{area}$ with leaf nitrogen per area and water availability (productivity gradient) predicted by `plant`.}
 \label{fig:leafN_water}}
 \end{figure}
 
-The figures \ref{fig:lma_narea1} and \ref{fig:lma_narea2} show that the gradient of $LMA$ is less strong but that a gradient of $N_{area}$ is predicted. There is also a negative correlation between $N_{area}$ and $LMA$ within sites.
+The figures \ref{fig:lma_narea1} and \ref{fig:lma_narea2} show that
+the gradient of $LMA$ is less strong than in the previous models but that a gradient of $N_{area}$ is predicted. There is also a negative correlation between $N_{area}$ and $LMA$ within sites.
 
 \begin{figure}[ht]
 \centering
@@ -221,7 +299,9 @@ The figures \ref{fig:lma_narea1} and \ref{fig:lma_narea2} show that the gradient
 \section{Farquhar photosynthesis model, water stress, and Leaf N}
 
 
-It would be interesting to explore if using a mechanistic model for photosynthesis and water stress could lead quantitatve prediction about how water stress influence growth and $N_{area}$ influence the response to water stress. I have strated to explore this below.
+It would be interesting to explore if using a mechanistic model for
+photosynthesis and water stress could lead to quantitative predictions
+about how water stress influence growth and how $N_{area}$ influences the response to water stress. I have started to explore this below.
 
 
 \subsection{Farquhar photosynthesis model and \plant\ photosynthesis model.}
@@ -247,7 +327,7 @@ A_n= min(J_E, J_C, J_s) - R_d.
 %% discontinuity. 
 
 %% The key mechanisms which support that $N_{area}$ might allow to
-%% adaptate to low water availability is that increasing $N_{area}$ at a
+%% adapt to low water availability is that increasing $N_{area}$ at a
 %% given stomatal conductance $g_s$
 %% increase $V_{cmax}$ and thus decrease the ratio $c_i/c_a$.
 
@@ -257,14 +337,14 @@ A_n= min(J_E, J_C, J_s) - R_d.
 %% J_E = Q_p \frac{a \alpha (p_i - \Gamma_*)}{p_i + 2 \Gamma_*}.
 %% \end{equation}
 
-%% , and $Q_p$ is the incident flux of photosynthetically active photon.
+%% , and $Q_p$ is the incident flux of photo-synthetically active photon.
 
 \begin{equation}
 \label{eq:JC}
-J_C= \frac{V_m (p_i - \Gamma_*)}{p_i + K_c (1+[o_2]/K_o)}.
+J_C= \frac{V_{cmax} (p_i - \Gamma_*)}{p_i + K_c (1+[o_2]/K_o)}.
 \end{equation}
 
-where $K_c$ and $K_o$ are the Michaelis constant for $CO_2$ and the competitive inhibition constant for $O_2$, and $V_m$ is the maximum catalytic capacity of Rubisco per leaf area.
+where $K_c$ and $K_o$ are the Michaelis constant for $CO_2$ and the competitive inhibition constant for $O_2$, and $V_{cmax}$ is the maximum catalytic capacity of Rubisco per leaf area.
 $p_i$ is given by $p_i = P c_i$. And $\Gamma_* = \frac{[O_2]}{2\tau}$ ($\tau$ is a ratio of kinetic parameters describing the partitioning of RuNP to the carboxylase or oxygenase)
 
 \begin{equation}
@@ -279,13 +359,13 @@ where
 J = \frac{ \alpha I + J_{max} - \sqrt{(\alpha I + J_{max})^2 - 4 \theta \alpha I J_{max}}}{2\theta}.
 \end{equation}
 
-with $\alpha$ the initial quantum yield (in mol of electron per mol of photon), $\theta$ the curvature of the light response and $J_{max}$ the maximum electron transfer.
+with $\alpha$ the initial quantum yield (in mol of electron per mol of photon), $\theta$ the curvature of the light response and $J_{max}$ the maximum electron transfer,
 see for instance \citet{Bernacchi-2009}.
 
 
 \begin{equation}
 \label{eq:JS}
-J_S= V_m/2.
+J_S= V_{cmax}/2.
 \end{equation}
 
 To have a more gradual transition than the minimum function it is possible to use the smaller roots of two quadratics functions:
@@ -304,11 +384,11 @@ where $J_P$ is the min of $J_C$ and $J_E$.
 
 where $\theta$ and $\beta$ are constant describing the transition between limitation.
 
-The kenetic parameters $K_c$, $K_o$, $V_m$, and $\tau$ change with temperature according to a $Q_{10}$ function ($k = k_{25} Q_{10}^{(T-25)/10}$).
+The kinetic parameters $K_c$, $K_o$, $V_{cmax}$, and $\tau$ change with temperature according to a $Q_{10}$ function ($k = k_{25} Q_{10}^{(T-25)/10}$).
 
 \clearpage
 
-We can use the R package plantecophys \citep{Duursma-2015} to compare the initial photosynthesis model of plant and FvC for different parameters. In most of the parameters I have assumed as in \citet{Medlyn-2002} that $J_{max} = 1.67 \times V_{cmax}$. Several other equations have been proposed see \citet{Walker-2014,Kattge-2011}. We will also need to express $V_{cmax}$ in function of $N_{area}$ see \citep{Kattge-2009,Domingues-2010}. 
+We can use the R package plantecophys \citep{Duursma-2015} to compare the current photosynthesis model of \plant\ and the FvC model for different parameters. In most of the cases I assumed as in \citet{Medlyn-2002} that $J_{max} = 1.67 \times V_{cmax}$. Several other equations have been proposed see \citet{Walker-2014,Kattge-2011}. For the simulations with $N_{area}$ we will also need to express $V_{cmax}$ in function of $N_{area}$ \citep{Kattge-2009,Domingues-2010,Sakschewski-2015}. For instance, \citet{Sakschewski-2015} fitted the following relationship on the TRY data $V_{cmax25} = 31.62 N_{area}^0.801$. 
 
 
 \begin{figure}[ht]
@@ -318,9 +398,9 @@ We can use the R package plantecophys \citep{Duursma-2015} to compare the initia
 \label{fig:photo}}
 \end{figure}
 
-The figure \ref{fig:photo} show the light response curve for \plant\ the default FvC, FvC with the light parameters similar to \plant\ and other parameters used in \citet{Sterck-2011} and in Troll \citep{Marechaux-2017}.
+The figure \ref{fig:photo} show the light response curves for \plant\, the default FvC, FvC with the light parameters similar to \plant\, the parameters used in \citet{Sterck-2011}, and the parameters used in Troll \citep{Marechaux-2017}.
 
-Then we can see how this scale up to the annual photosynthesis rate using the integration approach of \plant\. \plant\ use a Michaelis Menten function to approximate the annual photosynthesis rate. This not working as well for FvC. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figures \ref{fig:photo_annu_plant} and \ref{fig:photo_annu_fvc}. 
+Then we can see how this scale up to the annual photosynthesis rate using the integration approach of \plant\ . \plant\ use a Michaelis Menten function to approximate the annual photosynthesis rate see figure \ref{fig:photo_annu_plant}. The Michaelis Menten approximation is not working well for the FvC model, see Figure \ref{fig:photo_annu_fvc}. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figure \ref{fig:photo_annu_fvc}. 
 
 
 \begin{figure}[ht]
@@ -342,25 +422,28 @@ Then we can see how this scale up to the annual photosynthesis rate using the in
 
 \subsection{Coupled photosynthesis and water stress models}
 
-To include the effect of aridity it is need to couple the photosynthesis model with a stomatal conductance model. In all this model the stomatal conductance model is linked with FvC model with the Fick law:
+To include the effect of aridity it is need to couple the photosynthesis model with a stomatal conductance model. In most approaches the stomatal conductance model is linked with FvC model with the Fick law:
 
 \begin{equation}
 \label{eq:fick}
 A_n = g_s (c_a - c_i) = g_s c_a (1-\chi).
 \end{equation}
 
-There is a lot of different options that range from empirical models to optimization models and from models that include or not soil water stress. If soil water stress is include some approach also include competition for soil water between trees \citep{Farrior-2013}. My general idea would be to start by a relatively simple model for a first paper and then build on to include more complex processes. In the first model there would be not effect of soil water stress and no representation of competetion for water.
+Where $c_a$ and $c_i$ are respectively the $CO_2$ mole fraction of the air and in the leaf. 
+
+
+For the stomatal model a lot of different options have been proposed that range from empirical models to optimization models and from models that include or not soil water stress. If soil water stress is include some approach also include competition for soil water between trees \citep{Farrior-2013}. My general idea would be to start by a relatively simple model for a first paper and then build on to include more complex processes. In the first model there would be not effect of soil water stress and no representation of competition for water.
 
 I will give a brief overview of the existing stomatal models. 
 
-One of the first and most classical model is the one of \citet{Collatz-1991} which connect the FvC photosynthesis model with the Ball Berry model which predict $g_s$. This is an empricial relationship based on the follwing equation:
+One of the first and most classical model is the one of \citet{Collatz-1991} which connect the FvC photosynthesis model with the Ball Berry model which predict $g_s$. This is an empirical relationship based on the following equation:
 
 \begin{equation}
 \label{eq:gs-Ball}
 g_s= g_0 + g_1 \frac{A_n h_s}{c_a}.
 \end{equation}
 
-where $h_s$ relative humidity at the leaf surface, and $c_a$ modle fraction of the air (at leaf surface).
+where $h_s$ relative humidity at the leaf surface, and $c_a$ $CO_2$ mole fraction of the air (at leaf surface).
 
 This has been modified by \citet{Leuning-1995} as the following empirical equation:
 
@@ -369,7 +452,7 @@ This has been modified by \citet{Leuning-1995} as the following empirical equati
 g_s= g_0 + g_1 \frac{A_n }{(c_a - \Gamma)(1+D/D_0)}.
 \end{equation}
 
-Then several approach have been developed to propose stomatal conductance that would optimize the summed cost of water loss and carbon gain \citet{Medlyn-2002,Prentice-2014,Wolf-2016,Sperry-2017}. One of the most used approach is the one developed by \citep{Medlyn-2011} as :
+Then several approach have been developed to predict stomatal conductance based on the optimization of the summed cost of water loss and carbon gain \citep{Medlyn-2002,Prentice-2014,Wolf-2016,Sperry-2017}. One of the most used approach is the one developed by \citet{Medlyn-2011} as :
 
 \begin{equation}
 \label{eq:gs-Medlyn}
@@ -379,9 +462,9 @@ g_s \approx g_0 + (1 + \frac{g_1}{\sqrt{D}}) \frac{A_n }{c_a}.
 
 Then other authors have proposed to account for the impact of xylem cavitation \citet{Wolf-2016,Sperry-2016,Sperry-2017} in the model and also to maximize carbon gain rather than the water use efficiency \citet{Wolf-2016}. I think that \citep{Sperry-2016} propose a framework that would be easy to implement and to connect to a water budget in \plant\ . 
 
-But as an initial step we could use either the model of \citep{Medlyn-2011} or \citep{Leuning-1995}. We need to keep in mind that this models that are based only on vpd are supposed to be applicable to plant without soil water stress.
+But as an initial step we could use either the model of \citet{Medlyn-2011} or \citet{Leuning-1995}. We need to keep in mind that these models that are based only on vpd are supposed to be applicable only to plant without soil water stress.
  
-The figures \ref{fig:photo_stomat}, \ref{fig:photo_stomat_BB}, \ref{fig:photo_stomat_Leuning}, and \ref{fig:photo_stomat_opti} show the different coupled model in plantecophys. 
+The figures \ref{fig:photo_stomat}, \ref{fig:photo_stomat_BB}, \ref{fig:photo_stomat_Leuning}, and \ref{fig:photo_stomat_opti} show the different coupled models in plantecophys. 
 
 \begin{figure}[ht]
 \centering
@@ -411,6 +494,7 @@ The figures \ref{fig:photo_stomat}, \ref{fig:photo_stomat_BB}, \ref{fig:photo_st
 \label{fig:photo_stomat}}
 \end{figure}
 
+\clearpage
 
 The variation of the Leuning model with vpd seems to give rise to an annual model that is well approximated by the non-rectangular hyperbola (see \ref{fig:photo_annu_fvc_vpd3}).
 
@@ -423,6 +507,29 @@ The variation of the Leuning model with vpd seems to give rise to an annual mode
 
 
 So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Kattge-2009} or \citep{Sakschewski-2015}. 
+
+\subsection{TODO to run simulation with this FvC model in plant}
+
+\begin{itemize}
+
+\item I need to change or add the annual photosynthesis in the C code to allow to use also a non-rectangular hyperbola in  ff16 strategy. 
+
+\item I need to choose a parameterisation for the FvC model (this seems to be quite variable in fact). I propose to use either TROLL or Sterck.
+
+\item I need to decide the relationship between $V_{cmax}$ and $N_{area}$ \footnote{We need to discuss the idea of splitting $N_{area}$ in structural and Rubisco}. It seems simple to start with \citet{Sakschewski-2015}.
+\end{itemize}
+
+In the long-term it would be interesting to think about:
+
+\begin{itemize}
+
+\item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}). 
+
+\item using stomatal model that is linked to the soil water potential (as in \citet{Spery-2016} or \citet{Sterck-2011})
+
+\item include a simple water budget to model tree competition for water 
+
+\end{itemize}  
 
 %% TODO a list of different assumption an show some example with plantecophys
 
