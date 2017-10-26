@@ -93,6 +93,8 @@ targets:
     - figures/Annual_Photo_Plant.pdf
     - figures/Annual_Photo_FvC_vpd0.pdf
     - figures/Annual_Photo_FvC_vpd3.pdf
+    - figures/Annual_Photo_FvC_narea_vpd0.pdf
+    - figures/Annual_Photo_FvC_narea_vpd3.pdf
 
 
   figures_wood:
@@ -268,6 +270,14 @@ targets:
 
   figures/Annual_Photo_FvC_vpd3.pdf:
     command: plot_photosyn_annual_FvC(I(vpd = 3))
+    plot: wide
+
+  figures/Annual_Photo_FvC_narea_vpd0.pdf:
+    command: plot_photosyn_annual_FvC_Narea()
+    plot: wide
+
+  figures/Annual_Photo_FvC_narea_vpd3.pdf:
+    command: plot_photosyn_annual_FvC_Narea(I(vpd = 3))
     plot: wide
 
 

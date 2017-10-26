@@ -416,22 +416,115 @@ legend(x = 0.2, y = max(data_a$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, 
 
 
 
+
+
+
+plot_photosyn_annual_FvC_Narea<-  function(vpd = 0,
+                                              narea = 1.87e-3,
+                                              B_lf1= 31.62 *1000^0.801,
+                                          # HTTP://DOI.WILEY.COM/10.1111/GCB.12870 CONVERSION OF NARE IN G M-2
+                                              B_lf2=0.7,
+                                              B_lf3=0.3,
+                                              B_lf4=21000,
+                                              B_lf5=0.801, # http://doi.wiley.com/10.1111/gcb.12870
+                                              B_lf6=1.67,
+                                              k_I=0.5,
+                                              latitude=0.0){
+require(plantecophys)
+require(plant)
+
+    assimilation_FvCB <- function(I, V, vpd, alpha, theta, lf6) {
+    df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
+                        VPD = vpd,
+                        Vcmax  = V,
+                        Jmax  = V*lf6,
+                        alpha = alpha,
+                        theta = theta,
+                        gsmodel = "BBLeuning") # Jmax ~1.67 Vcmax in Medlyn et al. 20
+    return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
+    }
+
+    ## Photosynthesis  [mol CO2 / m2 / yr]
+    approximate_annual_assimilation <- function(narea, latitude, vpd) {
+      E <- seq(0, 1, by=0.02)
+      ## Only integrate over half year, as solar path is symmetrical
+      D <- seq(0, 365/2, length.out = 10000)
+      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+
+      Vcmax <- B_lf1 * (narea) ^  B_lf5
+      theta <- B_lf2
+      alpha <- B_lf3
+      lf6   <- B_lf6
+      AA <- NA * E
+
+      for (i in seq_len(length(E))) {
+        AA[i] <- 2 * plant:::trapezium(D, assimilation_FvCB(
+                                    k_I * I * E[i], Vcmax, vpd, alpha, theta, lf6))
+      }
+      if(all(diff(AA) < 1E-8)) {
+        # line fitting will fail if all have are zero, or potentially same value
+        ret <- c(last(AA), 0)
+        names(ret) <- c("p1","p2", "p3")
+      } else {
+        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data.frame(E = E, AA = AA),
+                   start = list(p1 = 120, p2 = 400, p3 = 0.9),
+                   lower=c(10,2, 0.2), upper=c(200,800, 1), algorithm = "port")
+        ret <- coef(fit)
+      }
+        return(data.frame(E = E, AA = AA))
+    }
+
+data_a<- approximate_annual_assimilation(narea, latitude, vpd)
+
+fit <- nls(AA ~ p1 * E/(p2 + E), data_a,
+           start = list(p1 = 160, p2 = 0.1))
+a_p1  <- coef(fit)[["p1"]]
+a_p2  <- coef(fit)[["p2"]]
+
+mar.default <- c(5,4,4,2) + 0.1
+par(mfrow = c(1, 2), mar = mar.default + c(0, 0.3, 0, 0))
+theta <- B_lf2
+alpha <- B_lf3
+plot(0:200, assimilation_FvCB(0:200, B_lf1 * (narea) ^  B_lf5, vpd, alpha , theta, B_lf6),
+     type = "l",
+     xlab = expression(paste("PPFD (mol", " ",m^-2, " ", d^-1, ")" )),
+     ylab = expression(paste(A,"(mol", " ", m^-2, " ",d^-1, ")" )))
+
+E <- seq(0, 1, by=0.02)
+plot(data_a$E, data_a$AA,
+     xlab = "percentage full light",
+     ylab = expression(paste(A,"(mol", " ", m^-2, " ",y^-1, ")" )))
+
+# Michaelis menten
+fit <- nls(AA ~ p1 * E/(p2 + E), data_a,
+           start = list(p1 = 160, p2 = 0.1))
+lines(E, coef(fit)[["p1"]]*E/(coef(fit)[["p2"]]+E), col = "red", lwd = 2)
+#exponential model
+# see https://dl.sciencesocieties.org/publications/aj/pdfs/107/2/786
+# https://www.csusm.edu/terl/publications1/Lobo_13_Photo.pdf
+# http://www.sciencedirect.com/science/article/pii/S002251938080004X
+fit <- nls(AA ~ p1 *(1-exp(-p2* E/p1)), data_a,
+           start = list(p1 = 120, p2 = 1000), algorithm = "port")
+lines(E, coef(fit)[["p1"]]*(1-exp(-E*coef(fit)[["p2"]]/coef(fit)[["p1"]])),
+      col = "green", lwd = 2)
+# see http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2435.2009.01630.x/epdf
+# non-rectangular hyperbola
+fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data_a,
+           start = list(p1 = 120, p2 = 400, p3 = 0.9),
+           lower=c(10,2, 0.2), upper=c(200,800, 1), algorithm = "port")
+lines(E, (coef(fit)[["p1"]] +coef(fit)[["p2"]]*E -
+          sqrt((coef(fit)[["p1"]]+coef(fit)[["p2"]]*E)^2-
+               4*coef(fit)[["p3"]]*coef(fit)[["p2"]]*E*coef(fit)[["p1"]]))/
+         (2*coef(fit)[["p3"]]),
+      col = "blue", lwd = 2)
+legend(x = 0.2, y = max(data_a$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, NA),
+       col = c("black", "red", "green", "blue"),
+       legend = c("Data Integrated", "Michealis Menten", "Exponential", "Non Rectangular Hyperbola"),
+       bty = "n", cex = 0.75)
+}
+
+
 ## plot_photosyn_annual_FvC(vpd = 0, alpha = 0.3, theta = 0.7)
 
 ## to change in C++ code function assimilation_leaf in ff16_strategy.cpp and default param
-
-## // [Appendix S6] Per-leaf photosynthetic rate.
-## // Here, `x` is openness, ranging from 0 to 1.
-## double FF16_Strategy::assimilation_leaf(double x) const {
-##   return a_p1 * x / (x + a_p2);
-## }
-
-
-
-# Sperry model of stomatal conductance TODO ADD (WHAT full model or just an approximation based on only on cavitation curve ? see Sterck for similar idea)
-
-# cavitation curve
-k_xyl <- function(P, b, c, kmax = 5){
-kmax * exp(-(P/b)^c)
-}
 
