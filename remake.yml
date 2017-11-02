@@ -8,7 +8,6 @@ packages:
   - raster
   - gtools
   - dplyr
-  - TheoTradeOff
   - reldist
 
 sources:
@@ -96,131 +95,6 @@ targets:
     - figures/Annual_Photo_FvC_narea_vpd0.pdf
     - figures/Annual_Photo_FvC_narea_vpd3.pdf
 
-
-  figures_wood:
-    depends:
-    - figures/vessel_climate.pdf
-    - figures/wood_density_climate.pdf
-
-  figures_theo:
-    depends:
-    - figures/vessel_climate.pdf
-    - figures/wood_density_climate.pdf
-    - figures/resLV_1.pdf
-    - figures/resLV_2.pdf
-    - figures/resLV_0a.pdf
-    - figures/resLV_0b.pdf
-    - figures/map_theo_K100.pdf
-    - figures/map_theo_K10.pdf
-    - figures/map_theo_K5.pdf
-    - figures/map_theo_K1.pdf
-    - figures/mean_ce_theo_K100.pdf
-    - figures/mean_ce_theo_K10.pdf
-    - figures/mean_ce_theo_K5.pdf
-    - figures/mean_ce_theo_K1.pdf
-    - figures/range_theo_K100.pdf
-    - figures/range_theo_K10.pdf
-    - figures/range_theo_K5.pdf
-    - figures/range_theo_K1.pdf
-
-# Simulation results and figures ###################################################
-
-#### LV for intro
-  figures/resLV_0a.pdf:
-    command: plot_intro_fig_0a(df_pred)
-
-  figures/resLV_0b.pdf:
-    command: plot_intro_fig_0b(df_pred)
-
-  figures/resLV_1.pdf:
-    command: plot_intro_fig_1(df_pred)
-
-  figures/resLV_2.pdf:
-    command: plot_intro_fig_2(df_pred)
-
-  figures/ternplot.pdf:
-    command: TernPlotSp(add_text = TRUE)
-    plot: square
-
-  df_pred:
-    command: data_intro_fig()
-
-### TheoTradeOff
-
-  list_init:
-    command: generate_init()
-
-  l_res_K100:
-    command: run_K(list_init, I(K = 100))
-
-  l_res_K10:
-    command: run_K(list_init, I(K = 10))
-
-  l_res_K5:
-    command: run_K(list_init, I(K = 5))
-
-  l_res_K1:
-    command: run_K(list_init, I(K = 1))
-
-  figures/map_theo_K100.pdf:
-    command: plot_map(l_res_K100, list_init, I(val_K = 100))
-    plot: wide
-
-  figures/map_theo_K10.pdf:
-    command: plot_map(l_res_K10, list_init, I(val_K = 10))
-    plot: wide
-
-  figures/map_theo_K5.pdf:
-    command: plot_map(l_res_K5, list_init, I(val_K = 5))
-    plot: wide
-
-  figures/map_theo_K1.pdf:
-    command: plot_map(l_res_K1, list_init, I(val_K = 1))
-    plot: wide
-
-  figures/mean_ce_theo_K100.pdf:
-    command: plot_mean_param(l_res_K100, list_init)
-    plot: wide
-
-  figures/mean_ce_theo_K10.pdf:
-    command: plot_mean_param(l_res_K10, list_init)
-    plot: wide
-
-  figures/mean_ce_theo_K5.pdf:
-    command: plot_mean_param(l_res_K5, list_init)
-    plot: wide
-
-  figures/mean_ce_theo_K1.pdf:
-    command: plot_mean_param(l_res_K1, list_init)
-    plot: wide
-
-  data_range_K100:
-    command: generate_data_sp_ranges(l_res_K100)
-
-  figures/range_theo_K100.pdf:
-    command: plot_range(data_range_K100)
-    plot: wide
-
-  data_range_K10:
-    command: generate_data_sp_ranges(l_res_K10)
-
-  figures/range_theo_K10.pdf:
-    command: plot_range(data_range_K10)
-    plot: wide
-
-  data_range_K5:
-    command: generate_data_sp_ranges(l_res_K5)
-
-  figures/range_theo_K5.pdf:
-    command: plot_range(data_range_K5)
-    plot: wide
-
-  data_range_K1:
-    command: generate_data_sp_ranges(l_res_K1)
-
-  figures/range_theo_K1.pdf:
-    command: plot_range(data_range_K1)
-    plot: wide
 
 ## Plant simuls
 
@@ -430,14 +304,6 @@ targets:
     command: figure_lma_climate(leaf_traits)
     plot: wide
 
-  figures/vessel_climate.pdf:
-    command: plot_vessel_clim(zanne_clim)
-    plot: wide
-
-  figures/wood_density_climate.pdf:
-    command: plot_wood_density_clim(chave_clim)
-    plot: wide
-
   param_slope_P:
     command: param_B_kl_climate_P(leaf_traits)
 
@@ -451,49 +317,19 @@ targets:
                           "data/wright_2004_locations.csv",
                           AridityIndex)
 
-  zanne_clim:
-    command: get_climate_niche(zanne, worldclim)
-    packages:
-      - parallel
-      - rgbif
-      - dismo
-
-  chave_clim:
-    command: get_climate_niche(chave, worldclim)
-    packages:
-      - parallel
-      - rgbif
-      - dismo
-
-  zanne:
-    packages: xlsx
-    command: process_zanne_2010("download/zanne-2010.xls")
-
   olson:
     packages: xlsx
     command: process_olson_2010("download/olson-2014.xls")
-
-  chave:
-    packages: xlsx
-    command: process_chave_2009("download/chave-2009.xls")
 
   AridityIndex:
     command: download_aridity_index()
     packages: raster
 
 
-  worldclim:
-    command: getData(I('worldclim'), var = I('bio'), res = 2.5, path=I("download"))
-    packages: raster
-
   download/wright-2004.xls:
     download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
 
-  download/zanne-2010.xls:
-    download: "https://datadryad.org/bitstream/handle/10255/dryad.1139/GlobalVesselAnatomyDatabase.xls?sequence=1"
 
   download/olson-2014.xls:
     download: "http://api.onlinelibrary.wiley.com/asset/v1/doi/10.1111%2Fele.12302/asset/supinfo%2Fele12302-sup-0001-AppendixS1.xls?l=j6%2BNsqLlmq%2FUmTwPXEFuIHuWIDkoh16bdSPkBsbx1JqrIriGYfLAO23oVGh0yhC%2B91BwN0ZWzMJL%0Amf%2BX2bFUKS64r5EDpuQ9"
 
-  download/chave-2009.xls:
-    download: "http://datadryad.org/bitstream/handle/10255/dryad.235/GlobalWoodDensityDatabase.xls?sequence=1"

@@ -35,7 +35,7 @@ make install
 ```
 
 
-### TODO
+### Done
 
 - implement new parametrisation to include aditional effect along
   climatic gradients
@@ -55,4 +55,6 @@ make install
    with higher dark leaf respiration per area for higher Narea. But
    need to compare with Prentice et al. (2014).
 
-4. Frost gradients affect survival but short vessel size allow for an adaptation to lower temperature in term of survival but with a carbon cost.
+### TODO
+
+1. Implement physiologicla FvC model for Leaf N and water stress
