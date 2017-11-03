@@ -461,16 +461,6 @@ require(plant)
         AA[i] <- 2 * plant:::trapezium(D, assimilation_FvCB(
                                     k_I * I * E[i], Vcmax, vpd, alpha, theta, lf6))
       }
-      if(all(diff(AA) < 1E-8)) {
-        # line fitting will fail if all have are zero, or potentially same value
-        ret <- c(last(AA), 0)
-        names(ret) <- c("p1","p2", "p3")
-      } else {
-        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data.frame(E = E, AA = AA),
-                   start = list(p1 = 120, p2 = 400, p3 = 0.9),
-                   lower=c(10,2, 0.2), upper=c(200,800, 1), algorithm = "port")
-        ret <- coef(fit)
-      }
         return(data.frame(E = E, AA = AA))
     }
 
@@ -505,13 +495,14 @@ lines(E, coef(fit)[["p1"]]*E/(coef(fit)[["p2"]]+E), col = "red", lwd = 2)
 # http://www.sciencedirect.com/science/article/pii/S002251938080004X
 fit <- nls(AA ~ p1 *(1-exp(-p2* E/p1)), data_a,
            start = list(p1 = 120, p2 = 1000), algorithm = "port")
+
 lines(E, coef(fit)[["p1"]]*(1-exp(-E*coef(fit)[["p2"]]/coef(fit)[["p1"]])),
       col = "green", lwd = 2)
 # see http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2435.2009.01630.x/epdf
 # non-rectangular hyperbola
 fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data_a,
-           start = list(p1 = 120, p2 = 400, p3 = 0.9),
-           lower=c(10,2, 0.2), upper=c(200,800, 1), algorithm = "port")
+           start = list(p1 = 170, p2 = 600, p3 = 0.9))
+
 lines(E, (coef(fit)[["p1"]] +coef(fit)[["p2"]]*E -
           sqrt((coef(fit)[["p1"]]+coef(fit)[["p2"]]*E)^2-
                4*coef(fit)[["p3"]]*coef(fit)[["p2"]]*E*coef(fit)[["p1"]]))/
@@ -524,7 +515,183 @@ legend(x = 0.2, y = max(data_a$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, 
 }
 
 
-## plot_photosyn_annual_FvC(vpd = 0, alpha = 0.3, theta = 0.7)
+plot_FvCB_param_narea <- function(vpd = 0,
+                                    B_lf1= 31.62 *1000^0.801,
+                                # HTTP://DOI.WILEY.COM/10.1111/GCB.12870 CONVERSION OF NARE IN G M-2
+                                    B_lf2=0.7,
+                                    B_lf3=0.3,
+                                    B_lf4=21000,
+                                    B_lf5=0.801, # http://doi.wiley.com/10.1111/gcb.12870
+                                    B_lf6=1.67,
+                                    k_I=0.5,
+                                    latitude=0.0){
+require(plantecophys)
+require(plant)
 
-## to change in C++ code function assimilation_leaf in ff16_strategy.cpp and default param
+    assimilation_FvCB <- function(I, V, vpd, alpha, theta, lf6) {
+      df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
+                          VPD = vpd,
+                          Vcmax  = V,
+                          Jmax  = V*lf6,
+                          alpha = alpha,
+                          theta = theta,
+                          gsmodel = "BBLeuning") # Jmax ~1.67 Vcmax in Medlyn et al. 20
+      return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
+    }
+
+    ## Photosynthesis  [mol CO2 / m2 / yr]
+    approximate_annual_assimilation <- function(narea, latitude, vpd) {
+        E <- seq(0, 1, by=0.02)
+        ## Only integrate over half year, as solar path is symmetrical
+        D <- seq(0, 365/2, length.out = 10000)
+        I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+        Vcmax <- B_lf1 * (narea) ^  B_lf5
+        theta <- B_lf2
+        alpha <- B_lf3
+        lf6   <- B_lf6
+        AA <- NA * E
+        for (i in seq_len(length(E))) {
+          AA[i] <- 2 * plant:::trapezium(D, assimilation_FvCB(
+                                      k_I * I * E[i], Vcmax, vpd, alpha, theta, lf6))
+        }
+          return(data.frame(E = E, AA = AA))
+    }
+
+
+v_narea <-  seq(2e-3, 8e-3, length.out = 10)
+data_coef <- matrix(NA, nrow = 10, ncol = 5)
+rownames(data_coef) <- 1:10
+for (i in 1:10){
+  data_a<- approximate_annual_assimilation(narea = v_narea[i], latitude, vpd)
+  fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data_a,
+             start = list(p1 = 300, p2 = 600, p3 = 0.7))
+
+  data_coef[i, 1:3] <- coef(fit)
+  data_coef[i, 4] <-  B_lf1 * (v_narea[i]) ^  B_lf5
+  data_coef[i, 5] <-  v_narea[i]
+}
+colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
+data_coef <- data.frame(data_coef)
+par(mfrow = c(2,2))
+plot(p1~narea, data_coef, type = "l")
+plot(p2~narea, data_coef, type = "l")
+plot(p3~narea, data_coef, type = "l")
+plot(Vcmax~narea, data_coef, type = "l")
+
+}
+
+
+## Compare FF16 and FF16FvCB
+
+f <- function(x, pl) {
+  env <- fixed_environment(x)
+  pl$compute_vars_phys(env)
+  pl$internals$height_dt
+}
+
+derivs <- function(t, y, plant, env) {
+ plant$ode_state <- y
+ plant$compute_vars_phys(env)
+ list(plant$ode_rates)
+}
+
+compare_strategy_growth<- function(){
+require(plant)
+tt <- seq(0, 50, length.out=101)
+env <- fixed_environment(1.0)
+
+p <- scm_base_parameters("FF16")
+s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s2 <- strategy(trait_matrix(3e-3,"narea"), p)
+s3 <- strategy(trait_matrix(9e-3,"narea"), p)
+pl1 <- FF16_PlantPlus(s1)
+pl2 <- FF16_PlantPlus(s2)
+pl3 <- FF16_PlantPlus(s3)
+
+y01 <- setNames(pl1$ode_state, pl1$ode_names)
+yy1 <- deSolve::lsoda(y01, tt, derivs, pl1, env=env)
+y02 <- setNames(pl2$ode_state, pl2$ode_names)
+yy2 <- deSolve::lsoda(y02, tt, derivs, pl2, env=env)
+y03 <- setNames(pl3$ode_state, pl3$ode_names)
+yy3 <- deSolve::lsoda(y03, tt, derivs, pl3, env=env)
+plot(height ~ time, yy1, type="l", ylim = c(0, 18))
+lines(yy2[, "time"], yy2[, "height"], lty = 2)
+lines(yy3[, "time"], yy3[, "height"], lty = 3)
+
+
+pF <- scm_base_parameters("FF16FvCB")
+
+sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
+sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
+sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
+plF1 <- FF16FvCB_PlantPlus(sF1)
+plF2 <- FF16FvCB_PlantPlus(sF2)
+plF3 <- FF16FvCB_PlantPlus(sF3)
+
+yF01 <- setNames(plF1$ode_state, plF1$ode_names)
+yyF1 <- deSolve::lsoda(yF01, tt, derivs, plF1, env=env)
+yF02 <- setNames(plF2$ode_state, plF2$ode_names)
+yyF2 <- deSolve::lsoda(yF02, tt, derivs, plF2, env=env)
+yF03 <- setNames(plF3$ode_state, plF3$ode_names)
+yyF3 <- deSolve::lsoda(yF03, tt, derivs, plF3, env=env)
+lines(height ~ time, yyF1, type="l", lty = 1, col = "red")
+lines(height ~ time, yyF2, type="l", lty = 2, col = "red")
+lines(height ~ time, yyF3, type="l", lty = 3, col = "red")
+legend("bottomright",
+       c("Narea = 1e-3", "Narea = 3e-3", "Narea = 9e-3", "FF16", "FF16FvCB"),
+       lty=c(1,2,3,1,1), col=c(rep("black", 3), "red", "black"), bty="n")
+
+}
+
+
+compare_strategy_lcp<- function(){
+require(plant)
+
+p <- scm_base_parameters("FF16")
+s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s2 <- strategy(trait_matrix(3e-3,"narea"), p)
+s3 <- strategy(trait_matrix(9e-3,"narea"), p)
+pl1 <- FF16_PlantPlus(s1)
+pl2 <- FF16_PlantPlus(s2)
+pl3 <- FF16_PlantPlus(s3)
+
+openness <- seq(0, 1, length.out=51)
+
+lcp1 <- lcp_whole_plant(pl1)
+lcp2 <- lcp_whole_plant(pl2)
+lcp3 <- lcp_whole_plant(pl3)
+
+x <- c(lcp1, openness[openness > lcp1])
+plot(x, sapply(x, f, pl1), type="l", xlim=c(0, 1),
+     las=1, xlab="Canopy openness", ylab="Height growth rate (m / yr)")
+points(lcp1, 0.0, pch=19)
+x <- c(lcp2, openness[openness > lcp2])
+lines(x, sapply(x, f, pl2), lty = 2)
+points(lcp2, 0.0, pch=19)
+x <- c(lcp3, openness[openness > lcp3])
+lines(x, sapply(x, f, pl3), lty = 3)
+points(lcp3, 0.0, pch=19)
+
+
+
+
+pF <- scm_base_parameters("FF16FvCB")
+
+sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
+sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
+sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
+plF1 <- FF16FvCB_PlantPlus(sF1)
+plF2 <- FF16FvCB_PlantPlus(sF2)
+plF3 <- FF16FvCB_PlantPlus(sF3)
+
+lcpF1 <- lcp_whole_plant(plF1)
+
+
+## TODO
+## look at Narea effect on growth and lcp
+
+## look at patch dynamcis for two different N value
+
+}
+
 

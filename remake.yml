@@ -114,6 +114,10 @@ targets:
     command: plot_water_LeafN()
     plot: square
 
+  figures/FvC_FF16_FF16FvCB_Growth.pdf:
+    command: compare_strategy_growth()
+    plot: square
+
   figures/FvC_stomatal_BBLeuning.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
     plot: wide
@@ -273,6 +277,12 @@ targets:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
     check: exists
     cleanup_level: purge
+
+  assembly_FvCB_lma_single_narea_lma:
+    command: run_assembly_FvCB_narea_lma(disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
 
 # Data sources and figures for traits patterns  ###################################################
 

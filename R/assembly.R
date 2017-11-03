@@ -128,6 +128,16 @@ mclapply(vec_site_prod,
          mc.cores = 7)
 }
 
+run_assembly_vpd_list<- function(vec_vpd,FUN = run_assembly_FvCB_narea_lma,
+                             disturbance_mean_interval=10, data_param = NA) {
+require(parallel)
+mclapply(vec_site_prod,
+         FUN,
+         disturbance_mean_interval = disturbance_mean_interval,
+         data_param = data_param,
+         mc.cores = 7)
+}
+
 
 run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
@@ -163,6 +173,26 @@ assembler_run(obj_m0, 20)
 run_assembly_narea_lma<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+
+  bounds_narea <- viable_fitness(bounds(narea=c(1E-5, 1E2)), p, x = 0.01)
+  bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+
+# now pass in the bounds -- previously we just passed in infinite bounds
+  sys0 <- community(p, rbind(bounds_narea, bounds_lma),
+                   fitness_approximate_control=list(type="gp"))
+
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+
+assembler_run(obj_m0, 20)
+
+}
+
+
+run_assembly_FvCB_narea_lma<- function(vpd=0.0, disturbance_mean_interval=10, ...) {
+  p <- trait_gradients_FvCB_parameters(vpd=vpd)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
 
@@ -231,6 +261,35 @@ trait_gradients_base_parameters <- function(...) {
   p$strategy_default$a_f2 <- 0
   p
 }
+
+
+##' Hopefully sensible set of parameters for use with the EBT.  Turns
+##' accuracy down a bunch, makes it noisy, sets up the
+##' hyperparameterisation that we most often use.
+##' @title Sensible, fast (ish) EBT parameters
+##' @authorDaniel Falster
+##' @export
+trait_gradients_FvCB_parameters <- function(...) {
+  #plant_log_console()
+  ctrl <- equilibrium_verbose(fast_control())
+  ctrl$schedule_eps <- 0.001
+  ctrl$equilibrium_eps <- 1e-5
+
+  ctrl$equilibrium_nsteps  <- 80
+  ctrl$equilibrium_solver_name <- "iteration"
+  ## ctrl$equilibrium_solver_name <- "hybrid"
+                                 #"hybrid" # in default this is "iteration"
+  ctrl$equilibrium_verbose <-  TRUE
+
+  FF16_FvCB_trait_gradient_hyperpar <- make_FF16FvCB_hyperpar(...)
+  p <- FF16FvCB_Parameters(patch_area=1.0, control=ctrl,
+                   hyperpar=FF16_FvCB_trait_gradient_hyperpar)
+      # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
+  p
+}
+
 
 ##' Hopefully sensible set of parameters for use with the EBT.  Turns
 ##' accuracy down a bunch, makes it noisy, sets up the
