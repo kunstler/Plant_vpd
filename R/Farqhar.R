@@ -583,20 +583,16 @@ plot(Vcmax~narea, data_coef, type = "l")
 
 ## Compare FF16 and FF16FvCB
 
-f <- function(x, pl) {
-  env <- fixed_environment(x)
-  pl$compute_vars_phys(env)
-  pl$internals$height_dt
-}
 
+
+compare_strategy_growth<- function(){
+require(plant)
 derivs <- function(t, y, plant, env) {
  plant$ode_state <- y
  plant$compute_vars_phys(env)
  list(plant$ode_rates)
 }
 
-compare_strategy_growth<- function(){
-require(plant)
 tt <- seq(0, 50, length.out=101)
 env <- fixed_environment(1.0)
 
@@ -646,6 +642,11 @@ legend("bottomright",
 
 compare_strategy_lcp<- function(){
 require(plant)
+f <- function(x, pl) {
+  env <- fixed_environment(x)
+  pl$compute_vars_phys(env)
+  pl$internals$height_dt
+}
 
 p <- scm_base_parameters("FF16")
 s1 <- strategy(trait_matrix(1e-3,"narea"), p)
@@ -662,7 +663,7 @@ lcp2 <- lcp_whole_plant(pl2)
 lcp3 <- lcp_whole_plant(pl3)
 
 x <- c(lcp1, openness[openness > lcp1])
-plot(x, sapply(x, f, pl1), type="l", xlim=c(0, 1),
+plot(x, sapply(x, f, pl1), type="l", xlim=c(0, 1), ylim = c(0, 0.86),
      las=1, xlab="Canopy openness", ylab="Height growth rate (m / yr)")
 points(lcp1, 0.0, pch=19)
 x <- c(lcp2, openness[openness > lcp2])
@@ -685,13 +686,121 @@ plF2 <- FF16FvCB_PlantPlus(sF2)
 plF3 <- FF16FvCB_PlantPlus(sF3)
 
 lcpF1 <- lcp_whole_plant(plF1)
+lcpF2 <- lcp_whole_plant(plF2)
+lcpF3 <- lcp_whole_plant(plF3)
 
-
-## TODO
-## look at Narea effect on growth and lcp
-
-## look at patch dynamcis for two different N value
-
+x <- c(lcpF1, openness[openness > lcpF1])
+lines(x, sapply(x, f, plF1), col = 'red')
+points(lcpF1, 0.0, pch=19, col = "red")
+x <- c(lcpF2, openness[openness > lcpF2])
+lines(x, sapply(x, f, plF2), lty = 2, col = 'red')
+points(lcpF2, 0.0, pch=19, col = "red")
+x <- c(lcpF3, openness[openness > lcpF3])
+lines(x, sapply(x, f, plF3), lty = 3, col = 'red')
+points(lcpF3, 0.0, pch=19, col = "red")
 }
 
 
+## TODO
+
+## look at patch dynamcis for two different N value
+
+compare_strategy_patch<- function(){
+require(plant)
+p0 <- scm_base_parameters("FF16")
+p0$control$equilibrium_nsteps <- 30
+p0$control$equilibrium_solver_name <- "hybrid"
+p0$disturbance_mean_interval <- 30.0
+
+## First, with a single species:
+p <- expand_parameters(trait_matrix(c(3e-3, 5e-3, 9e-3), "narea"), p0, FALSE)
+
+
+p_eq <- equilibrium_seed_rain(p)
+
+## Then collect the patch-level dynamics:
+data <- run_scm_collect(p_eq)
+
+tt <- data$time
+h1 <- data$species[[1]]["height", , ]
+h2 <- data$species[[2]]["height", , ]
+h3 <- data$species[[3]]["height", , ]
+
+cols <- c("#e41a1c", "#377eb8", "#4daf4a")
+
+## Relativise the log densities onto (-4, max)
+d1 <- data$species[[1]]["log_density", , ]
+d2 <- data$species[[2]]["log_density", , ]
+d3 <- data$species[[3]]["log_density", , ]
+rel <- function(x, xmin) {
+  x[x < xmin] <- xmin
+  xmax <- max(x, na.rm=TRUE)
+  (x - xmin) / (xmax - xmin)
+}
+
+
+
+rd1 <- rel(d1, -4)
+rd2 <- rel(d2, -4)
+rd3 <- rel(d3, -4)
+
+n <- length(tt)
+x1 <- matrix(rep(tt, ncol(h1)), nrow(h1))
+x2 <- matrix(rep(tt, ncol(h2)), nrow(h2))
+x3 <- matrix(rep(tt, ncol(h3)), nrow(h3))
+col1 <- matrix(make_transparent(cols[[1]], rd1), nrow(d1))
+col2 <- matrix(make_transparent(cols[[2]], rd2), nrow(d2))
+col3 <- matrix(make_transparent(cols[[3]], rd3), nrow(d3))
+par(mfrow = c(1,2))
+plot(NA, xlim=range(tt),
+     las=1, xlab="Time (years)", ylab="Cohort height (m)",
+     ylim = range(h1,h2,h3, na.rm = TRUE))
+segments(x1[-1, ], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
+segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
+segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
+
+## FvCB
+pF0 <- scm_base_parameters("FF16FvCB")
+pF0$control$equilibrium_nsteps <- 30
+pF0$control$equilibrium_solver_name <- "hybrid"
+pF0$disturbance_mean_interval <- 30.0
+
+## First, with a single species:
+pF <- expand_parameters(trait_matrix(c(3e-3, 5e-3, 9e-3), "narea"), pF0, FALSE)
+
+pF_eq <- equilibrium_seed_rain(pF)
+
+## Then collect the patch-level dynamics:
+dataF <- run_scm_collect(pF_eq)
+
+tt <- dataF$time
+h1 <- dataF$species[[1]]["height", , ]
+h2 <- dataF$species[[2]]["height", , ]
+h3 <- dataF$species[[3]]["height", , ]
+
+cols <- c("#e41a1c", "#377eb8", "#4daf4a")
+
+## Relativise the log densities onto (-4, max)
+d1 <- dataF$species[[1]]["log_density", , ]
+d2 <- dataF$species[[2]]["log_density", , ]
+d3 <- dataF$species[[3]]["log_density", , ]
+
+rd1 <- rel(d1, -4)
+rd2 <- rel(d2, -4)
+rd3 <- rel(d3, -4)
+n <- length(tt)
+x1 <- matrix(rep(tt, ncol(h1)), nrow(h1))
+x2 <- matrix(rep(tt, ncol(h2)), nrow(h2))
+x3 <- matrix(rep(tt, ncol(h3)), nrow(h3))
+col1 <- matrix(make_transparent(cols[[1]], rd1), nrow(d1))
+col2 <- matrix(make_transparent(cols[[2]], rd2), nrow(d2))
+col3 <- matrix(make_transparent(cols[[3]], rd3), nrow(d3))
+plot(NA, xlim=range(tt),
+     las=1, xlab="Time (years)", ylab="Cohort height (m)",
+     ylim = range(h1,h2,h3, na.rm = TRUE))
+segments(x1[-1,], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
+segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
+segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
+
+
+}
