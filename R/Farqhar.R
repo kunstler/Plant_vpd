@@ -585,7 +585,7 @@ plot(Vcmax~narea, data_coef, type = "l")
 
 
 
-compare_strategy_growth<- function(){
+compare_strategy_growth<- function(light = 1.0, ymax = 19){
 require(plant)
 derivs <- function(t, y, plant, env) {
  plant$ode_state <- y
@@ -594,10 +594,10 @@ derivs <- function(t, y, plant, env) {
 }
 
 tt <- seq(0, 50, length.out=101)
-env <- fixed_environment(1.0)
+env <- fixed_environment(light)
 
 p <- scm_base_parameters("FF16")
-s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s1 <- strategy(trait_matrix(2e-3,"narea"), p)
 s2 <- strategy(trait_matrix(3e-3,"narea"), p)
 s3 <- strategy(trait_matrix(9e-3,"narea"), p)
 pl1 <- FF16_PlantPlus(s1)
@@ -610,14 +610,14 @@ y02 <- setNames(pl2$ode_state, pl2$ode_names)
 yy2 <- deSolve::lsoda(y02, tt, derivs, pl2, env=env)
 y03 <- setNames(pl3$ode_state, pl3$ode_names)
 yy3 <- deSolve::lsoda(y03, tt, derivs, pl3, env=env)
-plot(height ~ time, yy1, type="l", ylim = c(0, 18))
+plot(height ~ time, yy1, type="l", ylim = c(0, ymax), main = paste("light level", light))
 lines(yy2[, "time"], yy2[, "height"], lty = 2)
 lines(yy3[, "time"], yy3[, "height"], lty = 3)
 
 
 pF <- scm_base_parameters("FF16FvCB")
 
-sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
+sF1 <- strategy(trait_matrix(2e-3,"narea"), pF)
 sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
 sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
 plF1 <- FF16FvCB_PlantPlus(sF1)
@@ -634,22 +634,105 @@ lines(height ~ time, yyF1, type="l", lty = 1, col = "red")
 lines(height ~ time, yyF2, type="l", lty = 2, col = "red")
 lines(height ~ time, yyF3, type="l", lty = 3, col = "red")
 legend("bottomright",
-       c("Narea = 1e-3", "Narea = 3e-3", "Narea = 9e-3", "FF16", "FF16FvCB"),
+       c("Narea = 2e-3", "Narea = 3e-3", "Narea = 9e-3", "FF16", "FF16FvCB"),
        lty=c(1,2,3,1,1), col=c(rep("black", 3), "red", "black"), bty="n")
 
 }
 
 
-compare_strategy_lcp<- function(){
-require(plant)
-f <- function(x, pl) {
+f_g<- function(x, pl) {
   env <- fixed_environment(x)
   pl$compute_vars_phys(env)
   pl$internals$height_dt
 }
 
+
+compare_strategy_light_growth<- function(){
+require(plant)
+openness <- seq(0, 1, length.out=101)
+
+
 p <- scm_base_parameters("FF16")
-s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s1 <- strategy(trait_matrix(2e-3,"narea"), p)
+s2 <- strategy(trait_matrix(3e-3,"narea"), p)
+s3 <- strategy(trait_matrix(9e-3,"narea"), p)
+pl1 <- FF16_PlantPlus(s1)
+pl2 <- FF16_PlantPlus(s2)
+pl3 <- FF16_PlantPlus(s3)
+
+plot(openness, sapply(openness, f_g, pl1), type="l", xlim=c(0, 1),
+     las=1, xlab="Canopy openness", ylab="Height growth rate (m / yr)",
+     ylim = c(0, 1.4))
+lines(openness, sapply(openness, f_g, pl2), lty = 2)
+lines(openness, sapply(openness, f_g, pl3), lty = 3)
+
+
+pF <- scm_base_parameters("FF16FvCB")
+
+sF1 <- strategy(trait_matrix(2e-3,"narea"), pF)
+sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
+sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
+plF1 <- FF16FvCB_PlantPlus(sF1)
+plF2 <- FF16FvCB_PlantPlus(sF2)
+plF3 <- FF16FvCB_PlantPlus(sF3)
+
+lines(openness, sapply(openness, f_g, plF1), lty = 1, col = "red")
+lines(openness, sapply(openness, f_g, plF2), lty = 2, col = "red")
+lines(openness, sapply(openness, f_g, plF3), lty = 3, col = "red")
+legend("topleft",
+       c("Narea = 2e-3", "Narea = 3e-3", "Narea = 9e-3", "FF16", "FF16FvCB"),
+       lty=c(1,2,3,1,1), col=c(rep("black", 3), "red", "black"), bty="n")
+
+}
+
+
+compare_strategy_growth_narea<- function(){
+require(plant)
+
+f1 <- function(n, lights){
+  p <- scm_base_parameters("FF16")
+  s <- strategy(trait_matrix(n,"narea"), p)
+  pl <- FF16_PlantPlus(s)
+  pl$height <- 0.5
+  sapply(lights, f_g, pl)
+}
+
+f2<- function(n, lights){
+  p <- scm_base_parameters("FF16FvCB")
+  s <- strategy(trait_matrix(n,"narea"), p)
+  pl <- FF16FvCB_PlantPlus(s)
+  pl$height <- 0.5
+  sapply(lights, f_g, pl)
+}
+
+v_narea <- 10^seq(log10(1e-4),log10(5e-2), length.out = 50)
+v_g <- t(sapply(v_narea, f1, light = c(0.25, 1.0)))
+v_g_F <- t(sapply(v_narea, f2, light = c(0.25, 1.0)))
+
+plot(v_narea, v_g[, 2], type="l", ylim = range(v_g, v_g_F),
+     las=1, xlab="Nitrogen per area", ylab="Height growth rate", log = "x")
+lines(v_narea, v_g[, 1], lty = 2)
+lines(v_narea, v_g_F[, 2], col = "red")
+lines(v_narea, v_g_F[, 1], col = "red", lty = 2)
+}
+
+
+
+
+# much less accurate than what is normaly done in Plant but just while lcp_whole_plant doesn't work ...
+lcp_georges <- function(pl){
+  openness <- seq(0, 1, length.out=501)
+  v <- sapply(openness, f_g, pl)
+  lcp <- mean(openness[c(max(which(v < 1e-10)), min(which(v > 1e-10)))])
+  return(lcp)
+}
+
+
+compare_strategy_lcp<- function(){
+require(plant)
+
+p <- scm_base_parameters("FF16")
+s1 <- strategy(trait_matrix(2e-3,"narea"), p)
 s2 <- strategy(trait_matrix(3e-3,"narea"), p)
 s3 <- strategy(trait_matrix(9e-3,"narea"), p)
 pl1 <- FF16_PlantPlus(s1)
@@ -658,24 +741,22 @@ pl3 <- FF16_PlantPlus(s3)
 
 openness <- seq(0, 1, length.out=51)
 
-lcp1 <- lcp_whole_plant(pl1)
-lcp2 <- lcp_whole_plant(pl2)
-lcp3 <- lcp_whole_plant(pl3)
+lcp1 <- lcp_georges(pl1)
+lcp2 <- lcp_georges(pl2)
+lcp3 <- lcp_georges(pl3)
 
 x <- c(lcp1, openness[openness > lcp1])
-plot(x, sapply(x, f, pl1), type="l", xlim=c(0, 1), ylim = c(0, 0.86),
+plot(x, sapply(x, f_g, pl1), type="l", xlim=c(0, 1), ylim = c(0, 1.5),
      las=1, xlab="Canopy openness", ylab="Height growth rate (m / yr)")
 points(lcp1, 0.0, pch=19)
 x <- c(lcp2, openness[openness > lcp2])
-lines(x, sapply(x, f, pl2), lty = 2)
+lines(x, sapply(x, f_g, pl2), lty = 2)
 points(lcp2, 0.0, pch=19)
 x <- c(lcp3, openness[openness > lcp3])
-lines(x, sapply(x, f, pl3), lty = 3)
+lines(x, sapply(x, f_g, pl3), lty = 3)
 points(lcp3, 0.0, pch=19)
 
-
-
-
+## FF16FvCB
 pF <- scm_base_parameters("FF16FvCB")
 
 sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
@@ -685,23 +766,54 @@ plF1 <- FF16FvCB_PlantPlus(sF1)
 plF2 <- FF16FvCB_PlantPlus(sF2)
 plF3 <- FF16FvCB_PlantPlus(sF3)
 
-lcpF1 <- lcp_whole_plant(plF1)
-lcpF2 <- lcp_whole_plant(plF2)
-lcpF3 <- lcp_whole_plant(plF3)
+lcpF1 <- lcp_georges(plF1)
+lcpF2 <- lcp_georges(plF2)
+lcpF3 <- lcp_georges(plF3)
 
 x <- c(lcpF1, openness[openness > lcpF1])
-lines(x, sapply(x, f, plF1), col = 'red')
+lines(x, sapply(x, f_g, plF1), col = 'red')
 points(lcpF1, 0.0, pch=19, col = "red")
 x <- c(lcpF2, openness[openness > lcpF2])
-lines(x, sapply(x, f, plF2), lty = 2, col = 'red')
+lines(x, sapply(x, f_g, plF2), lty = 2, col = 'red')
 points(lcpF2, 0.0, pch=19, col = "red")
 x <- c(lcpF3, openness[openness > lcpF3])
-lines(x, sapply(x, f, plF3), lty = 3, col = 'red')
+lines(x, sapply(x, f_g, plF3), lty = 3, col = 'red')
 points(lcpF3, 0.0, pch=19, col = "red")
 }
 
 
-## TODO
+## lcp in function of Narea
+compare_strategy_lcp_narea<- function(){
+require(plant)
+
+f1 <- function(n){
+  p <- scm_base_parameters("FF16")
+  s <- strategy(trait_matrix(n,"narea"), p)
+  pl <- FF16_PlantPlus(s)
+  pl$height <- 0.5
+  lcp_georges(pl)
+}
+
+f2<- function(n){
+  p <- scm_base_parameters("FF16FvCB")
+  s <- strategy(trait_matrix(n,"narea"), p)
+  pl <- FF16FvCB_PlantPlus(s)
+  pl$height <- 0.5
+  lcp_georges(pl)
+}
+
+v_narea <- 10^seq(log10(1e-4),log10(1e-1), length.out = 50)
+v_lcp <- sapply(v_narea, f1)
+v_lcp_F <- sapply(v_narea, f2)
+
+plot(v_narea, v_lcp, type="l", ylim = c(0, 1),
+     las=1, xlab="Nitrogen per area", ylab="WP LCP",
+     log = "x")
+lines(v_narea, v_lcp_F, col = "red")
+}
+
+
+
 
 ## look at patch dynamcis for two different N value
 
@@ -801,6 +913,5 @@ plot(NA, xlim=range(tt),
 segments(x1[-1,], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
 segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
-
-
+legend("right", legend = c("Narea = 3e-3", "Narea = 5e-3", "Narea = 9e-3"), lty=1, col = cols, bty="n")
 }

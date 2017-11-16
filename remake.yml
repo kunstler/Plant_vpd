@@ -118,6 +118,10 @@ targets:
     command: compare_strategy_growth()
     plot: square
 
+  figures/FvC_FF16_FF16FvCB_Growth_Light.pdf:
+    command: compare_strategy_light_growth()
+    plot: square
+
   figures/FvC_stomatal_BBLeuning.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
     plot: wide
