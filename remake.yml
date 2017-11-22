@@ -99,6 +99,12 @@ targets:
 ## Plant simuls
 
 #### plots of physological models
+  figures/GROWTH_FF16_FvCB_Narea.pdf:
+    command: plot_lma_shade_tradeoff()
+    plot: square
+
+
+
   figures/tradeoff_shade_light.pdf:
     command: plot_lma_shade_tradeoff()
     plot: square
@@ -120,6 +126,14 @@ targets:
 
   figures/FvC_FF16_FF16FvCB_Growth_Light.pdf:
     command: compare_strategy_light_growth()
+    plot: square
+
+  figures/FvC_FF16_FF16FvCB_LCP_Narea.pdf:
+    command: compare_strategy_lcp_narea()
+    plot: square
+
+  figures/FvC_FF16_FF16FvCB_Growth_Narea.pdf:
+    command: compare_strategy_growth_narea()
     plot: square
 
   figures/FvC_stomatal_BBLeuning.pdf:
@@ -161,6 +175,15 @@ targets:
   figures/Annual_Photo_FvC_narea_vpd3.pdf:
     command: plot_photosyn_annual_FvC_Narea(I(vpd = 3))
     plot: wide
+
+  figures/Param_FvC_Vcmax_Jmax.pdf:
+    command: compare_fit_Vcmax_Jmax()
+    plot: wide
+
+  figures/Param_FvC_Narea_Vcmax.pdf:
+    command: compare_fit_Narea_Vcmax()
+    plot: wide
+
 
 
 #### plots of community assembly
@@ -331,10 +354,6 @@ targets:
                           "data/wright_2004_locations.csv",
                           AridityIndex)
 
-  olson:
-    packages: xlsx
-    command: process_olson_2010("download/olson-2014.xls")
-
   AridityIndex:
     command: download_aridity_index()
     packages: raster
@@ -343,7 +362,4 @@ targets:
   download/wright-2004.xls:
     download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
 
-
-  download/olson-2014.xls:
-    download: "http://api.onlinelibrary.wiley.com/asset/v1/doi/10.1111%2Fele.12302/asset/supinfo%2Fele12302-sup-0001-AppendixS1.xls?l=j6%2BNsqLlmq%2FUmTwPXEFuIHuWIDkoh16bdSPkBsbx1JqrIriGYfLAO23oVGh0yhC%2B91BwN0ZWzMJL%0Amf%2BX2bFUKS64r5EDpuQ9"
 

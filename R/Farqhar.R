@@ -1,30 +1,5 @@
 #Look at use of FvC model with plantecophys in Plant
 
-# Default param for FvC for forest tree ??
-# In plantecophys  alpha = 0.24, theta = 0.85, Jmax = 100, Vcmax = 50
-# in Medlyn et al. 2002 alpha = 0.3 theta 0.9
-# In Plant theta = 0.5 alpha is not on the same unite (mol of CO2 per mol of photon wherease in FvC in mol electron per mol photon) = 0.04 (conversion see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP 4*0.04 = 0.16 but we also probably need to correct for leaf absorbance 0.8 in Medlyn et al. 2002)
-# Sterck et al. 2011 theta = 0.5 alpha = 0.25 (not exactly the same alpha ...)
-# Valladares et al. 1997 tropicla shrub theta between 0.51 and 0.8 and alpha (in mol CO2) between 0.048 and 0.066
-# In TROLL Marechau & Chave Ecol. Monogr. in press alpha = 0.075*4 = 0.3 and theta = 0.7 based on von Caemmerer 2000
-
-# In von  Caemmerer 2000 the non rectangular hyperbola light response curve have a initial slope $\alpha_1 \times \PHI_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\PHI_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
-
-# LINK Vcmax and Jmax (according to Medlyn et al. 2002 Jmax = 1.67 Vcmax)?
-# in Walker, A. P. et al. 2014. The relationship of leaf photosynthetic traits - Vcmax and Jmax - to leaf nitrogen, leaf phosphorus, and specific leaf area: a meta-analysis and modeling study. - Ecology and Evolution 4: 3218–3235. It is a power function exp(1.01)*V^0.89 in Kattge et al. 2011 exp(1.669)*V^0.75, in Wullschleger exp(1.425)*V^0.837
-
-#Vcmax vs Narea
-# Sakschewski et al. 2014 Vcmax = 31.62*Narea^0.801
-# Or Vcmax and Jmax functiuon of N, P and LMA see Domingues, T. F. et al. 2010. Co-limitation of photosynthetic capacity by nitrogen and phosphorus in West Africa woodlands: Nutrients constraints on photosynthesis in African woodlands. - Plant, Cell & Environment 33: 959–980.
-#
-
-## V <- 5:200
-## plot(V, V*1.67, type = "l", xlab = "Vcmax", ylab = "Jmax")
-## lines(V, exp(1.01)*V^0.89, lty = 2)
-## lines(V, exp(1.669)*V^0.75, lty = 3)
-## lines(V, exp(1.425)*V^0.837, lty = 3)
-
-
 
 ##############################
 ### LOOK AT CONDUCTANCE MODEL
@@ -514,6 +489,9 @@ legend(x = 0.2, y = max(data_a$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, 
        bty = "n", cex = 0.75)
 }
 
+NonRectHyperbola <- function(p, E){
+(p[1] +p[2]*E - sqrt((p[1]+p[2]*E)^2-4*p[3]*p[2]*E*p[1]))/(2*p[3])
+}
 
 plot_FvCB_param_narea <- function(vpd = 0,
                                     B_lf1= 31.62 *1000^0.801,
@@ -527,7 +505,6 @@ plot_FvCB_param_narea <- function(vpd = 0,
                                     latitude=0.0){
 require(plantecophys)
 require(plant)
-
     assimilation_FvCB <- function(I, V, vpd, alpha, theta, lf6) {
       df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
                           VPD = vpd,
@@ -538,6 +515,12 @@ require(plant)
                           gsmodel = "BBLeuning") # Jmax ~1.67 Vcmax in Medlyn et al. 20
       return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
     }
+
+
+
+
+
+
 
     ## Photosynthesis  [mol CO2 / m2 / yr]
     approximate_annual_assimilation <- function(narea, latitude, vpd) {
@@ -557,26 +540,119 @@ require(plant)
           return(data.frame(E = E, AA = AA))
     }
 
+N_seq <-  50
+v_narea <- seq(1e-4,1e-1, length.out = N_seq)
+v_vpd <- seq(0, 6, length.out = N_seq)
+data_coef <- array(NA, dim = c(N_seq, N_seq, 3))
+data_coef1 <- data_coef2 <- data_coef3 <- data_coef
+    browser()
 
-v_narea <-  seq(2e-3, 8e-3, length.out = 10)
-data_coef <- matrix(NA, nrow = 10, ncol = 5)
-rownames(data_coef) <- 1:10
-for (i in 1:10){
-  data_a<- approximate_annual_assimilation(narea = v_narea[i], latitude, vpd)
-  fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3), data_a,
-             start = list(p1 = 300, p2 = 600, p3 = 0.7))
+for (i in 1:N_seq){
+  for (j in 1:N_seq){
+    print(i)
+    print(v_narea[i])
+    print(j)
+    print(v_vpd[j])
+    data_a <- approximate_annual_assimilation(v_narea[i], latitude, vpd = v_vpd[j])
+      tryCatch({
+      library(nls2)
+          print("nls2")
+        fitc <- nls2(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                     data = data_a,
+                    algorithm = "brute-force",
+                   start = expand.grid(p1 = seq(15, 6000, length.out = 30),
+                                      p2 = 700,
+                                      p3 = c(0.675)))
+        print(coef(fitc))
+        print("nls")
+        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                   data = data_a,
+                   start = coef(fitc))
+        data_coef[i, j, ] <- coef(fit)
+        }, error=function(e){})
 
-  data_coef[i, 1:3] <- coef(fit)
-  data_coef[i, 4] <-  B_lf1 * (v_narea[i]) ^  B_lf5
-  data_coef[i, 5] <-  v_narea[i]
+      tryCatch({
+        print("nls lin")
+        cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
+                1686197.21765355, 44.4400837954403)
+        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                   data = data_a,
+                   start = list(p1 = max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
+                                      cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
+                                p2 = 700,
+                                p3 = 0.7))
+        data_coef1[i, j, ] <- coef(fit)
+        }, error=function(e){})
+
+      tryCatch({
+      library(nlrmt)
+        cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
+                1686197.21765355, 44.4400837954403)
+      fitxb <-     nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                 data = data_a,
+                 start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
+                                    cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
+                              p2 = 700,
+                              p3 = 0.7),
+                 lower = 0.1)
+
+      data_coef2[i, j, ] <- fitxb$coefficients
+      }, error=function(e){})
+
+      tryCatch({
+      library(nlrmt)
+      fit <- wrapnls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                     data = data_a,
+                      start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
+                                               cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
+                                   p2 = 700,
+                                   p3 = 0.7),
+                     lower = 0.1)
+
+      data_coef3[i, j, ] <- coef(fit)
+      }, error=function(e){})
+## par(mfrow = c(1, 2))
+##       E <- seq(0, 1, length.out = 100)
+##       plot(data_a$E, data_a$AA)
+##       lines(E,NonRectHyperbola(data_coef2[i,j, 1:3], E))
+##       lines(E,NonRectHyperbola(data_coef[i,j, 1:3], E), col = "red")
+##       lines(E,NonRectHyperbola(data_coef1[i,j, 1:3], E), col = "green")
+##       lines(E,NonRectHyperbola(data_coef3[i,j, 1:3], E), col = "blue")
+
+##     Vcmax <- B_lf1 * (v_narea[i]) ^  B_lf5
+##     theta <- B_lf2
+##     alpha <- B_lf3
+##     lf6   <- B_lf6
+
+##     plot(0:1500, assimilation_FvCB(I= 0:1500, V = Vcmax, vpd = v_vpd[j] , alpha, theta, lf6), type = "l")
+
+ }
 }
-colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
-data_coef <- data.frame(data_coef)
-par(mfrow = c(2,2))
-plot(p1~narea, data_coef, type = "l")
-plot(p2~narea, data_coef, type = "l")
-plot(p3~narea, data_coef, type = "l")
-plot(Vcmax~narea, data_coef, type = "l")
+
+## colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
+## data_coef <- data.frame(data_coef)
+
+## par(mfrow = c(2,2))
+## data_coef$narea <- v_narea
+## NN <-  data_coef$narea
+## plot(p1~narea, data_coef, type = "p")
+## lmpoly3 <- lm(p1 ~  narea +I(narea^2)+I(narea^3)+log(narea), data_coef)
+## cc <- coef(lmpoly3)
+## lines(NN, cc[1]+cc[2]*NN+ cc[3]*NN^2+
+##           cc[4]*NN^3+cc[5]*log(NN),
+##       col = "red")
+## plot(p2~narea, data_coef, type = "p")
+## lmpoly4 <- lm(p2 ~  narea +I(narea^2)+I(narea^3)+I(narea^4), data_coef[data_coef$narea > 0.005, ])
+## cc <- coef(lmpoly4)
+## lines(NN, cc[1]+cc[2]*NN+ cc[3]*NN^2+
+##           cc[4]*NN^3+cc[5]*NN^4,
+##       col = "red")
+## plot(p3~narea, data_coef, type = "p")
+## lmpoly4 <- lm(p3 ~  narea +I(narea^2)+I(narea^3)+I(narea^4), data_coef[data_coef$narea > 0.005, ])
+## cc <- coef(lmpoly4)
+## lines(NN, cc[1]+cc[2]*NN+ cc[3]*NN^2+
+##           cc[4]*NN^3+cc[5]*NN^4,
+##       col = "red")
 
 }
 
@@ -686,28 +762,34 @@ legend("topleft",
 }
 
 
-compare_strategy_growth_narea<- function(){
+compare_strategy_growth_narea<- function(n_length = 50){
 require(plant)
 
-f1 <- function(n, lights){
+f1 <- function(narea, lights){
+    browser()
   p <- scm_base_parameters("FF16")
-  s <- strategy(trait_matrix(n,"narea"), p)
+  s <- strategy(trait_matrix(narea,"narea"), p)
   pl <- FF16_PlantPlus(s)
   pl$height <- 0.5
   sapply(lights, f_g, pl)
 }
 
-f2<- function(n, lights){
+f2<- function(narea, lights){
+    print(narea)
+    browser()
   p <- scm_base_parameters("FF16FvCB")
-  s <- strategy(trait_matrix(n,"narea"), p)
+  s <- strategy(trait_matrix(narea,"narea"), p)
   pl <- FF16FvCB_PlantPlus(s)
   pl$height <- 0.5
   sapply(lights, f_g, pl)
 }
+f2b <- function(n, lights){
+tryCatch(f2(n, lights), error=function(err) NA)
+}
 
-v_narea <- 10^seq(log10(1e-4),log10(5e-2), length.out = 50)
-v_g <- t(sapply(v_narea, f1, light = c(0.25, 1.0)))
-v_g_F <- t(sapply(v_narea, f2, light = c(0.25, 1.0)))
+v_narea <- 10^seq(log10(1e-4),log10(1e-1), length.out = n_length)
+v_g <- t(sapply(v_narea, f1, lights = c(0.25, 1.0)))
+v_g_F <- t(sapply(v_narea, f2, lights = c(0.25, 1.0)))
 
 plot(v_narea, v_g[, 2], type="l", ylim = range(v_g, v_g_F),
      las=1, xlab="Nitrogen per area", ylab="Height growth rate", log = "x")
@@ -783,7 +865,7 @@ points(lcpF3, 0.0, pch=19, col = "red")
 
 
 ## lcp in function of Narea
-compare_strategy_lcp_narea<- function(){
+compare_strategy_lcp_narea<- function(n_length = 50){
 require(plant)
 
 f1 <- function(n){
@@ -801,10 +883,13 @@ f2<- function(n){
   pl$height <- 0.5
   lcp_georges(pl)
 }
+f2b <- function(n){
+tryCatch(f2(n), error=function(err) NA)
+}
 
-v_narea <- 10^seq(log10(1e-4),log10(1e-1), length.out = 50)
+v_narea <- 10^seq(log10(1e-4),log10(1e-1), length.out = n_length)
 v_lcp <- sapply(v_narea, f1)
-v_lcp_F <- sapply(v_narea, f2)
+v_lcp_F <- sapply(v_narea, f2b)
 
 plot(v_narea, v_lcp, type="l", ylim = c(0, 1),
      las=1, xlab="Nitrogen per area", ylab="WP LCP",
@@ -915,3 +1000,51 @@ segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
 legend("right", legend = c("Narea = 3e-3", "Narea = 5e-3", "Narea = 9e-3"), lty=1, col = cols, bty="n")
 }
+
+
+compare_fit_Narea_Vcmax <- function(){
+a1 <- c(1.99, 6.35, 5.4, 34.05, 4.61)
+b1 <- c(10.71, 25.88, 30.38, 9.71, 30.20)
+# when estimation use also Amax not only Vcmax
+a2 <- c(8.9, 4.19, 5.73, 6.32, 14.71)
+b2 <-  c(9.30, 26.19, 26.81, 18.15, 23.15)
+names(a1) <- names(b1) <- names(a2) <- names(b2) <-c("Tropical_Trees_Oxisols",
+                                                    "Tropical_Trees_NonOxisols",
+                                                     "Temperate_Trees",
+                                                     "Coniferous_Trees",
+                                                     "Shrubs")
+Narea <- seq(0.1, 10, length.out = 100)
+par(mfrow = c(1,2))
+plot(Narea, 31.62*Narea^0.801, type = "l", xlab = "Narea (g m-2)",
+     ylab = "Vcmax")
+lines(Narea, exp(3.712)*Narea^0.650, lty = 2)
+lines(Narea, 10^1.57*Narea^0.55, lty = 3)
+lines(Narea, mean(a1) + Narea*mean(b1), lty = 4 , col = 2)
+lines(Narea, mean(a2) + Narea*mean(b2), lty = 4 , col = 3)
+legend("topleft", legend = c("Sakschewski-TRY", "Walker2017",
+                             "Domingues2011", "Kattge2009_V_meanPFT",
+                             "Kattge2009_VA_meanPFT"),
+       lty = c(1:4,4), col = c(1,1,1,2,3))
+plot(Narea, 31.62*Narea^0.801, type = "l", lty = 0, xlab = "Narea (g m-2)",
+     ylab = "Vcmax")
+for (i in 1:5){
+    lines(Narea, a1[i] + Narea*b1[i], lty = 1 , col = i+1)
+    lines(Narea, a2[i] + Narea*b2[i], lty = 2 , col = i+1)
+}
+legend("topleft", legend = names(a1),
+       lty = 1, col = 2:6)
+}
+
+
+compare_fit_Vcmax_Jmax <-  function(){
+V <- 5:200
+plot(V, V*1.67, type = "l", xlab = "Vcmax", ylab = "Jmax")
+lines(V, exp(1.01)*V^0.89, lty = 2)
+lines(V, exp(1.669)*V^0.75, lty = 3)
+lines(V, exp(1.425)*V^0.837, lty = 4)
+legend("topleft", legend = c("Medlyn", "Walker", "Kattge", "Wullschleger"),
+       lty = 1:4)
+}
+
+
+
