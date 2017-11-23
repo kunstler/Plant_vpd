@@ -521,7 +521,7 @@ require(plant)
     approximate_annual_assimilation <- function(narea, latitude, vpd) {
         E <- seq(0, 1, by=0.02)
         ## Only integrate over half year, as solar path is symmetrical
-        D <- seq(0, 365/2, length.out = 10000)
+        D <- seq(0, 365/2, length.out = 1000)
         I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
         Vcmax <- B_lf1 * (narea) ^  B_lf5
         theta <- B_lf2
@@ -549,49 +549,83 @@ for (i in 1:N_seq){
     print(v_vpd[j])
     data_a <- approximate_annual_assimilation(v_narea[i], latitude, vpd = v_vpd[j])
 
-      tryCatch({
-        library(nls2)
-        print("nls2")
-        fitc <- nls2(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
-                     data = data_a,
-                    algorithm = "brute-force",
-                   start = expand.grid(p1 = seq(15, 6000, length.out = 30),
-                                      p2 = 700,
-                                      p3 = c(0.675)))
-        print(coef(fitc))
-        print("nls")
-        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
-                   data = data_a,
-                   start = coef(fitc))
-        data_coef[i, j, ] <- coef(fit)
-       rm(fit)
-        }, error=function(e){})
-
-      tryCatch({
-        print("nls lin")
-        cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
-                1686197.21765355, 44.4400837954403)
-        fitl <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
-                   data = data_a,
-                   start = list(p1 = max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
-                                      cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
-                                p2 = 700,
-                                p3 = 0.7))
-        data_coef1[i, j, ] <- coef(fitl)
-        rm(fitl)
-        }, error=function(e){})
+      ## tryCatch({
+      ##   library(nls2)
+      ##   print("nls2")
+      ##   fitc <- nls2(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+      ##                data = data_a,
+      ##               algorithm = "brute-force",
+      ##              start = expand.grid(p1 = seq(15, 6000, length.out = 30),
+      ##                                 p2 = 700,
+      ##                                 p3 = c(0.675)))
+      ##   print(coef(fitc))
+      ##   print("nls")
+      ##   fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+      ##              data = data_a,
+      ##              start = coef(fitc))
+      ##   data_coef[i, j, ] <- coef(fit)
+      ##  rm(fit)
+      ##   }, error=function(e){})
 
       tryCatch({
       library(nlmrt)
-        cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
-                1686197.21765355, 44.4400837954403)
+      cc1 <- structure(c(513.547999719175, 38093.7191268825, -716.287232507933,
+                         -48575.1225891841, 386.422692779626, 2130984.72290072, -54.6429164954545,
+                         669.299367197834, 18292.1352053528, -51475.6684927739),
+                       .Names = c("(Intercept)",
+                                  "narea", "vpd", "I(narea^2)", "I(vpd^2)", "I(narea^3)", "I(vpd^3)",
+                                  "narea:vpd", "I(narea^2):I(vpd^2)", "I(narea^3):I(vpd^3)"))
+      cc2 <-  structure(c(739.051054471652, -8846.77177798858, 91.7091583568918,
+                          192492.905150734, -51.6726920806978, -1050985.83649208, 5.35848166827654,
+                          -1203.76915712215, 2863.05191512097, -3663.8041746596), .Names = c("(Intercept)",
+                          "narea", "vpd", "I(narea^2)", "I(vpd^2)", "I(narea^3)", "I(vpd^3)",
+                          "narea:vpd", "I(narea^2):I(vpd^2)", "I(narea^3):I(vpd^3)"))
+      cc3 <-  structure(c(0.679440693818516, -8.59320840282072, 0.273835487995944,
+                        229.273355837566, -0.0654697985768786, -1413.20023111164, 0.00364498764478693,
+                        -4.13115790794391, 5.66930944427831, -0.879603899747944), .Names = c("(Intercept)",
+                        "narea", "vpd", "I(narea^2)", "I(vpd^2)", "I(narea^3)", "I(vpd^3)",
+                        "narea:vpd", "I(narea^2):I(vpd^2)", "I(narea^3):I(vpd^3)"))
+
+      fitx <- nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                           data = data_a,
+                           start = list(p1 = min(max(0.01, cc1[1]+
+                                                           cc1[2]*v_narea[i]+ cc1[3]*v_vpd[j]+
+                                                           cc1[4]*v_narea[i]^2+ cc1[5]*v_vpd[j]^2+
+                                                           cc1[6]*v_narea[i]^3+ cc1[7]*v_vpd[j]^3+
+                                                           cc1[8]*v_narea[i]*v_vpd[j]+
+                                                           cc1[9]*v_narea[i]^2*v_vpd[j]^2+
+                                                           cc1[10]*v_narea[i]^3*v_vpd[j]^3), 6999),
+                                        p2 = min(max(0.01, cc2[1]+
+                                                           cc2[2]*v_narea[i]+ cc2[3]*v_vpd[j]+
+                                                           cc2[4]*v_narea[i]^2+ cc2[5]*v_vpd[j]^2+
+                                                           cc2[6]*v_narea[i]^3+ cc2[7]*v_vpd[j]^3+
+                                                           cc2[8]*v_narea[i]*v_vpd[j]+
+                                                           cc2[9]*v_narea[i]^2*v_vpd[j]^2+
+                                                           cc2[10]*v_narea[i]^3*v_vpd[j]^3), 999),
+                                        p3 = min(max(0.01, cc3[1]+
+                                                           cc3[2]*v_narea[i]+ cc3[3]*v_vpd[j]+
+                                                           cc3[4]*v_narea[i]^2+ cc3[5]*v_vpd[j]^2+
+                                                           cc3[6]*v_narea[i]^3+ cc3[7]*v_vpd[j]^3+
+                                                           cc3[8]*v_narea[i]*v_vpd[j]+
+                                                           cc3[9]*v_narea[i]^2*v_vpd[j]^2+
+                                                           cc3[10]*v_narea[i]^3*v_vpd[j]^3), 0.99)),
+                           lower = 0.01,
+                           upper = c(7000, 1000, 1))
+      data_coef1[i, j, ] <- fitx$coefficients
+      rm(fitw)
+      }, error=function(e){})
+
+      tryCatch({
+      library(nlmrt)
+      cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
+              1686197.21765355, 44.4400837954403)
       fitxb <- nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
                            data = data_a,
-                           start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
-                                                     cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
+                           start = list(p1 = min(max(0.01, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
+                                                     cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])), 6999),
                                         p2 = 700,
                                         p3 = 0.7),
-                           lower = 0.1,
+                           lower = 0.01,
                            upper = c(7000, 1000, 1))
       data_coef2[i, j, ] <- fitxb$coefficients
       rm(fitxb)
@@ -599,47 +633,86 @@ for (i in 1:N_seq){
 
       tryCatch({
       library(nlmrt)
-      cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
-              1686197.21765355, 44.4400837954403)
-      fitw <- wrapnls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
-                     data = data_a,
-                      start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
-                                               cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
-                                   p2 = 700,
-                                   p3 = 0.7),
-                     lower = 0.1,
-                     upper = c(7000, 1000, 1))
-      data_coef3[i, j, ] <- coef(fitw)
+      fitxb2 <- nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                           data = data_a,
+                           start = list(p1 = 500,
+                                        p2 = 600,
+                                        p3 = 0.8),
+                           lower = 0.01,
+                           upper = c(7000, 1000, 1))
+      data_coef3[i, j, ] <- fitxb2$coefficients
       rm(fitw)
       }, error=function(e){})
 
-browser()
+      ## browser()
+      ## par(mfrow = c(1, 2))
+      ## E <- seq(0, 1, length.out = 100)
+      ## plot(data_a$E, data_a$AA, xlab = "light level in percentage", ylab = "Annual Photosynthesis")
+      ## lines(E,NonRectHyperbola(data_coef2[i,j, 1:3], E))
+      ## lines(E,NonRectHyperbola(data_coef[i,j, 1:3], E), col = "red")
+      ## lines(E,NonRectHyperbola(data_coef1[i,j, 1:3], E), col = "green")
+      ## lines(E,NonRectHyperbola(data_coef3[i,j, 1:3], E), col = "blue")
 
-      par(mfrow = c(1, 2))
-      E <- seq(0, 1, length.out = 100)
-      plot(data_a$E, data_a$AA)
-      lines(E,NonRectHyperbola(data_coef2[i,j, 1:3], E))
-      lines(E,NonRectHyperbola(data_coef[i,j, 1:3], E), col = "red")
-      lines(E,NonRectHyperbola(data_coef1[i,j, 1:3], E), col = "green")
-      lines(E,NonRectHyperbola(data_coef3[i,j, 1:3], E), col = "blue")
-
-    Vcmax <- B_lf1 * (v_narea[i]) ^  B_lf5
-    theta <- B_lf2
-    alpha <- B_lf3
-    lf6   <- B_lf6
-
-    plot(0:1500, assimilation_FvCB(I= 0:1500, V = Vcmax, vpd = v_vpd[j] , alpha, theta, lf6), type = "l")
+      ## Vcmax <- B_lf1 * (v_narea[i]) ^  B_lf5
+      ## theta <- B_lf2
+      ## alpha <- B_lf3
+      ## lf6   <- B_lf6
+      ## plot((0:15000)/10, assimilation_FvCB(I= (0:15000)/10, V = Vcmax, vpd = v_vpd[j] , alpha, theta, lf6),
+      ##      type = "l", xlab = "light in quantum", ylab = "Daily photosynthesis")
 
  }
 }
 
 browser()
-dim(data_coef2)
- par(mfrow = c(2,2))
-mat1 <- apply(data_coef[,,1], 2, rev)
- image(v_vpd, v_narea, t(mat1))
- image(data_coef[,,2])
- image(data_coef[,,3])
+df <- (data_coef2+data_coef3)/2
+#df <- data_coef3
+df_p<- data.frame(narea = rep(v_narea, N_seq),
+                 vpd = rep(v_vpd, each = N_seq),
+                 p1 = as.vector(df[,,1]),
+                 p2 = as.vector(df[,,2]),
+                 p3 = as.vector(df[,,3]))
+library(ggplot2)
+p1 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p1)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+p2 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p2)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+p3 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p3)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+
+lm_p1 <- lm(p1~narea*vpd+ I(narea^2) + I(vpd^2) + I(narea^2):I(vpd^2)+
+                I(narea^3) + I(vpd^3) + I(narea^3):I(vpd^3) , df_p)
+ppb1 <- ggplot(data.frame(obs = df_p$p1, pred = predict(lm_p1)), aes(obs, pred)) + geom_point()+
+        geom_abline(slope = 1, intercept = 0)
+df_p$p1_pred <- predict(lm_p1)
+pp1 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p1_pred)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+lm_p2 <- lm(p2~narea*vpd+ I(narea^2) + I(vpd^2) + I(narea^2):I(vpd^2)+
+                I(narea^3) + I(vpd^3) + I(narea^3):I(vpd^3), df_p)
+ppb2 <- ggplot(data.frame(obs = df_p$p2, pred = predict(lm_p2)), aes(obs, pred)) + geom_point()+
+    geom_abline(slope = 1, intercept = 0)
+df_p$p2_pred <- predict(lm_p2)
+pp2 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p2_pred)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+lm_p3 <- lm(p3~narea*vpd+ I(narea^2) + I(vpd^2) + I(narea^2):I(vpd^2)+
+                I(narea^3) + I(vpd^3) + I(narea^3):I(vpd^3), df_p)
+ppb3 <- ggplot(data.frame(obs = df_p$p3, pred = predict(lm_p3)), aes(obs, pred)) + geom_point()+
+    geom_abline(slope = 1, intercept = 0)
+df_p$p3_pred <- predict(lm_p3)
+pp3 <- ggplot(df_p, aes(narea, vpd)) +
+  geom_raster(aes(fill = p3_pred)) +
+  scale_fill_gradientn(colours = terrain.colors(10))
+
+multiplot(p1, p2, p3, pp1, pp2, pp3, ppb1, ppb2, ppb3,cols = 3)
+dput(coef(lm_p1))
+dput(coef(lm_p2))
+dput(coef(lm_p3))
+
+
 ## colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
 ## data_coef <- data.frame(data_coef)
 
