@@ -517,11 +517,6 @@ require(plant)
     }
 
 
-
-
-
-
-
     ## Photosynthesis  [mol CO2 / m2 / yr]
     approximate_annual_assimilation <- function(narea, latitude, vpd) {
         E <- seq(0, 1, by=0.02)
@@ -540,12 +535,11 @@ require(plant)
           return(data.frame(E = E, AA = AA))
     }
 
-N_seq <-  50
+N_seq <-  25
 v_narea <- seq(1e-4,1e-1, length.out = N_seq)
 v_vpd <- seq(0, 6, length.out = N_seq)
 data_coef <- array(NA, dim = c(N_seq, N_seq, 3))
 data_coef1 <- data_coef2 <- data_coef3 <- data_coef
-    browser()
 
 for (i in 1:N_seq){
   for (j in 1:N_seq){
@@ -554,9 +548,10 @@ for (i in 1:N_seq){
     print(j)
     print(v_vpd[j])
     data_a <- approximate_annual_assimilation(v_narea[i], latitude, vpd = v_vpd[j])
+
       tryCatch({
-      library(nls2)
-          print("nls2")
+        library(nls2)
+        print("nls2")
         fitc <- nls2(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
                      data = data_a,
                     algorithm = "brute-force",
@@ -569,66 +564,82 @@ for (i in 1:N_seq){
                    data = data_a,
                    start = coef(fitc))
         data_coef[i, j, ] <- coef(fit)
+       rm(fit)
         }, error=function(e){})
 
       tryCatch({
         print("nls lin")
         cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
                 1686197.21765355, 44.4400837954403)
-        fit <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+        fitl <- nls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
                    data = data_a,
                    start = list(p1 = max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
                                       cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
                                 p2 = 700,
                                 p3 = 0.7))
-        data_coef1[i, j, ] <- coef(fit)
+        data_coef1[i, j, ] <- coef(fitl)
+        rm(fitl)
         }, error=function(e){})
 
       tryCatch({
-      library(nlrmt)
+      library(nlmrt)
         cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
                 1686197.21765355, 44.4400837954403)
-      fitxb <-     nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
-                 data = data_a,
-                 start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
-                                    cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
-                              p2 = 700,
-                              p3 = 0.7),
-                 lower = 0.1)
-
+      fitxb <- nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+                           data = data_a,
+                           start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
+                                                     cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
+                                        p2 = 700,
+                                        p3 = 0.7),
+                           lower = 0.1,
+                           upper = c(7000, 1000, 1))
       data_coef2[i, j, ] <- fitxb$coefficients
+      rm(fitxb)
       }, error=function(e){})
 
       tryCatch({
-      library(nlrmt)
-      fit <- wrapnls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+      library(nlmrt)
+      cc <- c(387.451138727026, 55451.4186883312, -219943.812400099,
+              1686197.21765355, 44.4400837954403)
+      fitw <- wrapnls(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
                      data = data_a,
                       start = list(p1 =  max(1, cc[1]+cc[2]*v_narea[i]+ cc[3]*v_narea[i]^2+
                                                cc[4]*v_narea[i]^3+cc[5]*log(v_narea[i])),
                                    p2 = 700,
                                    p3 = 0.7),
-                     lower = 0.1)
-
-      data_coef3[i, j, ] <- coef(fit)
+                     lower = 0.1,
+                     upper = c(7000, 1000, 1))
+      data_coef3[i, j, ] <- coef(fitw)
+      rm(fitw)
       }, error=function(e){})
-## par(mfrow = c(1, 2))
-##       E <- seq(0, 1, length.out = 100)
-##       plot(data_a$E, data_a$AA)
-##       lines(E,NonRectHyperbola(data_coef2[i,j, 1:3], E))
-##       lines(E,NonRectHyperbola(data_coef[i,j, 1:3], E), col = "red")
-##       lines(E,NonRectHyperbola(data_coef1[i,j, 1:3], E), col = "green")
-##       lines(E,NonRectHyperbola(data_coef3[i,j, 1:3], E), col = "blue")
 
-##     Vcmax <- B_lf1 * (v_narea[i]) ^  B_lf5
-##     theta <- B_lf2
-##     alpha <- B_lf3
-##     lf6   <- B_lf6
+browser()
 
-##     plot(0:1500, assimilation_FvCB(I= 0:1500, V = Vcmax, vpd = v_vpd[j] , alpha, theta, lf6), type = "l")
+      par(mfrow = c(1, 2))
+      E <- seq(0, 1, length.out = 100)
+      plot(data_a$E, data_a$AA)
+      lines(E,NonRectHyperbola(data_coef2[i,j, 1:3], E))
+      lines(E,NonRectHyperbola(data_coef[i,j, 1:3], E), col = "red")
+      lines(E,NonRectHyperbola(data_coef1[i,j, 1:3], E), col = "green")
+      lines(E,NonRectHyperbola(data_coef3[i,j, 1:3], E), col = "blue")
+
+    Vcmax <- B_lf1 * (v_narea[i]) ^  B_lf5
+    theta <- B_lf2
+    alpha <- B_lf3
+    lf6   <- B_lf6
+
+    plot(0:1500, assimilation_FvCB(I= 0:1500, V = Vcmax, vpd = v_vpd[j] , alpha, theta, lf6), type = "l")
 
  }
 }
 
+browser()
+dim(data_coef2)
+ par(mfrow = c(2,2))
+mat1 <- apply(data_coef[,,1], 2, rev)
+ image(v_vpd, v_narea, t(mat1))
+ image(data_coef[,,2])
+ image(data_coef[,,3])
 ## colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
 ## data_coef <- data.frame(data_coef)
 
@@ -653,7 +664,6 @@ for (i in 1:N_seq){
 ## lines(NN, cc[1]+cc[2]*NN+ cc[3]*NN^2+
 ##           cc[4]*NN^3+cc[5]*NN^4,
 ##       col = "red")
-
 }
 
 
