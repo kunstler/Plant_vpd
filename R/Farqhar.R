@@ -521,7 +521,7 @@ require(plant)
     approximate_annual_assimilation <- function(narea, latitude, vpd) {
         E <- seq(0, 1, by=0.02)
         ## Only integrate over half year, as solar path is symmetrical
-        D <- seq(0, 365/2, length.out = 1000)
+        D <- seq(0, 365/2, length.out = 10000)
         I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
         Vcmax <- B_lf1 * (narea) ^  B_lf5
         theta <- B_lf2
@@ -535,7 +535,7 @@ require(plant)
           return(data.frame(E = E, AA = AA))
     }
 
-N_seq <-  25
+N_seq <-  75
 v_narea <- seq(1e-4,1e-1, length.out = N_seq)
 v_vpd <- seq(0, 6, length.out = N_seq)
 data_coef <- array(NA, dim = c(N_seq, N_seq, 3))
@@ -664,8 +664,7 @@ for (i in 1:N_seq){
 }
 
 browser()
-df <- (data_coef2+data_coef3)/2
-#df <- data_coef3
+df <- (data_coef1+data_coef3+ data_coef2)/2
 df_p<- data.frame(narea = rep(v_narea, N_seq),
                  vpd = rep(v_vpd, each = N_seq),
                  p1 = as.vector(df[,,1]),
@@ -708,9 +707,6 @@ pp3 <- ggplot(df_p, aes(narea, vpd)) +
   scale_fill_gradientn(colours = terrain.colors(10))
 
 multiplot(p1, p2, p3, pp1, pp2, pp3, ppb1, ppb2, ppb3,cols = 3)
-dput(coef(lm_p1))
-dput(coef(lm_p2))
-dput(coef(lm_p3))
 
 
 ## colnames(data_coef) <-  c("p1", "p2", "p3", "Vcmax", "narea")
@@ -849,7 +845,6 @@ compare_strategy_growth_narea<- function(n_length = 50){
 require(plant)
 
 f1 <- function(narea, lights){
-    browser()
   p <- scm_base_parameters("FF16")
   s <- strategy(trait_matrix(narea,"narea"), p)
   pl <- FF16_PlantPlus(s)
@@ -859,7 +854,6 @@ f1 <- function(narea, lights){
 
 f2<- function(narea, lights){
     print(narea)
-    browser()
   p <- scm_base_parameters("FF16FvCB")
   s <- strategy(trait_matrix(narea,"narea"), p)
   pl <- FF16FvCB_PlantPlus(s)
@@ -872,7 +866,7 @@ tryCatch(f2(n, lights), error=function(err) NA)
 
 v_narea <- 10^seq(log10(1e-4),log10(1e-1), length.out = n_length)
 v_g <- t(sapply(v_narea, f1, lights = c(0.25, 1.0)))
-v_g_F <- t(sapply(v_narea, f2, lights = c(0.25, 1.0)))
+v_g_F <- t(sapply(v_narea, f2b, lights = c(0.25, 1.0)))
 
 plot(v_narea, v_g[, 2], type="l", ylim = range(v_g, v_g_F),
      las=1, xlab="Nitrogen per area", ylab="Height growth rate", log = "x")

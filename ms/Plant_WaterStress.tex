@@ -516,23 +516,36 @@ forest trees? Here is a short list of existing parametrisation for the
 light response part:
 \begin{itemize}
 
-\item In plantecophys (ADD REF)  $\alpha = 0.24$ and $\theta = 0.85$
-\item In Medlyn et al. 2002 $\alpha = 0.3$ and $\theta = 0.9$
-\item In Plant $\theta = 0.5$ and $\alpha= 0.04$ is not on the same unite (mol of CO2 per mol of photon wherease in FvCB in mol electron per mol photon)  (conversion see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP $4*0.04 = 0.16$ but we also probably need to correct for leaf absorbance 0.8 in Medlyn et al. 2002)
-\item In Sterck et al. 2011 $\theta = 0.5$ and $\alpha = 0.25$ (not exactly the same alpha ...)
-\item  In Valladares et al. 1997 tropicla shrub $\theta$ between 0.51 and 0.8 and $\alpha$ (in mol CO2) between 0.048 and 0.066
-\item In TROLL Marechau \& Chave Ecol. Monogr. in press $\alpha = 0.075*4 = 0.3$ and $\theta = 0.7$ based on von Caemmerer 2000
+\item In plantecophys \citep{Duursma-2015}  $\alpha = 0.24$ and $\theta = 0.85$
 
-\item In von  Caemmerer 2000 the non rectangular hyperbola light response curve have an initial slope $\alpha_1 \times \PHI_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\PHI_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
+\item In \citet{Medlyn-2002} $\alpha = 0.3$ and $\theta = 0.9$
+
+\item In Plant $\theta = 0.5$ and $\alpha= 0.04$ is not on the same unite (mol of CO2 per mol of photon wherease in FvCB in mol electron per mol photon)  (conversion see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP $4*0.04 = 0.16$ but we also probably need to correct for leaf absorbance 0.8 in Medlyn et al. 2002)
+
+\item In \citet{Sterck-2011} $\theta = 0.5$ and $\alpha = 0.25$ (not exactly the same alpha ...)
+
+\item  In Valladares et al. 1997 tropicla shrub $\theta$ between 0.51 and 0.8 and $\alpha$ (in mol CO2) between 0.048 and 0.066
+
+\item In TROLL \citet{Marechaux-2017} $\alpha = 0.075*4 = 0.3$ and $\theta = 0.7$ based on von Caemmerer 2000
+
+\item In von Caemmerer 2000 the non rectangular hyperbola light response curve has an initial slope $\alpha_1 \times \PHI_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\PHI_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
+
 \end{itemize}
 
-#LINK Vcmax and Jmax
+I propose to use the parametrisation of \citet{Marechaux-2017}. NEED TO CHECK!!!
+
+
+\subsection{Parametrisation of $J_{max}$ \texit{vs.} $V_{cmax}$}
 The hypothesis of a coordination between Calvin-Benson cycle limited rate of assimilation and electron transport limited rate of assimilation, lead to the asumption of a correlation between Vcmax and Jmax. Different model to link them have been proposed.
-- according to Medlyn et al. 2002 Jmax = 1.67 Vcmax
+\begin{itemize}
+
+\item according to \citet{Medlyn-2002} Jmax = 1.67 Vcmax
 - in Walker, A. P. et al. 2014. The relationship of leaf photosynthetic traits - Vcmax and Jmax - to leaf nitrogen, leaf phosphorus, and specific leaf area: a meta-analysis and modeling study. - Ecology and Evolution 4: 3218–3235.
 It is a power function exp(1.01)*V^0.89
 - in Try data from Kattge et al. 2011 exp(1.669)*V^0.75,
 - in Wullschleger 1993 exp(1.425)*V^0.837
+\end{itemize}
+
 
 ADD Figure Jmax vs Vcmax
 
@@ -551,7 +564,14 @@ Vcmax = exp(3.712)*N^0.650
 - Domingues et al. 2011
 Vcmax = 10^1.57*N^0.55 # Appendix C Table A2
 
-ADD FIGURE Vcmax Narea
+The Figure \ref{fig:Narea_Vcmax} show the different parametrization.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Narea_Vcmax.pdf}
+\caption{\textbf{Different parametrization of teh link between $N_{area}$ and $V_{cmax}$.}
+\label{fig:Narea_Vcmax}}
+\end{figure}
 
 Other traits such as leaf P and SLA could also influence Vcmax (Domingues et al. 2010, Walker et al. 2014). SLA have little effect on the link between Vcmax and leaf N.  Leaf P have little direct effect on Vcmax but an important interaction with leaf N: at low leaf P the slope of Vcmax vs leaf N is shallow but at high leaf P thisslope is steep (see Walker et al. 2014).
 It is also possible to use an other apporach where both Vcmax and Jmax are function traits rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
