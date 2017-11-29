@@ -1,12 +1,6 @@
 #Look at use of FvC model with plantecophys in Plant
 
 
-##############################
-### LOOK AT CONDUCTANCE MODEL
-
-## BBOpti BallBerry BBLeuning but would be good to add one based on soil water potential as in Sperry or in Sterck
-
-
 ## Plot coupled photosynthesis model and stomatal conductance model
 plot_FvC_stomatal <- function(gs_type = "BBLeuning"){
 require(plantecophys)

@@ -129,12 +129,11 @@ mclapply(vec_site_prod,
 }
 
 run_assembly_vpd_list<- function(vec_vpd,FUN = run_assembly_FvCB_narea_lma,
-                             disturbance_mean_interval=10, data_param = NA) {
+                             disturbance_mean_interval=10) {
 require(parallel)
 mclapply(vec_vpd,
          FUN,
          disturbance_mean_interval = disturbance_mean_interval,
-         data_param = data_param,
          mc.cores = 1)
 }
 
@@ -211,9 +210,9 @@ assembler_run(obj_m0, 20)
 }
 
 
-run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10) {
+run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
 
-  p <- trait_gradients_elev_parameters( site_prod = site_prod)
+  p <- trait_gradients_elev_parameters(data_param = data_param, site_prod = site_prod)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -297,7 +296,8 @@ trait_gradients_FvCB_parameters <- function(...) {
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
-trait_gradients_elev_parameters<- function( B_kl1_2_log10 =  -0.21511828 *(2/0.6), ...) {
+trait_gradients_elev_parameters<- function(data_param, ...) {
+  #TODO CHANGE THE WAY THE param are provided
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.001
@@ -312,7 +312,7 @@ trait_gradients_elev_parameters<- function( B_kl1_2_log10 =  -0.21511828 *(2/0.6
                                 B_kl1_1_log10 = log10(0.4565855),
                                 B_kl1_2_log10 = B_kl1_2_log10,
                                 B_kl2_1 = 1.71,
-                                B_kl2_2 = 0 )
+                                B_kl2_2 = data_param[2, 'LMAelev'] *(2/0.6) )
     # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)

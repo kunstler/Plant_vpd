@@ -13,6 +13,20 @@ The following can be installed directly in R
 - loggr: `devtools::install_github("smbache/loggr")`
 - grader: `devtools::install_github("richfitz/grader")`
 
+For grail see https://github.com/traitecoevo/grail
+
+install https://nlopt.readthedocs.io/en/latest/
+
+on unbuntu `sudo apt-get install libnlopt-dev`
+
+```
+git clone https://github.com/traitecoevo/grail.git
+cd grail
+make install
+```
+- RcppAramadillo `install.packages("RcppArmadillo")`
+- digest `install.packages("digest")`
+
 
 These packages are installed from github:
 
@@ -29,7 +43,7 @@ make install
 2. plant.assembly
 
 ```
-git clone git@github.com:traitecoevo/plant.assembly.git
+git clone https://kunstler@github.com/traitecoevo/plant.assembly.git
 cd plant.assembly
 make install
 ```

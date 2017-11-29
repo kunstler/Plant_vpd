@@ -94,16 +94,23 @@ targets:
     - figures/Annual_Photo_FvC_vpd3.pdf
     - figures/Annual_Photo_FvC_narea_vpd0.pdf
     - figures/Annual_Photo_FvC_narea_vpd3.pdf
+    - figures/NRH_param.pdf
+    - figures/Param_FvC_Vcmax_Jmax.pdf
+    - figures/Param_FvC_Narea_Vcmax.pdf
 
+
+  figures_plant_FF16_FF16FvC:
+    depends:
+    - figures/FvC_FF16_FF16FvCB_Growth_Narea.pdf
+    - figures/FvC_FF16_FF16FvCB_LCP_Narea.pdf
+    - figures/FvC_FF16_FF16FvCB_Growth.pdf
+    - figures/FvC_FF16_FF16FvCB_Growth_Light.pdf
+    - figures/FvC_FF16_FF16FvCB_LCP.pdf
+    - figures/FvC_FF16_FF16FvCB_Patch.pdf
 
 ## Plant simuls
 
 #### plots of physological models
-  figures/GROWTH_FF16_FvCB_Narea.pdf:
-    command: plot_lma_shade_tradeoff()
-    plot: square
-
-
   figures/tradeoff_shade_light.pdf:
     command: plot_lma_shade_tradeoff()
     plot: square
@@ -270,6 +277,9 @@ targets:
     command: plot_cor_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
+
+## run community assembly
+
   list_assembly_lma_single:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
     check: exists
@@ -326,7 +336,7 @@ targets:
     cleanup_level: purge
 
   list_assembly_FvCB_lma_multi_narea_lma:
-    command: run_assembly_list(I(vec_site_prod = c(0.0, 3.0)), I( disturbance_mean_interval = 40))
+    command: run_assembly_vpd_list(I(vec_site_prod = c(0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)), I( disturbance_mean_interval = 40))
     check: exists
     cleanup_level: purge
 
