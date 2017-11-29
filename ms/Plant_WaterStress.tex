@@ -304,7 +304,7 @@ photosynthesis and water stress could lead to quantitative predictions
 about how water stress influence growth and how $N_{area}$ influences the response to water stress. I have started to explore this below.
 
 
-\subsection{Farquhar photosynthesis model and \plant\ photosynthesis model.}
+\subsection{Farquhar photosynthesis model and plant photosynthesis model.}
 
 The FvC model describe leaf photosynthesis is describe as the minimum
 of three potential rates $J_E$ the light limited rate, $J_C$ the CO2
@@ -506,7 +506,7 @@ The variation of the Leuning model with vpd seems to give rise to an annual mode
 \end{figure}
 
 
-So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Kattge-2009} or \citep{Sakschewski-2015}.
+So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Sakschewski-2015}.
 
 \subsection{Parametrisation of the FvCB}
 
@@ -528,61 +528,70 @@ light response part:
 
 \item In TROLL \citet{Marechaux-2017} $\alpha = 0.075*4 = 0.3$ and $\theta = 0.7$ based on von Caemmerer 2000
 
-\item In von Caemmerer 2000 the non rectangular hyperbola light response curve has an initial slope $\alpha_1 \times \PHI_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\PHI_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
+\item In von Caemmerer 2000 the non rectangular hyperbola light response curve has an initial slope $\alpha_1 \times \Phi_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\Phi_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
 
 \end{itemize}
 
-I propose to use the parametrisation of \citet{Marechaux-2017}. NEED TO CHECK!!!
+I propose to use the parametrisation of \citet{Marechaux-2017}.
 
 
-\subsection{Parametrisation of $J_{max}$ \texit{vs.} $V_{cmax}$}
+\subsection{Parametrisation of Jmax \textit{vs.} Vcmax}
+
 The hypothesis of a coordination between Calvin-Benson cycle limited rate of assimilation and electron transport limited rate of assimilation, lead to the asumption of a correlation between Vcmax and Jmax. Different model to link them have been proposed.
 \begin{itemize}
 
-\item according to \citet{Medlyn-2002} Jmax = 1.67 Vcmax
-- in Walker, A. P. et al. 2014. The relationship of leaf photosynthetic traits - Vcmax and Jmax - to leaf nitrogen, leaf phosphorus, and specific leaf area: a meta-analysis and modeling study. - Ecology and Evolution 4: 3218–3235.
-It is a power function exp(1.01)*V^0.89
-- in Try data from Kattge et al. 2011 exp(1.669)*V^0.75,
-- in Wullschleger 1993 exp(1.425)*V^0.837
+\item according to \citet{Medlyn-2002} $J_{max} = 1.67 \times  V_{cmax}$.
+
+\item In \citet{Walker-2014} the relationship is a power function of $V_{cmax}$ $J_{max} = exp(1.01) \times V_{cmax}^{0.89}$.
+
+\item In Try data from \citet{Kattge-2011} this is $J_{max} = exp(1.669) \times V_{cmax}^{0.75}$.
+
+\item In \citet{Wullschleger-1993} this is $J_{max} = exp(1.425) \times V_{cmax}^{0.837}$.
+
 \end{itemize}
 
+The Figure \ref{fig:Vcmax_Jmax} show the different parametrization.
 
-ADD Figure Jmax vs Vcmax
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Vcmax_Jmax.pdf}
+\caption{\textbf{Different parametrization of the link between $J_{max}$ and $V_{cmax}$.}
+\label{fig:Vcmax_Jmax}}
+\end{figure}
+
+I propose to use either \citet{Medlyn-2002} or \citet{Walker-2014}.
 
 The slope of Jmax vs Vcamx (in log log) affect the light level at which photosynthesis become RuBisCO limited. A shallower slope shift the light level to higher light value and a steeper slope to a lower light value. This will thus affect shade tolerance.
 
 The link between Vcmax and Jmax might however be more complexe and depend on the light level and leaf P. According to Walker et al. 2014 the effect of SLA and leaf P are however relatively small. So this is ok to use only Jmax in function of Vcmax.
 
-#Vcmax vs Narea
-Photosynthetic rate should scale positively with leaf Nitrogen (N) because of teh large amount of N invested in RuBisCO. Several relationship have been proposed to link Vcmax and leaf N.
-- Sakschewski et al. 2014 Vcmax = 31.62*Narea^0.801 but UNIT CONVERSION of g per m2 to kg per m2 *1000^0.801
-- ln(Vcmax) = 3.946 + 0.921 * log(N) + 0.121 * log(P) + 0.281*log(N)*log(P), Walker et al. 2014. To get a function of only P take the mean leaf P (in TRY mean leaf P per area is 0.104 g m-2, in Walker et al. 2014 data this is 0.135)
-- Kattge et al. 2009. Vcmax = a + b * N with different value per Biomes estimated either with Vcmax onl or also constrained by Amax.
-- Walker et al. 2017 explore several alternative model for Vcmax:a modificytion of Walker et al. is
-Vcmax = exp(3.712)*N^0.650
+\subsection{Parametrisation of Vcmax \textit{vs.} Narea}
 
-- Domingues et al. 2011
-Vcmax = 10^1.57*N^0.55 # Appendix C Table A2
+Photosynthetic rate should scale positively with leaf Nitrogen (N) because of teh large amount of N invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
+
+\begin{itemize}
+
+\item \citet{Sakschewski-2015} prposed that $V_{cmax} = 31.62 \times N_{area}^{0.801}$ (unit g per m2 need to be converted in kg per m2 as $*1000^{0.801}$.
+
+\item  \citet{Walker-2014} proposed that $ln(Vcmax) = 3.946 + 0.921 \times log(N) + 0.121 \times log(P) + 0.281 \times log(N) \times log(P)$ and explored other model that include also LMA. To get a function of only N this should be $V_{cmax} = exp(3.712) \times N^{0.650}$ see  \citet{Walker-2017}.
+
+\item In \citet{Kattge-2011} $V_{cmax} = a + b \times N_{area}$ with different value per biomes estimated either with $V_{cmax}$ only or also constrained by $A_{max}$.
+
+\item In \citet{Domingues-2010} several model based on N and P.  If we look only at the one based only o N this is: $V_{cmax} = 10^{1.57} \times N_{area}^{0.55}$ (Appendix C Table A2).
+
+\end{itemize}
 
 The Figure \ref{fig:Narea_Vcmax} show the different parametrization.
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/Param_FvC_Narea_Vcmax.pdf}
-\caption{\textbf{Different parametrization of teh link between $N_{area}$ and $V_{cmax}$.}
+\caption{\textbf{Different parametrization of the link between Narea and Vcmax.}
 \label{fig:Narea_Vcmax}}
 \end{figure}
 
-Other traits such as leaf P and SLA could also influence Vcmax (Domingues et al. 2010, Walker et al. 2014). SLA have little effect on the link between Vcmax and leaf N.  Leaf P have little direct effect on Vcmax but an important interaction with leaf N: at low leaf P the slope of Vcmax vs leaf N is shallow but at high leaf P thisslope is steep (see Walker et al. 2014).
+Other traits such as leaf P and SLA could also influence Vcmax \citep{Walker-2014,Domingues-2010}. LMA have little effect on the link between Vcmax and Narea.  Leaf P have little direct effect on Vcmax but an important interaction with Narea: at low leaf P the slope of Vcmax \textit{vs} Narea is shallow but at high leaf P this slope is steeper \citep{Walker-2014}.
 It is also possible to use an other apporach where both Vcmax and Jmax are function traits rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
-
-# References:
-Domingues, T. F. et al. 2010. Co-limitation of photosynthetic capacity by nitrogen and phosphorus in West Africa woodlands: Nutrients constraints on photosynthesis in African woodlands. - Plant, Cell \& Environment 33: 959–980.
-Kattge, J. et al. 2009. Quantifying photosynthetic capacity and its relationship to leaf nitrogen content for global-scale terrestrial biosphere models. - Global Change Biology 15: 976–991.
-Kattge, J. et al. 2011. TRY - a global database of plant traits. - Global Change Biology 17: 2905–2935.
-Sakschewski, B. et al. 2015. Leaf and stem economics spectra drive diversity of functional plant traits in a dynamic global vegetation model. - Global Change Biology 21: 2711–2725.
-Walker, A. P. et al. 2014. The relationship of leaf photosynthetic traits - Vcmax and Jmax - to leaf nitrogen, leaf phosphorus, and specific leaf area: a meta-analysis and modeling study. - Ecology and Evolution 4: 3218–3235.
-WULLSCHLEGER, S. D. 1993. Biochemical Limitations to Carbon Assimilation in C3 Plants—A Retrospective Analysis of the A/Ci Curves from 109 Species. - Journal of Experimental Botany 44: 907–920.
 
 
 
@@ -595,7 +604,8 @@ In the long-term it would be interesting to think about:
 
 \item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}).
 
-\item using stomatal model that is linked to the soil water potential (as in \citet{Spery-2016} or \citet{Sterck-2011})
+\item using stomatal model that is linked to the soil water potential (as in \citet{Sperry-2016} or 
+\citet{Sterck-2011})
 
 \item include a simple water budget to model tree competition for water
 

@@ -104,7 +104,6 @@ targets:
     plot: square
 
 
-
   figures/tradeoff_shade_light.pdf:
     command: plot_lma_shade_tradeoff()
     plot: square
@@ -120,6 +119,8 @@ targets:
     command: plot_water_LeafN()
     plot: square
 
+## compare FF16FvCB and FF16
+
   figures/FvC_FF16_FF16FvCB_Growth.pdf:
     command: compare_strategy_growth()
     plot: square
@@ -128,13 +129,27 @@ targets:
     command: compare_strategy_light_growth()
     plot: square
 
+  figures/FvC_FF16_FF16FvCB_Growth_Narea.pdf:
+    command: compare_strategy_growth_narea()
+    plot: square
+
+  figures/FvC_FF16_FF16FvCB_LCP.pdf:
+    command: compare_strategy_lcp()
+    plot: square
+
   figures/FvC_FF16_FF16FvCB_LCP_Narea.pdf:
     command: compare_strategy_lcp_narea()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_Growth_Narea.pdf:
-    command: compare_strategy_growth_narea()
+  figures/FvC_FF16_FF16FvCB_Patch.pdf:
+    command: compare_strategy_patch()
     plot: square
+
+
+# Parametrization of FvCB
+
+  figures/NRH_param.pdf:
+    command: plot_FvCB_param_narea()
 
   figures/FvC_stomatal_BBLeuning.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
@@ -302,6 +317,16 @@ targets:
 
   list_assembly_lma_multi_narea_lma:
     command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_FvCB_lma_single_narea_lma:
+    command: run_assembly_vpd_list(I(vec_vpd = c(0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0) ),  I(disturbance_mean_interval = 5))
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_FvCB_lma_multi_narea_lma:
+    command: run_assembly_list(I(vec_site_prod = c(0.0, 3.0)), I( disturbance_mean_interval = 40))
     check: exists
     cleanup_level: purge
 
