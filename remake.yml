@@ -107,6 +107,8 @@ targets:
     - figures/FvC_FF16_FF16FvCB_Growth_Light.pdf
     - figures/FvC_FF16_FF16FvCB_LCP.pdf
     - figures/FvC_FF16_FF16FvCB_Patch.pdf
+    - figures/plot_lcp_narea_vpd.pdf
+    - figures/plot_growth_narea_vpd.pdf
 
 ## Plant simuls
 
@@ -164,18 +166,6 @@ targets:
 
   figures/FvC_FF16_FF16FvCB_Patch.pdf:
     command: compare_strategy_patch()
-    plot: square
-
-  figures/FvC_FF16_FF16FvCB_Patch1.pdf:
-    command: compare_strategy_patch(I(v_narea = c(1e-3, 1e-3, 1e-3)))
-    plot: square
-
-  figures/FvC_FF16_FF16FvCB_Patch2.pdf:
-    command: compare_strategy_patch(I(v_narea = c(5e-3, 5e-3, 5e-3)))
-    plot: square
-
-  figures/FvC_FF16_FF16FvCB_Patch3.pdf:
-    command: compare_strategy_patch(I(v_narea = c(9e-3, 9e-3, 9e-3)))
     plot: square
 
 # Parametrization of FvCB

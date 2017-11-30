@@ -310,9 +310,9 @@ trait_gradients_elev_parameters<- function(data_param, ...) {
   FF16_trait_gradient_hyperpar <-
       make_FF16_trait_gradient_slope_elev_hyperpar(...,
                                 B_kl1_1_log10 = log10(0.4565855),
-                                B_kl1_2_log10 = B_kl1_2_log10,
+                                B_kl1_2_log10 = data_param[2, 'LMAelev'] *(2/0.6),
                                 B_kl2_1 = 1.71,
-                                B_kl2_2 = data_param[2, 'LMAelev'] *(2/0.6) )
+                                B_kl2_2 = 0 )
     # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
