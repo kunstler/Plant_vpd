@@ -168,6 +168,10 @@ targets:
     command: compare_strategy_patch()
     plot: square
 
+  figures/FvC_FF16_FF16FvCB_Patch__F.pdf:
+    command: compare_strategy_patch_Fecundity()
+    plot: square
+
 # Parametrization of FvCB
 
   figures/NRH_param.pdf:

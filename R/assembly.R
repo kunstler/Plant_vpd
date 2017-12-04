@@ -256,8 +256,8 @@ trait_gradients_base_parameters <- function(...) {
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
       # neutralise reproduction
-  p$strategy_default$a_f1 <- 0.5
-  p$strategy_default$a_f2 <- 0
+  ## p$strategy_default$a_f1 <- 0.5
+  ## p$strategy_default$a_f2 <- 0
   p
 }
 

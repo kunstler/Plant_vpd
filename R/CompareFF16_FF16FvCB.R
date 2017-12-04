@@ -1,4 +1,108 @@
 ## Compare FF16 and FF16FvCB
+
+## Compare FF16 and FF16FvCB
+compare_strategy_fecundity<- function(light = 1, ymax = 19){
+require(plant)
+derivs <- function(t, y, plant, env) {
+ plant$ode_state <- y
+ plant$compute_vars_phys(env)
+ list(plant$ode_rates)
+}
+
+tt <- seq(0, 100, length.out=101)
+env <- fixed_environment(light)
+
+p <- scm_base_parameters("FF16")
+
+s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s2 <- strategy(trait_matrix(3e-3,"narea"), p)
+s3 <- strategy(trait_matrix(9e-3,"narea"), p)
+pl1 <- FF16_PlantPlus(s1)
+pl2 <- FF16_PlantPlus(s2)
+pl3 <- FF16_PlantPlus(s3)
+
+y01 <- setNames(pl1$ode_state, pl1$ode_names)
+yy1 <- deSolve::lsoda(y01, tt, derivs, pl1, env=env)
+y02 <- setNames(pl2$ode_state, pl2$ode_names)
+yy2 <- deSolve::lsoda(y02, tt, derivs, pl2, env=env)
+y03 <- setNames(pl3$ode_state, pl3$ode_names)
+yy3 <- deSolve::lsoda(y03, tt, derivs, pl3, env=env)
+par(mfrow= c(2,2))
+plot(fecundity ~ time, yy1, type="l",
+     ylim = c(0, max( yy1[, "fecundity"],  yy2[, "fecundity"],  yy3[, "fecundity"])),
+     main = paste("light level", light))
+lines(yy2[, "time"], yy2[, "fecundity"], lty = 2)
+lines(yy3[, "time"], yy3[, "fecundity"], lty = 3)
+p <- scm_base_parameters("FF16")
+p$strategy_default$a_f1 <- 0.5
+p$strategy_default$a_f2 <- 0
+
+s1 <- strategy(trait_matrix(1e-3,"narea"), p)
+s2 <- strategy(trait_matrix(3e-3,"narea"), p)
+s3 <- strategy(trait_matrix(9e-3,"narea"), p)
+pl1 <- FF16_PlantPlus(s1)
+pl2 <- FF16_PlantPlus(s2)
+pl3 <- FF16_PlantPlus(s3)
+
+y01 <- setNames(pl1$ode_state, pl1$ode_names)
+yy1 <- deSolve::lsoda(y01, tt, derivs, pl1, env=env)
+y02 <- setNames(pl2$ode_state, pl2$ode_names)
+yy2 <- deSolve::lsoda(y02, tt, derivs, pl2, env=env)
+y03 <- setNames(pl3$ode_state, pl3$ode_names)
+yy3 <- deSolve::lsoda(y03, tt, derivs, pl3, env=env)
+plot(fecundity ~ time, yy1, type="l",
+     ylim = c(0, max( yy1[, "fecundity"],  yy2[, "fecundity"],  yy3[, "fecundity"])),
+     main = paste("light level", light))
+lines(yy2[, "time"], yy2[, "fecundity"], lty = 2)
+lines(yy3[, "time"], yy3[, "fecundity"], lty = 3)
+
+pF <- scm_base_parameters("FF16FvCB")
+
+sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
+sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
+sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
+plF1 <- FF16FvCB_PlantPlus(sF1)
+plF2 <- FF16FvCB_PlantPlus(sF2)
+plF3 <- FF16FvCB_PlantPlus(sF3)
+
+yF01 <- setNames(plF1$ode_state, plF1$ode_names)
+yyF1 <- deSolve::lsoda(yF01, tt, derivs, plF1, env=env)
+yF02 <- setNames(plF2$ode_state, plF2$ode_names)
+yyF2 <- deSolve::lsoda(yF02, tt, derivs, plF2, env=env)
+yF03 <- setNames(plF3$ode_state, plF3$ode_names)
+yyF3 <- deSolve::lsoda(yF03, tt, derivs, plF3, env=env)
+plot(fecundity ~ time, yyF1, type="l", lty = 1, col = "red",
+     ylim = c(0, max( yyF1[, "fecundity"],  yyF2[, "fecundity"],  yyF3[, "fecundity"])))
+lines(fecundity ~ time, yyF2, type="l", lty = 2, col = "red")
+lines(fecundity ~ time, yyF3, type="l", lty = 3, col = "red")
+
+pF <- scm_base_parameters("FF16FvCB")
+pF$strategy_default$a_f1 <- 0.5
+pF$strategy_default$a_f2 <- 0
+
+sF1 <- strategy(trait_matrix(1e-3,"narea"), pF)
+sF2 <- strategy(trait_matrix(3e-3,"narea"), pF)
+sF3 <- strategy(trait_matrix(9e-3,"narea"), pF)
+plF1 <- FF16FvCB_PlantPlus(sF1)
+plF2 <- FF16FvCB_PlantPlus(sF2)
+plF3 <- FF16FvCB_PlantPlus(sF3)
+
+yF01 <- setNames(plF1$ode_state, plF1$ode_names)
+yyF1 <- deSolve::lsoda(yF01, tt, derivs, plF1, env=env)
+yF02 <- setNames(plF2$ode_state, plF2$ode_names)
+yyF2 <- deSolve::lsoda(yF02, tt, derivs, plF2, env=env)
+yF03 <- setNames(plF3$ode_state, plF3$ode_names)
+yyF3 <- deSolve::lsoda(yF03, tt, derivs, plF3, env=env)
+plot(fecundity ~ time, yyF1, type="l", lty = 1, col = "red",
+     ylim = c(0, max( yyF1[, "fecundity"],  yyF2[, "fecundity"],  yyF3[, "fecundity"])))
+lines(fecundity ~ time, yyF2, type="l", lty = 2, col = "red")
+lines(fecundity ~ time, yyF3, type="l", lty = 3, col = "red")
+legend("bottomright",
+       c("Narea = 1e-3", "Narea = 3e-3", "Narea = 9e-3", "FF16", "FF16FvCB"),
+       lty=c(1,2,3,1,1), col=c(rep("black", 3), "red", "black"), bty="n")
+
+}
+
 compare_strategy_growth<- function(light = 1, ymax = 19){
 require(plant)
 derivs <- function(t, y, plant, env) {
@@ -513,35 +617,32 @@ rel <- function(x, xmin) {
   (x - xmin) / (xmax - xmin)
 }
 
+## p0 <-  scm_base_parameters("FF16")
 p0 <- trait_gradients_base_parameters(site_prod=0.3)
 p0$control <- ctrl
 p0$disturbance_mean_interval <- 30.0
 
+## p0$strategy_default$a_f1 <- 0.5
+## p0$strategy_default$a_f2 <- 0
+
+
 ## First, with three species:
 p <- expand_parameters(trait_matrix(v_narea, "narea"), p0, FALSE)
-
 p_eq <- equilibrium_seed_rain(p)
-
 ## Then collect the patch-level dynamics:
 data <- run_scm_collect(p_eq)
-
 tt <- data$time
 h1 <- data$species[[1]]["height", , ]
 h2 <- data$species[[2]]["height", , ]
 h3 <- data$species[[3]]["height", , ]
-
 cols <- c("#e41a1c", "#377eb8", "#4daf4a")
-
 ## Relativise the log densities onto (-4, max)
 d1 <- data$species[[1]]["log_density", , ]
 d2 <- data$species[[2]]["log_density", , ]
 d3 <- data$species[[3]]["log_density", , ]
-
-
 rd1 <- rel(d1, -4)
 rd2 <- rel(d2, -4)
 rd3 <- rel(d3, -4)
-
 n <- length(tt)
 x1 <- matrix(rep(tt, ncol(h1)), nrow(h1))
 x2 <- matrix(rep(tt, ncol(h2)), nrow(h2))
@@ -557,7 +658,25 @@ segments(x1[-1, ], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
 segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
 
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
 
+#
 p0 <- trait_gradients_base_parameters(site_prod=-0.3)
 p0$control <- ctrl
 p0$disturbance_mean_interval <- 30.0
@@ -574,6 +693,10 @@ tt <- data$time
 h1 <- data$species[[1]]["height", , ]
 h2 <- data$species[[2]]["height", , ]
 h3 <- data$species[[3]]["height", , ]
+
+h1 <- data$species[[1]]["seeds_survival_weighted", , ]
+h2 <- data$species[[2]]["seeds_survival_weighted", , ]
+h3 <- data$species[[3]]["seeds_survival_weighted", , ]
 
 cols <- c("#e41a1c", "#377eb8", "#4daf4a")
 
@@ -600,9 +723,25 @@ segments(x1[-1, ], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
 segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
 
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
 
 ## FvCB
-
 pF0 <- FF16FvCB_Parameters(hyperpar = make_FF16FvCB_hyperpar(vpd = 0))
 pF0$control <-  ctrl
 pF0$disturbance_mean_interval <- 30.0
@@ -637,6 +776,7 @@ x3 <- matrix(rep(tt, ncol(h3)), nrow(h3))
 col1 <- matrix(make_transparent(cols[[1]], rd1), nrow(d1))
 col2 <- matrix(make_transparent(cols[[2]], rd2), nrow(d2))
 col3 <- matrix(make_transparent(cols[[3]], rd3), nrow(d3))
+par(mfrow = C(1,2))
 plot(NA, xlim=range(tt),
      las=1, xlab="Time (years)", ylab="Cohort height (m)",
      ylim = range(h1,h2,h3, na.rm = TRUE), main = "FF16FvCB vpd = 0")
@@ -644,6 +784,24 @@ segments(x1[-1,], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
 segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
 
+data <-  dataF
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
 
 ## high
 pF0 <- FF16FvCB_Parameters(hyperpar = make_FF16FvCB_hyperpar(vpd = 3))
@@ -687,9 +845,160 @@ segments(x1[-1,], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
 segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
 segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
 
-
 legend("right", legend = c("Narea = 1e-3", "Narea = 5e-3", "Narea = 9e-3"), lty=1, col = cols, bty="n")
+data <-  dataF
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
+
+legend("right", legend = paste0("Narea = ", v_narea), lty=1, col = cols, bty="n")
+
 }
+
+
+
+compare_strategy_patch_Fecundity<- function(v_narea = c(1e-3, 2e-3, 5e-3)){
+require(plant)
+
+ctrl <- equilibrium_verbose()
+ctrl$equilibrium_solver_name <- "iteration"
+#ctrl$equilibrium_verbose <-  TRUE
+ctrl$equilibrium_nsteps <- 20
+
+rel <- function(x, xmin) {
+  x[x < xmin] <- xmin
+  xmax <- max(x, na.rm=TRUE)
+  (x - xmin) / (xmax - xmin)
+}
+
+p0 <- trait_gradients_base_parameters(site_prod=0.0)
+p0$control <- ctrl
+p0$disturbance_mean_interval <- 30.0
+## First, with three species:
+p <- expand_parameters(trait_matrix(v_narea, "narea"), p0, FALSE)
+p_eq <- equilibrium_seed_rain(p)
+## Then collect the patch-level dynamics:
+data <- run_scm_collect(p_eq)
+tt <- data$time
+h1 <- data$species[[1]]["height", , ]
+h2 <- data$species[[2]]["height", , ]
+h3 <- data$species[[3]]["height", , ]
+cols <- c("#e41a1c", "#377eb8", "#4daf4a")
+## Relativise the log densities onto (-4, max)
+d1 <- data$species[[1]]["log_density", , ]
+d2 <- data$species[[2]]["log_density", , ]
+d3 <- data$species[[3]]["log_density", , ]
+rd1 <- rel(d1, -17)
+rd2 <- rel(d2, -17)
+rd3 <- rel(d3, -17)
+n <- length(tt)
+x1 <- matrix(rep(tt, ncol(h1)), nrow(h1))
+x2 <- matrix(rep(tt, ncol(h2)), nrow(h2))
+x3 <- matrix(rep(tt, ncol(h3)), nrow(h3))
+col1 <- matrix(make_transparent(cols[[1]], rd1), nrow(d1))
+col2 <- matrix(make_transparent(cols[[2]], rd2), nrow(d2))
+col3 <- matrix(make_transparent(cols[[3]], rd3), nrow(d3))
+par(mfrow = c(2,2))
+plot(NA, xlim=range(tt),
+     las=1, xlab="Time (years)", ylab="Cohort height (m)",
+     ylim = range(h1,h2,h3, na.rm = TRUE), main = "prod = 0.3")
+segments(x1[-1, ], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
+segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
+segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
+
+# Fecundity neutralised
+
+p0 <- trait_gradients_base_parameters(site_prod=0.0)
+p0$control <- ctrl
+p0$disturbance_mean_interval <- 30.0
+p0$strategy_default$a_f1 <- 0.5
+p0$strategy_default$a_f2 <- 0
+
+## First, with three species:
+p <- expand_parameters(trait_matrix(v_narea, "narea"), p0, FALSE)
+
+p_eq <- equilibrium_seed_rain(p)
+
+## Then collect the patch-level dynamics:
+data <- run_scm_collect(p_eq)
+
+tt <- data$time
+h1 <- data$species[[1]]["height", , ]
+h2 <- data$species[[2]]["height", , ]
+h3 <- data$species[[3]]["height", , ]
+## Relativise the log densities onto (-4, max)
+d1 <- data$species[[1]]["log_density", , ]
+d2 <- data$species[[2]]["log_density", , ]
+d3 <- data$species[[3]]["log_density", , ]
+rd1 <- rel(d1, -4)
+rd2 <- rel(d2, -4)
+rd3 <- rel(d3, -4)
+n <- length(tt)
+x1 <- matrix(rep(tt, ncol(h1)), nrow(h1))
+x2 <- matrix(rep(tt, ncol(h2)), nrow(h2))
+x3 <- matrix(rep(tt, ncol(h3)), nrow(h3))
+col1 <- matrix(make_transparent(cols[[1]], rd1), nrow(d1))
+col2 <- matrix(make_transparent(cols[[2]], rd2), nrow(d2))
+col3 <- matrix(make_transparent(cols[[3]], rd3), nrow(d3))
+par(mfrow = c(1,2))
+plot(NA, xlim=range(tt),
+     las=1, xlab="Time (years)", ylab="Cohort height (m)",
+     ylim = range(h1,h2,h3, na.rm = TRUE), main = "prod = 0.3 Constant Fecundity")
+segments(x1[-1, ], h1[-1, ], x1[-n, ], h1[-n, ], col=col1[-n, ], lend="butt")
+segments(x2[-1, ], h2[-1, ], x2[-n, ], h2[-n, ], col=col2[-n, ], lend="butt")
+segments(x3[-1, ], h3[-1, ], x3[-n, ], h3[-n, ], col=col3[-n, ], lend="butt")
+# size structure
+height1 <- t(data$species[[1]]["height", , ])
+log_density1 <- t(data$species[[1]]["log_density", , ])
+density1 <- exp(log_density1)
+height2 <- t(data$species[[2]]["height", , ])
+log_density2 <- t(data$species[[2]]["log_density", , ])
+density2 <- exp(log_density2)
+height3 <- t(data$species[[3]]["height", , ])
+log_density3 <- t(data$species[[3]]["log_density", , ])
+density3 <- exp(log_density3)
+matplot(height1, density1, type="l", lty=1,
+        col= make_transparent( cols[1], 0.25),
+        ylim = c(1e-27, max(density, na.rm = TRUE)),
+        xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
+        log="y")
+matplot(height2, density2, type = "l", add = TRUE, col = make_transparent( cols[2], 0.25))
+matplot(height3, density3, type = "l", add = TRUE, col = make_transparent( cols[3], 0.25))
+
+legend("right", legend = paste0("Narea = ", v_narea), lty=1, col = cols, bty="n")
+}
+
 
 #####################################################
 #####################################################
