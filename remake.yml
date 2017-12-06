@@ -20,6 +20,9 @@ plot_options:
   wide:
     height: 5
     width: 10
+  Bwide:
+    height: 10
+    width: 15
   skinny:
     height: 4.5
     width: 3
@@ -172,10 +175,61 @@ targets:
     command: compare_strategy_patch_Fecundity()
     plot: square
 
+  dataFF16_l_FH:
+    command: data_patch_FF16(I(prod = -0.3))
+
+  dataFF16_h_FH:
+    command: data_patch_FF16(I(prod = 0.3))
+
+  dataFF16_l_FC:
+    command: data_patch_FF16(I(prod = -0.3), I(cancel_F = TRUE))
+
+  dataFF16_h_FC:
+    command: data_patch_FF16(I(prod = 0.3), I(cancel_F = TRUE))
+    check: exists
+    cleanup_level: purge
+
+  dataFF16FvCB_l_FH:
+    command: data_patch_FF16FvCB(I(vpd = 0.0))
+    check: exists
+    cleanup_level: purge
+
+  dataFF16FvCB_h_FH:
+    command: data_patch_FF16FvCB(I(vpd = 3))
+    check: exists
+    cleanup_level: purge
+
+  dataFF16FvCB_l_FC:
+    command: data_patch_FF16FvCB(I(vpd = 0), I(cancel_F = TRUE))
+    check: exists
+    cleanup_level: purge
+
+  dataFF16FvCB_h_FC:
+    command: data_patch_FF16FvCB(I(vpd = 3), I(cancel_F = TRUE))
+    check: exists
+    cleanup_level: purge
+
+  figures/Patch_FF16_FH.pdf:
+    command: plot_patch_data_grad(dataFF16_l_FH, dataFF16_h_FH, I(title = "FF16 FH"))
+    plot: Bwide
+
+  figures/Patch_FF16_FC.pdf:
+    command: plot_patch_data_grad(dataFF16_l_FC, dataFF16_h_FC, I(title = "FF16 FC"))
+    plot: Bwide
+
+  figures/Patch_FF16FvCB_FH.pdf:
+    command: plot_patch_data_grad(dataFF16FvCB_h_FH, dataFF16FvCB_l_FH, I(title = "FF16FvCB FH"))
+    plot: Bwide
+
+  figures/Patch_FF16FvCB_FC.pdf:
+    command: plot_patch_data_grad(dataFF16FvCB_h_FC, dataFF16FvCB_l_FC, I(title = "FF16FvCB FC"))
+    plot: Bwide
+
 # Parametrization of FvCB
 
   figures/NRH_param.pdf:
     command: plot_FvCB_param_narea()
+    plot: wide
 
   figures/FvC_stomatal_BBLeuning.pdf:
     command: plot_FvC_stomatal(I(gs_type = "BBLeuning"))
@@ -350,14 +404,10 @@ targets:
     cleanup_level: purge
 
   list_assembly_FvCB_lma_single_narea_lma:
-    command: run_assembly_vpd_list(I(vec_vpd = c(0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0) ),  I(disturbance_mean_interval = 5))
-    check: exists
-    cleanup_level: purge
+    command: run_assembly_vpd_list(I(vec_vpd = c(0, 2.0) ),  I(disturbance_mean_interval = 5))
 
   list_assembly_FvCB_lma_multi_narea_lma:
-    command: run_assembly_vpd_list(I(vec_site_prod = c(0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)), I( disturbance_mean_interval = 40))
-    check: exists
-    cleanup_level: purge
+    command: run_assembly_vpd_list(I(vec_site_prod = c(0, 2.0)), I( disturbance_mean_interval = 40))
 
   assembly_FvCB_lma_single_narea_lma:
     command: run_assembly_FvCB_narea_lma(disturbance_mean_interval = 5)

@@ -128,13 +128,18 @@ mclapply(vec_site_prod,
          mc.cores = 7)
 }
 
-run_assembly_vpd_list<- function(vec_vpd,FUN = run_assembly_FvCB_narea_lma,
-                             disturbance_mean_interval=10) {
+run_assembly_vpd_list<- function(vec_vpd,
+                             disturbance_mean_interval=10,
+                             FUN = run_assembly_FvCB_narea_lma) {
 require(parallel)
-mclapply(vec_vpd,
-         FUN,
-         disturbance_mean_interval = disturbance_mean_interval,
-         mc.cores = 1)
+START <- Sys.time()
+res <- mclapply(vec_vpd,
+                FUN,
+                disturbance_mean_interval = disturbance_mean_interval,
+                mc.cores = 2)
+END <- Sys.time()
+print(END-START)
+return(res)
 }
 
 
@@ -153,6 +158,9 @@ run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
   p$disturbance_mean_interval <- disturbance_mean_interval
 
@@ -172,6 +180,9 @@ assembler_run(obj_m0, 20)
 run_assembly_narea_lma<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
   p$disturbance_mean_interval <- disturbance_mean_interval
 
@@ -194,25 +205,29 @@ run_assembly_FvCB_narea_lma<- function(vpd=0.0, disturbance_mean_interval=10, ..
   p <- trait_gradients_FvCB_parameters(vpd=vpd)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
-  bounds_narea <- viable_fitness(bounds(narea=c(1E-4, 1E2)), p, x = 0.01)
+  bounds_narea <- viable_fitness(bounds(narea=c(1E-4, 1E-2)), p, x = 0.01)
   bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
 
 # now pass in the bounds -- previously we just passed in infinite bounds
   sys0 <- community(p, rbind(bounds_narea, bounds_lma),
                    fitness_approximate_control=list(type="gp"))
-
 # and also tell the assembler not to calculate the bounds
 obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
-
+print('initialized')
 assembler_run(obj_m0, 20)
-
 }
 
 
 run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
 
   p <- trait_gradients_elev_parameters(data_param = data_param, site_prod = site_prod)
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -225,6 +240,9 @@ run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_
 run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
 
   p <- trait_gradients_slope_parameters(data_param = data_param, site_prod = site_prod)
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
   p$disturbance_mean_interval <- disturbance_mean_interval
   sys0 <- community(p, bounds_infinite("lma"),
@@ -248,16 +266,11 @@ trait_gradients_base_parameters <- function(...) {
 
   ctrl$equilibrium_nsteps  <- 80
   ctrl$equilibrium_solver_name <- "iteration"
-  ## ctrl$equilibrium_solver_name <- "hybrid"
-                                 #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
   FF16_trait_gradient_hyperpar <- make_FF16_trait_gradient_hyperpar(...)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
-      # neutralise reproduction
-  ## p$strategy_default$a_f1 <- 0.5
-  ## p$strategy_default$a_f2 <- 0
   p
 }
 
@@ -283,9 +296,6 @@ trait_gradients_FvCB_parameters <- function(...) {
   FF16_FvCB_trait_gradient_hyperpar <- make_FF16FvCB_hyperpar(...)
   p <- FF16FvCB_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_FvCB_trait_gradient_hyperpar)
-      # neutralise reproduction
-  p$strategy_default$a_f1 <- 0.5
-  p$strategy_default$a_f2 <- 0
   p
 }
 
@@ -316,9 +326,6 @@ trait_gradients_elev_parameters<- function(data_param, ...) {
     # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
-      # neutralise reproduction
-  p$strategy_default$a_f1 <- 0.5
-  p$strategy_default$a_f2 <- 0
   p
 }
 
@@ -349,9 +356,6 @@ trait_gradients_slope_parameters<- function(data_param, ...) {
 
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
-      # neutralise reproduction
-  p$strategy_default$a_f1 <- 0.5
-  p$strategy_default$a_f2 <- 0
   p
 }
 
