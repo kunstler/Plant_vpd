@@ -19,4 +19,4 @@ echo ${SLURM_ARRAY_TASK_ID}
 
 
 # on lance le script R en precisant bien son chemin 
-R CMD BATCH "--args ${SLURM_ARRAY_TASK_ID}" scripts_cluster/assembly_FF16FvCB_Dist5_vpd.R
+R CMD BATCH "--args vpd=${SLURM_ARRAY_TASK_ID}" scripts_cluster_R/assembly_FF16FvCB_Dist5_vpd.R FF16FvCB_Dist5_vpd${SLURM_ARRAY_TASK_ID}.out
