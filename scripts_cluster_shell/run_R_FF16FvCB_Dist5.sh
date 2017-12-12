@@ -1,10 +1,10 @@
 #!/bin/sh
-#SBATCH --job-name=run_R_vpd
+#SBATCH --job-name=run_R_Dist5_vpd
 #SBATCH -p q-irstea
-#SBATCH --time=00:05:00                                    
+#SBATCH --time=240:05:00                                    
 #SBATCH -A u_emgr                                          
-#SBATCH -o %j.out
-#SBATCH -e %j.err
+#SBATCH -o run_R_Dist5_vpd%j.out
+#SBATCH -e run_R_Dist5_vpd%j.err
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
 #SBATCH --mem=80000
