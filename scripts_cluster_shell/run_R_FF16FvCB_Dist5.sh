@@ -3,8 +3,8 @@
 #SBATCH -p q-irstea
 #SBATCH --time=00:05:00                                    
 #SBATCH -A u_emgr                                          
-#SBATCH -o /scratch/gerard.henry/%j.out
-#SBATCH -e /scratch/gerard.henry/%j.err
+#SBATCH -o %j.out
+#SBATCH -e %j.err
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
 #SBATCH --mem=80000
