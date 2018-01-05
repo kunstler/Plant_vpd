@@ -143,7 +143,7 @@ return(res)
 }
 
 
-run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
+run_assembly <- function(site_prod=0.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
 
@@ -155,7 +155,7 @@ run_assembly <- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
   assembler_run(obj_m0, 20)
 }
 
-run_assembly_narea<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
+run_assembly_narea<- function(site_prod=0.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
   # neutralise reproduction
@@ -177,7 +177,7 @@ assembler_run(obj_m0, 20)
 
 }
 
-run_assembly_narea_lma<- function(site_prod=1.0, disturbance_mean_interval=10, ...) {
+run_assembly_narea_lma<- function(site_prod=0.0, disturbance_mean_interval=10, ...) {
 
   p <- trait_gradients_base_parameters(site_prod=site_prod)
   # neutralise reproduction
@@ -213,8 +213,12 @@ run_assembly_FvCB_narea_lma<- function(vpd=0.0, disturbance_mean_interval=10, ..
   bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
 
 # now pass in the bounds -- previously we just passed in infinite bounds
-  sys0 <- community(p, rbind(bounds_narea, bounds_lma),
+  ## sys0 <- community(p, rbind(bounds_narea, bounds_lma),
+  ##                  fitness_approximate_control=list(type="gp"))
+
+  sys0 <- community(p, rbind(bounds(narea=c(1E-4, 1E-2)), bounds(lma=c(0.001, 3))),
                    fitness_approximate_control=list(type="gp"))
+
 # and also tell the assembler not to calculate the bounds
 obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
 print('initialized')
@@ -222,7 +226,7 @@ assembler_run(obj_m0, 20)
 }
 
 
-run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
+run_assembly_elev <- function(site_prod=0.0, disturbance_mean_interval=10, data_param) {
 
   p <- trait_gradients_elev_parameters(data_param = data_param, site_prod = site_prod)
   # neutralise reproduction
@@ -237,7 +241,7 @@ run_assembly_elev <- function(site_prod=1.0, disturbance_mean_interval=10, data_
   assembler_run(obj_m0, 20)
 }
 
-run_assembly_slope <- function(site_prod=1.0, disturbance_mean_interval=10, data_param) {
+run_assembly_slope <- function(site_prod=0.0, disturbance_mean_interval=10, data_param) {
 
   p <- trait_gradients_slope_parameters(data_param = data_param, site_prod = site_prod)
   # neutralise reproduction
