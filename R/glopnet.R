@@ -77,9 +77,9 @@ process_wright_2004 <- function(filename, sitevars_file, AridityIndex) {
   names(data)[names(data) %in%
               c('dataset', 'mat_degc', 'map_mm')]<- c('location','mat', 'map')
 
-  return(subset(data,   data[["map"]] < 4000 & #why did you subset the data to have more than 400m of MAP ??
-     data[["growthform"]] %in% c("S","T")))
-  ## return(data)
+  ## return(subset(data,   data[["map"]] < 4000 & #why did you subset the data to have more than 400m of MAP ??
+  ##    data[["growthform"]] %in% c("S","T")))
+  return(data)
 }
 
 figure_lma_climate <- function(data) {
@@ -215,9 +215,13 @@ plot_coef_sma <- function(df, var){
             weights = df$elevw)
   abline(obj_lm,
          col = 'gray')
-  if(summary(obj_lm)$coefficients[2,4] < 0.05) {
+  if(summary(obj_lm)$coefficients[2,4] < 0.01) {
    text(x=min(df[[var]]), y=max(df$elevationch)*0.85,
         paste0("* R2 =",round(summary(obj_lm)$r.squared, 3)) , cex=1.2, col = "red", pos = 4)
+    }else{
+      text(x=min(df[[var]])+0.1, y=max(df$elevationch)*0.85,
+           "NS",
+           cex=1.2, col = "red", pos = 4)
   }
   plot(df[[var]], df$slopem,
        ylim = range(df$slopech, df$slopecl),
@@ -226,9 +230,15 @@ plot_coef_sma <- function(df, var){
   obj_lm <- lm(formula(paste("slopem ~ ", var)), data = df , weights = df$slopw)
   abline(obj_lm,
          col = 'gray')
-  if(summary(obj_lm)$coefficients[2,4] < 0.05) text(x=min(df[[var]]), y=max(df$slopech)-0.2,
-                                                paste0("* R2 =",round(summary(obj_lm)$r.squared, 3)),
-                                                cex=1.2, col = "red", pos = 4)
+  if(summary(obj_lm)$coefficients[2,4] < 0.01){
+      text(x=min(df[[var]]), y=max(df$slopech)-0.2,
+           paste0("* R2 =",round(summary(obj_lm)$r.squared, 3)),
+           cex=1.2, col = "red", pos = 4)
+  }else{
+      text(x=min(df[[var]])+0.1, y=max(df$slopech)-0.2,
+           "NS",
+           cex=1.2, col = "red", pos = 4)
+  }
 }
 
 figure_lma_tradeoff_climate_slope_elev<- function(data) {
@@ -259,7 +269,7 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
   df$map <-  scale(df$map)
   df$mat <-  scale(df$mat)
 
-  par(mfrow = c(4,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+  par(mfrow = c(3,2), mar=c(2.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
   #MAP
   plot_coef_sma(df, "map")
   # MAP
@@ -269,19 +279,6 @@ figure_lma_tradeoff_climate_slope_elev<- function(data) {
                    weights = df$slopw)))
   print("slope vs map over mat")
   print(summary(lm(slopem~scale(map),
-                   data = df ,
-                   weights = df$slopw)))
-
-   #MAT
-  plot_coef_sma(df, "mat")
-  #MAT
-
-  print("elevation vs mat")
-  print(summary(lm(elevationm~scale(mat),
-                   data = df ,
-                   weights = df$slopw)))
-  print("slope vs mat")
-  print(summary(lm(slopem~scale(mat),
                    data = df ,
                    weights = df$slopw)))
 
@@ -349,12 +346,19 @@ figure_B_kl_climate<- function(data) {
   df$slopw <- 1/(df$slopech - df$slopecl)
 
   param_P<- data.frame(coef = c("inter", "slope"),
-                      elev = coef(lm(elevationm~map,
+                       elev = coef(lm(elevationm~map,
+                                      data = df ,
+                                      weights = df$elevw)),
+                       slop = coef(lm(slopem~map,
                                      data = df ,
-                                     weights = df$elevw)),
-                      slop = coef(lm(slopem~map,
-                                     data = df ,
-                                     weights = df$slopw)))
+                                     weights = df$slopw))
+                      )
+
+pval_elev_P<- as.integer(summary(lm(elevationm~map,data = df,
+                                    weights = df$elevw))$coefficients[2,4] > 0.01)
+pval_slop_P<- as.integer(summary(lm(slopem~map,data = df,
+                                    weights = df$slopw))$coefficients[2,4] > 0.01)
+
 
   param_TP<- data.frame(coef = c("inter", "slope"),
                       elev = coef(lm(elevationm~mat_o_map,
@@ -364,29 +368,38 @@ figure_B_kl_climate<- function(data) {
                                      data = df ,
                                      weights = df$slopw)))
 
+pval_elev_TP<- as.integer(summary(lm(elevationm~mat_o_map,data = df,
+                                    weights = df$elevw))$coefficients[2,4] > 0.01)
+pval_slop_TP<- as.integer(summary(lm(slopem~mat_o_map,data = df,
+                                    weights = df$slopw))$coefficients[2,4] > 0.01)
+
   seq_stress <- seq(from = -1.5, to = 1.5, length.out = 100)
   par(mfrow = c(2, 2))
   plot(seq_stress, 10^(param_P[1, 2] + seq_stress * param_P[2,2]),
        xlab = "MAP", ylab = "B_kl1", type = "l",
-       xlim = range(df$map), ylim = range(10^df$elevationm))
+       xlim = range(df$map), ylim = range(10^df$elevationm),
+       lty = pval_elev_P+1)
   points(df$map, 10^df$elevationm)
   segments(df$map, 10^df$elevationcl, df$map, 10^df$elevationch)
   abline(v=0, col = 'red')
   plot(seq_stress, param_P[1, 3] + seq_stress * param_P[2,3],
        xlab = "MAP", ylab = "B_kl2", type = "l",
-       xlim = range(df$map), ylim = range(df$slopem))
+       xlim = range(df$map), ylim = range(df$slopem),
+       lty = pval_slop_P+1)
   points(df$map, df$slopem)
   segments(df$map, df$slopecl, df$map, df$slopech)
   abline(v=0, col = 'red')
   plot(seq_stress, 10^(param_TP[1, 2] + seq_stress * param_TP[2,2]),
        xlab = "MAT over MAP", ylab = "B_kl1", type = "l",
-       xlim = range(df$mat_o_map), ylim = range(10^df$elevationm))
+       xlim = range(df$mat_o_map), ylim = range(10^df$elevationm),
+       lty = pval_elev_TP+1)
   points(df$mat_o_map, 10^df$elevationm)
   segments(df$mat_o_map, 10^df$elevationcl, df$mat_o_map, 10^df$elevationch)
   abline(v=0, col = 'red')
   plot(seq_stress, param_TP[1, 3] + seq_stress * param_TP[2,3],
        xlab = "MAT over MAP", ylab = "B_kl2", type = "l",
-       xlim = range(df$mat_o_map), ylim = range(df$slopem))
+       xlim = range(df$mat_o_map), ylim = range(df$slopem),
+       lty = pval_slop_TP+1)
   points(df$mat_o_map, df$slopem)
   segments(df$mat_o_map, df$slopecl, df$mat_o_map, df$slopech)
   abline(v=0, col = 'red')
@@ -430,8 +443,15 @@ param_B_kl_climate_P<- function(data) {
                                      data = df, weights = df$elevm )),
                       LMAslope = coef(lm(slopem~map,
                                      data = df, weights = df$elevm )))
+
+pval_elev_P<- summary(lm(elevationm~map,data = df,
+                         weights = df$elevw))$coefficients[2,4] > 0.01
+pval_slop_P<- summary(lm(slopem~map,data = df,
+                         weights = df$slopw))$coefficients[2,4] > 0.01
+if(pval_elev_P) param$LMAelev <-  NA
+if(pval_slop_P) param$LMAslope <-  NA
+
   write.csv(param, file = "output/data_slope_P.csv", row.names = FALSE)
-return(param)
 }
 
 param_B_kl_climate_TP<- function(data) {
@@ -471,7 +491,12 @@ param_B_kl_climate_TP<- function(data) {
                                      data = df, , weights = df$slopm )),
                       LMAslope = coef(lm(slopem~mat_o_map,
                                      data = df , weights = df$slopm)))
-  write.csv(param, file = "output/data_slope_TP.csv", row.names = FALSE)
+pval_elev_TP<- summary(lm(elevationm~mat_o_map,data = df,
+                         weights = df$elevw))$coefficients[2,4] > 0.01
+pval_slop_TP<- summary(lm(slopem~mat_o_map,data = df,
+                         weights = df$slopw))$coefficients[2,4] > 0.01
+if(pval_elev_TP) param$LMAelev <-  NA
+if(pval_slop_TP) param$LMAslope <-  NA
 
-  return(param)
+  write.csv(param, file = "output/data_slope_TP.csv", row.names = FALSE)
 }
