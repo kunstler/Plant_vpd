@@ -1,10 +1,10 @@
 #!/bin/sh
-#SBATCH --job-name=run_R_Dist5_TP_prod${SLURM_ARRAY_TASK_ID}
+#SBATCH --job-name=run_R_Dist5_TP_prod%j
 #SBATCH -p q-irstea
 #SBATCH --time=95:00:00                                    
 #SBATCH -A u_emgr                                          
-#SBATCH -o run_R_Dist5_TP_prod${SLURM_ARRAY_TASK_ID}.out
-#SBATCH -e run_R_Dist5_TP_prod${SLURM_ARRAY_TASK_ID}.err
+#SBATCH -o run_R_Dist5_TP_prod%j.out
+#SBATCH -e run_R_Dist5_TP_prod%j.err
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
 #SBATCH --mem=80000
