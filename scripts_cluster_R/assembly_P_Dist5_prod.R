@@ -14,7 +14,7 @@ if(length(args)==0){
 
 source("R/assembly.R")
 dir.create("output_cluster", showWarnings = FALSE)
-prod <- prod/10
+prod <- (prod-3)/10
 print(prod)
 res <- run_assembly_elev_slope(site_prod = prod, name_data_param = "output/data_slope_P.csv",
                                disturbance_mean_interval = 5)
