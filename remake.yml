@@ -297,20 +297,20 @@ targets:
     command: plot_trait_gradient(list_assembly_lma_multi, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_single_elev.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_elev, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
+  figures/gradient_lma_single_P.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_P, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_multi_elev.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_elev, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+  figures/gradient_lma_multi_P.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_P, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
-  figures/gradient_lma_single_slope.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_slope, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
+  figures/gradient_lma_single_TP.pdf:
+    command: plot_trait_gradient(list_assembly_lma_single_TP, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
     plot: square
 
-  figures/gradient_lma_multi_slope.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_slope, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+  figures/gradient_lma_multi_TP.pdf:
+    command: plot_trait_gradient(list_assembly_lma_multi_TP, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
   figures/gradient_lma_single_narea_lma.pdf:
@@ -362,23 +362,23 @@ targets:
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_single_elev:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev), disturbance_mean_interval = 5)
+  list_assembly_lma_single_P:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 5)
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_multi_elev:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev), disturbance_mean_interval = 40)
+  list_assembly_lma_multi_P:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 40)
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_single_slope:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope), disturbance_mean_interval = 5)
+  list_assembly_lma_single_TP:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 5)
     check: exists
     cleanup_level: purge
 
-  list_assembly_lma_multi_slope:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_slope), disturbance_mean_interval = 40)
+  list_assembly_lma_multi_TP:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 40)
     check: exists
     cleanup_level: purge
 

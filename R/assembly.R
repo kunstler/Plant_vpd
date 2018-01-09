@@ -119,12 +119,12 @@ plot_fitness_assembly <- function(list_assembly_lma, vec_site_prod) {
 
 
 run_assembly_list<- function(vec_site_prod,FUN = run_assembly,
-                             disturbance_mean_interval=10, data_param = NA) {
+                             disturbance_mean_interval=10, name_data_param = NA) {
 require(parallel)
 mclapply(vec_site_prod,
          FUN,
          disturbance_mean_interval = disturbance_mean_interval,
-         data_param = data_param,
+         name_data_param = name_data_param,
          mc.cores = 7)
 }
 
@@ -209,10 +209,10 @@ run_assembly_FvCB_narea_lma<- function(vpd=0.0, disturbance_mean_interval=10, ..
   p$strategy_default$a_f1 <- 0.5
   p$strategy_default$a_f2 <- 0
 
-  bounds_narea <- viable_fitness(bounds(narea=c(1E-4, 1E-2)), p, x = 0.01)
-  bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+  ## bounds_narea <- viable_fitness(bounds(narea=c(1E-4, 1E-2)), p, x = 0.01)
+  ## bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
 
-# now pass in the bounds -- previously we just passed in infinite bounds
+  # now pass in the bounds -- previously we just passed in infinite bounds
   ## sys0 <- community(p, rbind(bounds_narea, bounds_lma),
   ##                  fitness_approximate_control=list(type="gp"))
 
@@ -226,24 +226,8 @@ assembler_run(obj_m0, 20)
 }
 
 
-run_assembly_elev <- function(site_prod=0.0, disturbance_mean_interval=10, data_param) {
-
-  p <- trait_gradients_elev_parameters(data_param = data_param, site_prod = site_prod)
-  # neutralise reproduction
-  p$strategy_default$a_f1 <- 0.5
-  p$strategy_default$a_f2 <- 0
-
-  p$disturbance_mean_interval <- disturbance_mean_interval
-  sys0 <- community(p, bounds_infinite("lma"),
-                     fitness_approximate_control=list(type="gp"))
-
-  obj_m0 <- assembler(sys0, list(birth_move_tol=0.5))
-  assembler_run(obj_m0, 20)
-}
-
-run_assembly_slope <- function(site_prod=0.0, disturbance_mean_interval=10, data_param) {
-
-  p <- trait_gradients_slope_parameters(data_param = data_param, site_prod = site_prod)
+run_assembly_elev_slope <- function(site_prod=0.0, name_data_param, disturbance_mean_interval=10) {
+  p <- trait_gradients_elev_slope_parameters(name_data_param = name_data_param, site_prod = site_prod)
   # neutralise reproduction
   p$strategy_default$a_f1 <- 0.5
   p$strategy_default$a_f2 <- 0
@@ -304,15 +288,15 @@ trait_gradients_FvCB_parameters <- function(...) {
 }
 
 
-##' Hopefully sensible set of parameters for use with the EBT.  Turns
-##' accuracy down a bunch, makes it noisy, sets up the
-##' hyperparameterisation that we most often use. Include a variation of LMA LT elevation of the tradeoff changing with MAP
+
+##' hyperparameterisation that include a variation of LMA LT elevation and or slope of the tradeoff changing with MAP or MAT over MAP
 ##' @title Sensible, fast (ish) EBT parameters
 ##' @author Georges Kunstler
 ##' @export
-trait_gradients_elev_parameters<- function(data_param, ...) {
-  #TODO CHANGE THE WAY THE param are provided
+trait_gradients_elev_slope_parameters<- function(name_data_param, ...) {
   #plant_log_console()
+  param <- read.csv(name_data_param)
+
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.001
   ctrl$equilibrium_eps <- 1e-5
@@ -321,43 +305,27 @@ trait_gradients_elev_parameters<- function(data_param, ...) {
   ctrl$equilibrium_solver_name <- "iteration" #"hybrid" # in default this is "iteration"
   ctrl$equilibrium_verbose <-  TRUE
 
-  FF16_trait_gradient_hyperpar <-
-      make_FF16_trait_gradient_slope_elev_hyperpar(...,
-                                B_kl1_1_log10 = log10(0.4565855),
-                                B_kl1_2_log10 = data_param[2, 'LMAelev'] *(2/0.6),
-                                B_kl2_1 = 1.71,
-                                B_kl2_2 = 0 )
-    # this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
-  p <- FF16_Parameters(patch_area=1.0, control=ctrl,
-                   hyperpar=FF16_trait_gradient_hyperpar)
-  p
+B_kl1_1_log10b <- log10(0.4565855)
+B_kl1_2_log10b <- 0
+B_kl2_1b <- 1.71
+B_kl2_2b <- 0
+
+if (!is.na(param[1, 'LMAelev'])){
+B_kl1_1_log10b <- param[1, 'LMAelev']
+B_kl1_2_log10b <- param[2, 'LMAelev']*(2/0.6)
 }
-
-##' Hopefully sensible set of parameters for use with the EBT.  Turns
-##' accuracy down a bunch, makes it noisy, sets up the
-##' hyperparameterisation that we most often use. Include a variation of LMA LT tradeoff changing with MAT over MAP for the slope
-##' @title Sensible, fast (ish) EBT parameters
-##' @author Georges Kunstler
-##' @export
-trait_gradients_slope_parameters<- function(data_param, ...) {
-  #plant_log_console()
-  ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.001
-  ctrl$equilibrium_eps <- 1e-5
-
-  ctrl$equilibrium_nsteps  <- 80
-  ctrl$equilibrium_solver_name <- "iteration"
-                                 #"hybrid" # in default this is "iteration"
-  ctrl$equilibrium_verbose <-  TRUE
+if (!is.na(param[1, 'LMAslope'])){
+B_kl2_1b <- -param[1, 'LMAslope']
+B_kl2_2b <- -param[2, 'LMAslope']*(2/0.6)
+}
+#this slope is for a gradient of precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
 
   FF16_trait_gradient_hyperpar <-
       make_FF16_trait_gradient_slope_elev_hyperpar(...,
-                                B_kl1_1_log10 = log10(0.4565855),
-                                B_kl1_2_log10 = 0,
-                                B_kl2_1 = 1.71,
-                                B_kl2_2 = -data_param[2, 'LMAslope']* (2/0.6) )
-    # this slope is for a gradient of Temp / precipitation from -1 to 1 but we can not vary that much the productivity (otherwise growth become zero) so I rescale it to have the same slope on a range only between -0.3 and 0.3 (which is a range where growth is non zero)
-
+                                B_kl1_1_log10 = B_kl1_1_log10b,
+                                B_kl1_2_log10 = B_kl1_2_log10b,
+                                B_kl2_1 = B_kl2_1b,
+                                B_kl2_2 = B_kl2_2b)
   p <- FF16_Parameters(patch_area=1.0, control=ctrl,
                    hyperpar=FF16_trait_gradient_hyperpar)
   p
