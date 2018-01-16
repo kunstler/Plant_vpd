@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --job-name=run_R_Dist40_vpd
-#SBATCH -p q-irstea
+#SBATCH -p q-128Go
 #SBATCH --time=95:00:00                                    
 #SBATCH -A u_emgr                                          
 #SBATCH -o run_R_Dist40_vpd%j.out

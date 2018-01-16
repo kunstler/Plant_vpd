@@ -79,3 +79,51 @@ NearestPlot <- function(x1,y1,x2,y2) {
 } #NearestPlot
 
 
+############
+#### COMPUTE VPD AND ITS CORRELATION GLOBALY
+
+# STATURATED VAPOR PRESSURE FUNCTIONS
+
+
+#Teten formula in FAO 56 in
+svp <- function(T){
+0.6108 * exp(17.27 * T / (T + 237.3))
+}
+
+fun_unzip <- function(name, down_path = "download"){
+unzip(name, junkpaths = TRUE, exdir = down_path)
+}
+
+read_all_month_stack <- function(name){
+months <- c(paste0("0", 1:9), 10:12)
+f <- function(n, name) raster(file.path("download", paste0(name,n,".tif")))
+stack(lapply(months, f, name = name))
+}
+
+vpd_tavg_corr <- function(){
+stack_tmin <- read_all_month_stack("wc2.0_2.5m_tmin_")
+stack_tmax <- read_all_month_stack("wc2.0_2.5m_tmax_")
+stack_tavg <- read_all_month_stack("wc2.0_2.5m_tavg_")
+stack_vapr <- read_all_month_stack("wc2.0_2.5m_vapr_")
+stack_t <- stack(stack_tmin, stack_tmax)
+f <- function(x) (svp(x[1:12]) +svp(x[13:24]))/2
+stack_svp <- calc(stack_t, f)
+stack_vp <- stack(stack_vapr, stack_svp)
+f <- function(x) (x[1:12] -x[13:24])
+stack_vpd <- calc(stack_vp,f)
+return(list(vpd = stack_vpd, tavg = stack_tavg))
+}
+
+mean_vpd_t_cor <- function(list_clim){
+vpd_m <- calc(list_clim$vpd, function(x) mean(x[1:12]))
+t_m <- calc(list_clim$tavg, function(x) mean(x[1:12]))
+browser()
+
+}
+## T <- seq(-10, 30, length.out = 20)
+## plot(T, svp_a(T)/10, type = "l", ylim = range(svp_a(T)/10, svp_b(T)))
+## lines(T, svp_b(T), lty = 2)
+## lines(T, svp_c(T)/10, lty = 3, col = "red")
+## lines(T, svp_d(T)/10, lty = 4)
+
+
