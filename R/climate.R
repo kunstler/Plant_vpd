@@ -117,13 +117,48 @@ return(list(vpd = stack_vpd, tavg = stack_tavg))
 mean_vpd_t_cor <- function(list_clim){
 vpd_m <- calc(list_clim$vpd, function(x) mean(x[1:12]))
 t_m <- calc(list_clim$tavg, function(x) mean(x[1:12]))
+df2 <- data.frame(T = as.vector(t_m), vpd = as.vector(vpd_m))
+list_vpd_t<- vector("list")
+for (i in 1:12){
+list_vpd_t[[i]] <- data.frame(T = as.vector(list_clim$tavg[[i]]), vpd = as.vector(list_clim$vpd[[i]]),
+                              months = rep(i, length.out = dim(list_clim$vpd[[i]])[1]*
+                                                          dim(list_clim$vpd[[i]])[2]))
+}
+
+df1 <- do.call("rbind",list_vpd_t)
+# restrict data to be above -15C
+df2 <- df2[df2$T> -15 & !is.na(df2$T), ]
+
+df1 <- df1[df1$T> -40 & !is.na(df1$T), ]
+return(list(df_months= df1, df_avg= df2))
+}
+
+plot_reg_vpd_t <- function(ll_d){
+df1 <- ll_d$months
+df2 <- ll_d$avg
+
+df1$vpd2 <- df1$vpd - max(df1$vpd)*1.01
+df2$vpd2 <- df2$vpd - max(df2$vpd)*1.01
 browser()
 
-}
-## T <- seq(-10, 30, length.out = 20)
-## plot(T, svp_a(T)/10, type = "l", ylim = range(svp_a(T)/10, svp_b(T)))
-## lines(T, svp_b(T), lty = 2)
-## lines(T, svp_c(T)/10, lty = 3, col = "red")
-## lines(T, svp_d(T)/10, lty = 4)
+res2 <- lm(T~log(-vpd2), data = df2)
+res1 <- lm(T~log(-vpd2), data = df2)
 
+coef1 <- coefficients(res1)
+coef2 <- coefficients(res2)
+seq_vpd <- seq(-4, 0, length.out = 100)
+pred1 <- coef1[1] +coef1[2]*log(seq_vpd - max(df1$vpd)*1.01)
+pred2 <- coef2[1] +coef2[2]*log(seq_vpd - max(df2$vpd)*1.01)
+
+pdf("figures/vpd_t.pdf")
+x11()
+plot(df1$vpd, df1$T, col = df1$months, xlab = "vpd", ylab ="Tavg months", main = "monthly data")
+lines(seq_vpd, pred1, lwd =2)
+print(coef1)
+x11()
+plot(df2$vpd, df2$T, xlab = "vpd", ylab ="Tavg months", main = "annual data")
+lines(seq_vpd, pred2, lwd =2)
+print(coef2)
+dev.off()
+}
 

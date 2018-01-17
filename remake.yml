@@ -467,6 +467,9 @@ targets:
   mean_vpd_t_cor:
     command: mean_vpd_t_cor(data_vpd_t) 
 
+  plot_vpd_t_cor:
+    command: plot_reg_vpd_t(mean_vpd_t_cor) 
+
   download/wc2.0_2.5m_vapr_01.tif:
     command: fun_unzip("download/wc2.0_2.5m_vapr.zip")
 
