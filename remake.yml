@@ -456,7 +456,7 @@ targets:
     command: download_aridity_index()
     packages: raster
 
-  data_vpd_t:  
+  data_vpd_t:
     command: vpd_tavg_corr()
     depends:
     - download/wc2.0_2.5m_vapr_01.tif
@@ -464,11 +464,23 @@ targets:
     - download/wc2.0_2.5m_tmax_01.tif
     - download/wc2.0_2.5m_tavg_01.tif
 
-  mean_vpd_t_cor:
-    command: mean_vpd_t_cor(data_vpd_t) 
+  df_mean_vpd_t_cor:
+    command: mean_vpd_t_cor(data_vpd_t)
 
-  plot_vpd_t_cor:
-    command: plot_reg_vpd_t(mean_vpd_t_cor) 
+  df_months_vpd_t_cor:
+    command: months_vpd_t_cor(data_vpd_t)
+
+  plot_vpd_t_cor_mean:
+    command: plot_reg_vpd_t_mean(df_mean_vpd_t_cor)
+
+  plot_vpd_t_cor_months:
+    command: plot_reg_vpd_t_months(df_months_vpd_t_cor)
+
+  plot_vpd_t_cor_mean_zero:
+    command: plot_reg_vpd_t_mean_zero(df_mean_vpd_t_cor)
+
+  plot_vpd_t_cor_months_zero:
+    command: plot_reg_vpd_t_months_zero(df_months_vpd_t_cor)
 
   download/wc2.0_2.5m_vapr_01.tif:
     command: fun_unzip("download/wc2.0_2.5m_vapr.zip")
