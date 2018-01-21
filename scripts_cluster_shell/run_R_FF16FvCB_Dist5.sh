@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH --job-name=run_R_Dist5_vpd
 #SBATCH -p q-128Go
-#SBATCH --time=95:00:00                                    
+#SBATCH --time=190:00:00                                    
 #SBATCH -A u_emgr                                          
 #SBATCH -o run_R_Dist5_vpd%j.out
 #SBATCH -e run_R_Dist5_vpd%j.err
