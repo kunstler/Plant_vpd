@@ -221,7 +221,7 @@ assembler_run(obj_m0, 20)
 
 run_assembly_FvCB_narea_lma_Tleaf<- function(vpd=0.0, name_param_Tleaf, disturbance_mean_interval=10, ...) {
   coefs <- readRDS(name_param_Tleaf)
-  Tleaf <- coefs['intercept'] + coefs['intercept']*log(-(vpd - coefs['max_trans']))
+  Tleaf <- coefs['intercept'] + coefs['intercept']*log(vpd + coefs['max_trans'])
 
   p <- trait_gradients_FvCB_parameters(vpd=vpd,Tleaf = Tleaf)
 
