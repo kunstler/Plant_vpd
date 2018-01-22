@@ -209,12 +209,26 @@ run_assembly_FvCB_narea_lma<- function(vpd=0.0, disturbance_mean_interval=10, ..
   p$strategy_default$a_f1 <- 0.5
   p$strategy_default$a_f2 <- 0
 
-  ## bounds_narea <- viable_fitness(bounds(narea=c(1E-4, 1E-2)), p, x = 0.01)
-  ## bounds_lma <- viable_fitness(bounds(lma=c(0.001, 3)), p, x = 0.01)
+  sys0 <- community(p, rbind(bounds(narea=c(1E-4, 1E-2)), bounds(lma=c(0.001, 3))),
+                   fitness_approximate_control=list(type="gp"))
 
-  # now pass in the bounds -- previously we just passed in infinite bounds
-  ## sys0 <- community(p, rbind(bounds_narea, bounds_lma),
-  ##                  fitness_approximate_control=list(type="gp"))
+# and also tell the assembler not to calculate the bounds
+obj_m0 <- assembler(sys0, list(birth_move_tol=0.5, compute_viable_fitness = FALSE))
+print('initialized')
+assembler_run(obj_m0, 20)
+}
+
+
+run_assembly_FvCB_narea_lma_Tleaf<- function(vpd=0.0, name_param_Tleaf, disturbance_mean_interval=10, ...) {
+  coefs <- readRDS(name_param_Tleaf)
+  Tleaf <- coefs['intercept'] + coefs['intercept']*log(-(vpd - coefs['max_trans']))
+
+  p <- trait_gradients_FvCB_parameters(vpd=vpd,Tleaf = Tleaf)
+
+  p$disturbance_mean_interval <- disturbance_mean_interval
+  # neutralise reproduction
+  p$strategy_default$a_f1 <- 0.5
+  p$strategy_default$a_f2 <- 0
 
   sys0 <- community(p, rbind(bounds(narea=c(1E-4, 1E-2)), bounds(lma=c(0.001, 3))),
                    fitness_approximate_control=list(type="gp"))

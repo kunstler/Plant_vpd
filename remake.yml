@@ -467,20 +467,11 @@ targets:
   df_mean_vpd_t_cor:
     command: mean_vpd_t_cor(data_vpd_t)
 
-  df_months_vpd_t_cor:
-    command: months_vpd_t_cor(data_vpd_t)
-
-  plot_vpd_t_cor_mean:
+  output/coef_T_vpd.rds:
     command: plot_reg_vpd_t_mean(df_mean_vpd_t_cor)
-
-  plot_vpd_t_cor_months:
-    command: plot_reg_vpd_t_months(df_months_vpd_t_cor)
 
   plot_vpd_t_cor_mean_zero:
     command: plot_reg_vpd_t_mean_zero(df_mean_vpd_t_cor)
-
-  plot_vpd_t_cor_months_zero:
-    command: plot_reg_vpd_t_months_zero(df_months_vpd_t_cor)
 
   download/wc2.0_2.5m_vapr_01.tif:
     command: fun_unzip("download/wc2.0_2.5m_vapr.zip")

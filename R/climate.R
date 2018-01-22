@@ -123,21 +123,6 @@ return(df2)
 }
 
 
-months_vpd_t_cor <- function(list_clim){
-list_vpd_t<- vector("list")
-for (i in 1:12){
-list_vpd_t[[i]] <- data.frame(T = as.vector(list_clim$tavg[[i]]),
-                              vpd = as.vector(list_clim$vpd[[i]]),
-                              months = rep(i,
-                                  length.out = dim(list_clim$vpd[[i]])[1]*
-                                                 dim(list_clim$vpd[[i]])[2]))
-list_vpd_t[[i]] <- list_vpd_t[[i]] %>% filter(T > -15 & !is.na(T))
-}
-library(dplyr)
-df1 <- bind_rows(list_vpd_t)
-return(df1)
-}
-
 
 plot_reg_vpd_t_mean<- function(df2){
 df2 <-  df2 %>% mutate(vpd2 = vpd - max(vpd)*1.01)
@@ -155,7 +140,8 @@ abline(v = -0.25, col = "purple")
 print(coef2)
 print(max(df2$vpd))
 dev.off()
-return(list(coef = coef2, max = max(df2$vpd)*1.01))
+res <- c(intercept = coef2[1], slope = coef2[2], max_trans = max(df2$vpd)*1.01)
+saveRDS(res, file = 'output/coef_T_vpd.rds')
 }
 
 
@@ -175,42 +161,4 @@ dev.off()
 return(coef2)
 }
 
-
-plot_reg_vpd_t_months<- function(df1){
-df1 <- sample_frac(df1, 0.001)
-df1 <-  df1 %>% mutate(vpd2 = vpd - max(vpd)*1.01)
-df1 <- df1 %>% mutate(logvpd = log(-vpd2))
-res1 <- lm(T~logvpd , data = df1)
-seq_vpd <- seq(-4, 0, length.out = 100)
-seq_logvpd<- log(-(seq_vpd - max(df1$vpd)*1.01))
-pred <- predict(res1, newdata = data.frame(logvpd = seq_logvpd, vpd2 = seq_vpd))
-coef1 <- coefficients(res1)
-png("figures/vpd_t_months.png")
-plot(df1$vpd, df1$T, xlab = "vpd", cex = 0.5, ylab ="Tavg months", main = "months data")
-lines(seq_vpd, pred, lwd =2, col = "red")
-print(coef1)
-print(max(df1$vpd))
-dev.off()
-return(list(coef = coef1, max = max(df1$vpd)*1.01))
-}
-
-
-plot_reg_vpd_t_months_zero<- function(df1){
-df1 <- sample_frac(df1, 0.001)
-df1 <- df1 %>% mutate(vpd = ifelse(vpd >= 0 , -0.0000000001, vpd))
-df1 <- df1 %>% mutate(logvpd = log(-vpd))
-
-res1 <- lm(T~logvpd, data = df1)
-
-coef1 <- coefficients(res1)
-seq_vpd <- seq(-4, -0.000001, length.out = 100)
-pred1 <- coef1[1] +coef1[2]*log(-seq_vpd)
-png("figures/vpd_t_months_zero.png")
-plot(df1$vpd, df1$T, xlab = "vpd", cex = 0.5, ylab ="Tavg months", main = "months data")
-lines(seq_vpd, pred1, lwd =2, col = "red")
-print(coef1)
-print(max(df1$vpd))
-dev.off()
-return(list(coef = coef1, max = max(df1$vpd)*1.01))
-}
 
