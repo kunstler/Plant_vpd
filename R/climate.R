@@ -57,6 +57,7 @@ return(raster_aridity)
 extract_aridty <- function(lats,lons,raster_aridity){
 plot_aridity <- raster::extract(raster_aridity, cbind(lons, lats))/10000
 nas <- which(is.na(plot_aridity))
+print(paste0("number of missing plot for aridity", length(nas)))
     if (length(nas)>0) {
       good <- which(!is.na(plot_aridity))
       near <- NearestPlot(lons[nas],lats[nas],lons[good],lats[good])
@@ -86,6 +87,10 @@ NearestPlot <- function(x1,y1,x2,y2) {
 
 
 #Teten formula in FAO 56 in
+
+## Compute saturated water pressure based on Tmin and Tmax as recommended by
+## Allen, RG, Pereira, LS, Raes, D, Smith, M (1998) Meteorological data, Chapter 3. In: Crop evapotranspiration - Guidelines for computing crop water requirements. Food and Agricuture Organization (FAO) Irrigation and Drainage Paper 56. United Nations, FAO, Rome, Italy. Available from http://www.fao.org/docrep/x0490e/x0490e07.htm#calculation%20procedures
+
 svp <- function(T){
 0.6108 * exp(17.27 * T / (T + 237.3))
 }
@@ -100,7 +105,7 @@ f <- function(n, name) raster(file.path("download", paste0(name,n,".tif")))
 stack(lapply(months, f, name = name))
 }
 
-vpd_tavg_corr <- function(){
+vpd_tavg_data <- function(){
 stack_tmin <- read_all_month_stack("wc2.0_2.5m_tmin_")
 stack_tmax <- read_all_month_stack("wc2.0_2.5m_tmax_")
 stack_tavg <- read_all_month_stack("wc2.0_2.5m_tavg_")
@@ -111,12 +116,31 @@ stack_svp <- calc(stack_t, f)
 stack_vp <- stack(stack_vapr, stack_svp)
 f <- function(x) (x[1:12] -x[13:24])
 stack_vpd <- calc(stack_vp,f)
-return(list(vpd = stack_vpd, tavg = stack_tavg))
+vpd_m <- calc(stack_vpd, function(x) mean(x[1:12]))
+t_m <- calc(stack_tavg, function(x) mean(x[1:12]))
+
+saveRDS(vpd_m, "output/vpd_raster.rds")
+saveRDS(t_m, "output/tavg_raster.rds")
 }
 
+
+extract_vpd <- function(lats,lons){
+vpd_m<- readRDS("output/vpd_raster.rds")
+plot_vpd <- raster::extract(vpd_m, cbind(lons, lats))
+nas <- which(is.na(plot_vpd))
+print(paste0("number of missing plot for vpd", length(nas)))
+    if (length(nas)>0) {
+      good <- which(!is.na(plot_vpd))
+      near <- NearestPlot(lons[nas],lats[nas],lons[good],lats[good])
+      plot_vpd[nas] <- plot_vpd[good[near]]
+    }
+return(plot_vpd)
+}
+
+
 mean_vpd_t_cor <- function(list_clim){
-vpd_m <- calc(list_clim$vpd, function(x) mean(x[1:12]))
-t_m <- calc(list_clim$tavg, function(x) mean(x[1:12]))
+vpd_m<- readRDS("output/vpd_raster.rds")
+t_m<- savereadRDS("output/tavg_raster.rds")
 df2 <- data.frame(T = as.vector(t_m), vpd = as.vector(vpd_m))
 df2 <- df2 %>% filter(T> -5 & !is.na(T))
 return(df2)

@@ -41,14 +41,7 @@ knitr_options:
 targets:
   all:
     depends:
-      - ms/ideas.pdf
-      - ms/literature.pdf
-
-  ms/ideas.pdf:
-    depends:
-      - ms/ms.sty
-      - ms/amnat.bst
-    command: latex_build("ms/ideas.tex", "ms/references.bib", clean=TRUE)
+      - ms/Plant_WaterStress.pdf
 
   ms/Plant_WaterStress.pdf:
     depends:
@@ -56,19 +49,6 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/Plant_WaterStress.tex", "ms/references.bib", clean=TRUE)
 
-  ms/literature.pdf:
-    depends:
-      - ms/ms.sty
-      - ms/amnat.bst
-    command: latex_build("ms/literature.tex", "ms/references.bib", clean=TRUE)
-
-  ms/abstract_sfe.pdf:
-    depends:
-      - ms/ms.sty
-    command: latex_build("ms/abstract_sfe.tex", clean=TRUE)
-
-  slides.pdf:
-    command: xelatex_build_clean("slides.tex")
 
   figures_plant:
     depends:
@@ -427,23 +407,40 @@ targets:
     command: figure_lma_tradeoff_climate(leaf_traits, I(var_clim = 'map'))
     plot: tall
 
+  figures/data_lma_ll_trade_off_narea.pdf:
+    command: figure_lma_tradeoff_narea(leaf_traits)
+    plot: tall
+
   figures/data_lma_ll_trade_off_climate_slope_elev.pdf:
     command: figure_lma_tradeoff_climate_slope_elev(leaf_traits)
     plot: tall
+
+  figures/data_lma_ll_trade_off_narea_slope_elev.pdf:
+    command: figure_lma_tradeoff_narea_slope_elev(leaf_traits)
+    plot: wide
 
   figures/data_B_kl_climate.pdf:
     command: figure_B_kl_climate(leaf_traits)
     plot: wide
 
+  figures/data_B_kl_narea.pdf:
+    command: figure_B_kl_narea(leaf_traits)
+    plot: wide
+
   figures/leaf_climate.pdf:
     command: figure_lma_climate(leaf_traits)
     plot: wide
+    depends:
+    - output/vpd_raster.rds
 
   output/data_slope_P.csv:
     command: param_B_kl_climate_P(leaf_traits)
 
   output/data_slope_TP.csv:
     command: param_B_kl_climate_TP(leaf_traits)
+
+  output/data_slope_narea.csv:
+    command: param_B_kl_narea(leaf_traits)
 
   leaf_traits:
     packages: xlsx
@@ -456,8 +453,8 @@ targets:
     command: download_aridity_index()
     packages: raster
 
-  data_vpd_t:
-    command: vpd_tavg_corr()
+  output/vpd_raster.rds:
+    command: vpd_tavg_data()
     depends:
     - download/wc2.0_2.5m_vapr_01.tif
     - download/wc2.0_2.5m_tmin_01.tif
@@ -465,7 +462,9 @@ targets:
     - download/wc2.0_2.5m_tavg_01.tif
 
   df_mean_vpd_t_cor:
-    command: mean_vpd_t_cor(data_vpd_t)
+    command: mean_vpd_t_cor()
+    depends:
+    - output/vpd_raster.rds
 
   output/coef_T_vpd.rds:
     command: plot_reg_vpd_t_mean(df_mean_vpd_t_cor)
