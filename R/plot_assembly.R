@@ -9,7 +9,6 @@ format_list_res_vpd_cluster <- function(name,
   return(list_res)
 }
 
-#plot_trait_gradient_narea_lma(ll,  vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3))
 
 
 plot_trait_gradient <- function(list_assembly_lma, vec_site_prod, var = "lma",
@@ -30,7 +29,7 @@ plot_trait_gradient <- function(list_assembly_lma, vec_site_prod, var = "lma",
 }
 
 plot_trait_vpd <- function(list_assembly_lma, vec_site_vpd, var = "lma",
-                                varlab = expression(paste("Leaf-mass per area (kg ", m^-2,")"))) {
+                           varlab = expression(paste("Leaf-mass per area (kg ", m^-2,")"))) {
   list_data <- list_assembly_lma
   grad <- vec_site_vpd
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
@@ -61,6 +60,27 @@ plot_trait_gradient_narea_lma<- function(list_assembly_lma,
        ylim= range(unlist(y)),
     ylab= varlab,
     xlab="Site productivity")
+
+  for(i in seq_along(list_data)) {
+    points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black",
+           pch=1, cex = 0.5+10*z[[i]])
+  }
+}
+
+plot_trait_vpd_narea_lma<- function(list_assembly_lma,
+                                         vec_site_prod,
+                                         var = "narea",
+               varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))) {
+  list_data <- list_assembly_lma
+  grad <- vec_site_prod
+  y <- lapply(list_data, function(x) x$community$traits[ ,var])
+  z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
+
+
+  plot(NA, type="n", log="y", las=1, xlim=range(grad),
+       ylim= range(unlist(y)),
+    ylab= varlab,
+    xlab="vpd")
 
   for(i in seq_along(list_data)) {
     points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black",

@@ -339,11 +339,11 @@ targets:
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
-    command: plot_trait_gradient_narea_lma(list_assembly_FvCB_lma_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_lma_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
 
   figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
-    command: plot_trait_gradient_narea_lma(list_assembly_FvCB_lma_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_lma_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma2.pdf:
