@@ -170,7 +170,7 @@ run_assembly_elev_slope <- function(site_prod=0.0, name_data_param, disturbance_
 }
 
 
-run_assembly_FvCB_narea_lma_NareaLTR<- function(vpd=0.0, name_param_NareaLTR,
+run_assembly_FvCB_narea_lma_Narea_LTR<- function(vpd=0.0, name_param_NareaLTR,
                                                 disturbance_mean_interval=10, ...) {
   p <- trait_gradients_FvCB_parameters(name_data_param = name_param_NareaLTR, vpd=vpd)
 

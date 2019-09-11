@@ -258,6 +258,19 @@ targets:
     command: compare_fit_Narea_Vcmax()
     plot: wide
 
+#### plots of community assembly FvCB
+
+  list_FvCB_FvCB_lma_Narea_dist5_vpd:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_dist5_vpd"))
+
+  list_FvCB_FvCB_lma_Narea_dist40_vpd:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_dist40_vpd"))
+
+  list_FvCB_FvCB_lma_Narea_Tleaf_dist5_vpd:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist5_vpd"))
+
+  list_FvCB_FvCB_lma_Narea_Tleaf_dist40_vpd:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist40_vpd"))
 
 
 #### plots of community assembly
@@ -319,6 +332,18 @@ targets:
 
   figures/gradient_narea_lma_multi_narea_lma.pdf:
     command: plot_trait_gradient_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: square
+
+  figures/gradient_narea_lma_single_narea_lma.pdf:
+    command: plot_trait_gradient_narea_lma(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
+    plot: square
+
+  figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
+    command: plot_trait_gradient_narea_lma(list_assembly_FvCB_lma_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
+    command: plot_trait_gradient_narea_lma(list_assembly_FvCB_lma_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma2.pdf:
@@ -387,6 +412,12 @@ targets:
 
   list_assembly_FvCB_lma_multi_narea_lma:
     command: run_assembly_vpd_list(I(vec_site_prod = c(0, 2.0)), I( disturbance_mean_interval = 40))
+
+  list_assembly_FvCB_lma_single_narea_lma_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist5_vpd"))
+
+  list_assembly_FvCB_lma_multi_narea_lma_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist40_vpd"))
 
   assembly_FvCB_lma_single_narea_lma:
     command: run_assembly_FvCB_narea_lma(disturbance_mean_interval = 5)
