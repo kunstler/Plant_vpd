@@ -5,7 +5,8 @@
 #SBATCH -A u_emgr                                          
 #SBATCH -o run_R_NareaLTR_Dist40_vpd%j.out
 #SBATCH -e run_R_NareaLTR_Dist40_vpd%j.err
-#SBATCH --mail-type=ALL                                   
+#SBATCH --mail-type=ALL
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
 #SBATCH --mem=15000
   
