@@ -7,7 +7,7 @@
 #SBATCH -e run_R_NareaLTR_Dist40_vpd%j.err
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
-#SBATCH --mem=80000
+#SBATCH --mem=15000
   
 module unload gcc
 module load R/gcc
