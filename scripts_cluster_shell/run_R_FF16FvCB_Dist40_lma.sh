@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --job-name=run_R_Dist40_vpd_lma
-#SBATCH -p parallel
+#SBATCH -p q-128
 #SBATCH --time=190:00:00                                    
 #SBATCH -A u_emgr                                          
 #SBATCH -o run_R_Dist40_vpd_lma%j.out
