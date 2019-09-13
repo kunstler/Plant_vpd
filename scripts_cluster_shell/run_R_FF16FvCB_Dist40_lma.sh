@@ -1,10 +1,11 @@
 #!/bin/sh
 #SBATCH --job-name=run_R_Dist40_vpd_lma
-#SBATCH -p q-128Go
+#SBATCH -p parallel
 #SBATCH --time=190:00:00                                    
 #SBATCH -A u_emgr                                          
 #SBATCH -o run_R_Dist40_vpd_lma%j.out
 #SBATCH -e run_R_Dist40_vpd_lma%j.err
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
 #SBATCH --mem=80000
