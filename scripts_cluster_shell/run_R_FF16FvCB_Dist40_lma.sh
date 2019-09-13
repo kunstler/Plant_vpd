@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL                                   
 #SBATCH --mail-user=georges.kunstler@irstea.fr                                                                                                    
-#SBATCH --mem=80000
+#SBATCH --mem=15000
   
 module unload gcc
 module load R/gcc
