@@ -1028,8 +1028,10 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
     }
   }
   assert_scalar(lma_0)
-  assert_scalar(B_kl1)
-  assert_scalar(B_kl2)
+  assert_scalar(B_kl1_1)
+  assert_scalar(B_kl1_2)
+  assert_scalar(B_kl2_1)
+  assert_scalar(B_kl2_2)
   assert_scalar(rho_0)
   assert_scalar(B_dI1)
   assert_scalar(B_dI2)
