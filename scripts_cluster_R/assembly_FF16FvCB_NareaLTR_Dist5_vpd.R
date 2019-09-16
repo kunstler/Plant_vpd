@@ -13,6 +13,7 @@ if(length(args)==0){
 }
 
 source("R/assembly.R")
+sessionInfo()
 dir.create("output_cluster", showWarnings = FALSE)
 vpd <- vpd/10
 print( vpd)
