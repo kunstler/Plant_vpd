@@ -173,7 +173,7 @@ run_assembly_elev_slope <- function(site_prod=0.0, name_data_param, disturbance_
 run_assembly_FvCB_narea_lma_Narea_LTR<- function(vpd=0.0,
                                                  disturbance_mean_interval=10,
                                                  ...) {
-    
+
  p <- trait_gradients_FvCB_LTR_Narea_parameters(vpd=vpd)
 
   p$disturbance_mean_interval <- disturbance_mean_interval
@@ -475,7 +475,8 @@ make_FF16_trait_gradient_hyperpar <- function(
       E <- seq(0, 1, by=0.02)
       ## Only integrate over half year, as solar path is symmetrical
       D <- seq(0, 365/2, length.out = 10000)
-      I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+      I <- plant:::PAR_given_solar_angle(
+                       plant:::solar_angle(D, latitude = abs(latitude)))
 
       Amax <- (1+site_prod)*B_lf1 * (narea/narea_0) ^  B_lf5
       theta <- B_lf2
@@ -1000,10 +1001,10 @@ make_FF16_FvCB_trait_gradient_slope_elev_hyperpar <- function(lma_0=0.1978791,
 
 
 make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
-                                B_kl1_1 = -0.1450071,
-                                B_kl1_2 =  0.5213681,
-                                B_kl2_1 = 1.71,
-                                B_kl2_2 = 0,
+                                      B_kl1_1 = -0.1450071,
+                                      B_kl1_2 =  0.5213681,
+                                      B_kl2_1 = 1.71,
+                                      B_kl2_2 = 0,
                                       rho_0=608.0,
                                       B_dI1=0.01,
                                       B_dI2=0.0,
@@ -1108,7 +1109,8 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
       E <- seq(0, 1, by=0.02)
       ## Only integrate over half year, as solar path is symmetrical
       D <- seq(0, 365/2, length.out = 10000)
-      I <- PAR_given_solar_angle(solar_angle(D, latitude = abs(latitude)))
+      I <- plant:::PAR_given_solar_angle(
+                       plant:::solar_angle(D, latitude = abs(latitude)))plant:::
 
       Vcmax <- B_lf1 * (narea) ^  B_lf5
       theta <- B_lf2
