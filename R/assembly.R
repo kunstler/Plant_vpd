@@ -1055,7 +1055,8 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
   assert_scalar(latitude)
   assert_scalar(vpd)
   assert_scalar(Tleaf)
-
+  require(plantecophys)
+  require(nlmrt)
   ## TODO: k_I should actually be in default parameter set, so perhaps don't pass into function?
 
   function(m, s, filter=TRUE) {
@@ -1093,7 +1094,7 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
     ## Narea, photosynthesis, respiration
 
     assimilation_FvCB <- function(I, V, vpd, Tleaf, alpha, theta, lf6, lf7) {
-    df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
+    df_pred <- plantecophys::Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
                         VPD = vpd,
                         Tleaf = Tleaf,
                         Vcmax  = V,
@@ -1129,7 +1130,7 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
         ret <- c(last(AA), 0)
         names(ret) <- c("p1","p2", "p3")
       } else {
-        fitxb2 <- nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
+        fitxb2 <- nlmrt::nlxb(AA ~ (p1 +p2*E - sqrt((p1+p2*E)^2-4*p3*p2*E*p1))/(2*p3),
                            data = data.frame(E = E, AA = AA),
                            start = list(p1 = 500,
                                         p2 = 600,
