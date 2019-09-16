@@ -514,17 +514,18 @@ pval_slop_TP<- as.integer(summary(lm(slopem~mat_o_map,data = df,
 
 figure_B_kl_narea<- function(data) {
   require(dplyr)
-
   data <- subset(data, !is.na(data[["n.area"]] * data[["lma"]] *
                               data[["leaf_turnover"]]))
-    data$levels <- cut(data$n.area,
-                     breaks = quantile(data$n.area,
-                                       probs = seq(0,1, length.out = 15),
-                                       na.rm = TRUE),
-                     labels = FALSE, ordered_result = TRUE,
-                     include.lowest = TRUE)
-    levels <- data$levels
-    data_summ <- data %>% group_by(levels) %>% summarise(n.area.mean = mean(n.area)) %>% ungroup()
+  data$naream<-  data$n.area/1.87e-3
+  data$levels <- cut(data$naream,
+                   breaks = quantile(data$naream,
+                                     probs = seq(0,1, length.out = 15),
+                                     na.rm = TRUE),
+                   labels = FALSE, ordered_result = TRUE,
+                   include.lowest = TRUE)
+  levels <- data$levels
+  data_summ <- data %>% group_by(levels) %>%
+      summarise(n.area.mean = mean(naream)) %>% ungroup()
   lma <- data[["lma"]]/0.1978791
   leaf_turnover <- data[["leaf_turnover"]]
   sm <- sma(leaf_turnover ~ lma, log="xy")
@@ -549,8 +550,7 @@ figure_B_kl_narea<- function(data) {
   df$elevw <- 1/(df$elevationch - df$elevationcl)
   df$slopw <- 1/(df$slopech - df$slopecl)
   df <-  df[df$pval <= 0.05, ]
-  df$naream<-  df$n.area.mean/1.87e-3
-
+  df$naream<-  df$n.area.mean
   param_N<- data.frame(coef = c("inter", "slope"),
                        elev = coef(lm(elevationm~naream,
                                       data = df ,
@@ -558,23 +558,27 @@ figure_B_kl_narea<- function(data) {
                        slop = coef(lm(slopem~naream,
                                      data = df ,
                                      weights = df$slopw))
-                      )
-pval_elev_N<- as.integer(summary(lm(elevationm~naream, data = df,
-                                    weights = df$elevw))$coefficients[2,4] > 0.01)
-pval_slop_N<- as.integer(summary(lm(slopem~naream, data = df,
-                                    weights = df$slopw))$coefficients[2,4] > 0.01)
-  seq_stress <- seq(from = min(df$naream), to = max(df$naream), length.out = 100)
+                       )
+  print(param_N)
+  pval_elev_N<- as.integer(summary(lm(elevationm~naream, data = df,
+                                weights = df$elevw))$coefficients[2,4] > 0.01)
+  pval_slop_N<- as.integer(summary(lm(slopem~naream, data = df,
+                                weights = df$slopw))$coefficients[2,4] > 0.01)
+  seq_stress <- seq(from = min(df$naream), to = max(df$naream),
+                    length.out = 100)
   par(mfrow = c(1, 2))
   plot(seq_stress, param_N[1, 2] + seq_stress * param_N[2,2],
-       xlab = "Narea", ylab = "B_kl1", type = "l",
-       xlim = range(df$naream), ylim = range(df$elevationm, df$elevationch, df$elevationcl),
+       xlab = "Narea over Narea mean", ylab = "B_kl1", type = "l",
+       xlim = range(df$naream),
+       ylim = range(df$elevationm, df$elevationch, df$elevationcl),
        lty = pval_elev_N+1)
   points(df$naream, df$elevationm)
   segments(df$naream, df$elevationcl, df$naream, df$elevationch)
   abline(v=1, col = 'red')
   plot(seq_stress, param_N[1, 3] + seq_stress * param_N[2,3],
-       xlab = "Narea", ylab = "B_kl2", type = "l",
-       xlim = range(df$naream), ylim = range(df$slopem, df$slopech, df$slopecl),
+       xlab = "Narea over Narea mean", ylab = "B_kl2", type = "l",
+       xlim = range(df$naream),
+       ylim = range(df$slopem, df$slopech, df$slopecl),
        lty = pval_slop_N+1)
   points(df$naream, df$slopem)
   segments(df$naream, df$slopecl, df$naream, df$slopech)
@@ -690,12 +694,13 @@ param_B_kl_narea<- function(data) {
   require(dplyr)
 
   data <- subset(data, !is.na(data[["lma"]] * data[["leaf_turnover"]] * data[["n.area"]]))
-    data$levels <- cut(data$n.area,
-                     breaks = quantile(data$n.area,
-                                       probs = seq(0,1, length.out = 15),
-                                       na.rm = TRUE),
-                     labels = FALSE, ordered_result = TRUE,
-                     include.lowest = TRUE)
+  data$naream<-  data$n.area/1.87e-3
+  data$levels <- cut(data$n.area,
+                   breaks = quantile(data$n.area,
+                                     probs = seq(0,1, length.out = 15),
+                                     na.rm = TRUE),
+                   labels = FALSE, ordered_result = TRUE,
+                   include.lowest = TRUE)
   data_summ <- data %>% group_by(levels) %>% summarise(n.area.mean = mean(n.area)) %>% ungroup()
   levels <- data$levels
   lma <- data[["lma"]]/0.1978791
@@ -723,7 +728,7 @@ param_B_kl_narea<- function(data) {
   df$elevw <- 1/(df$elevationch - df$elevationcl)
   df$slopw <- 1/(df$slopech - df$slopecl)
   df <-  df[df$pval <= 0.05, ]
-  df$naream<-  df$n.area.mean/1.87e-3
+  df$naream<-  df$n.area.mean
 
   param <- data.frame(coef = c("a", "b"),
                       LMAelev = coef(lm(elevationm~naream,
