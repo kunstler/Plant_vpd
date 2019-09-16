@@ -1110,7 +1110,7 @@ make_FF16_FvCB_trait_gradient_LTRvsNarea_hyperpar <- function(lma_0=0.1978791,
       ## Only integrate over half year, as solar path is symmetrical
       D <- seq(0, 365/2, length.out = 10000)
       I <- plant:::PAR_given_solar_angle(
-                       plant:::solar_angle(D, latitude = abs(latitude)))plant:::
+                       plant:::solar_angle(D, latitude = abs(latitude)))
 
       Vcmax <- B_lf1 * (narea) ^  B_lf5
       theta <- B_lf2
