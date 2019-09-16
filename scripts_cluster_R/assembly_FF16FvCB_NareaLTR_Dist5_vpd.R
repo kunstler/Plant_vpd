@@ -14,9 +14,6 @@ if(length(args)==0){
 
 
 source("R/assembly.R")
-sessionInfo()
-D <- seq(0, 365/2, length.out = 10000)
-plant:::solar_angle(D, latitude = abs(0))
 
 dir.create("output_cluster", showWarnings = FALSE)
 vpd <- vpd/10
