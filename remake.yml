@@ -54,15 +54,7 @@ targets:
     depends:
     - figures/tradeoff_shade_light.pdf
     - figures/data_climate.pdf
-    - figures/data_lma_ll_trade_off.pdf
-    - figures/data_lma_ll_trade_off_climate_elev_T_P.pdf
-    - figures/data_lma_ll_trade_off_climate_elev_P.pdf
-    - figures/data_lma_ll_trade_off_climate_slope_elev.pdf
     - figures/data_B_kl_climate.pdf
-    - figures/fitness_lma_single.pdf
-    - figures/fitness_lma_multi.pdf
-    - figures/gradient_lma_single.pdf
-    - figures/gradient_lma_multi.pdf
 
   figures_plant_FvC:
     depends:
@@ -94,21 +86,6 @@ targets:
 
 ## Plant simuls
 
-#### plots of physological models
-  figures/tradeoff_shade_light.pdf:
-    command: plot_lma_shade_tradeoff()
-    plot: square
-
-  figures/WaterS_LeafN_contour.pdf:
-    command: plot_contour_waterStress_LeafN(res_photo)
-    plot: square
-
-  res_photo:
-    command: data_contour()
-
-  figures/WaterS_LeafN.pdf:
-    command: plot_water_LeafN()
-    plot: square
 
 ## compare FF16FvCB and FF16
 
@@ -258,20 +235,195 @@ targets:
     command: compare_fit_Narea_Vcmax()
     plot: wide
 
-#### plots of community assembly FvCB
+# Narea vs LTR
 
-  list_FvCB_FvCB_lma_Narea_dist5_vpd:
-    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_dist5_vpd"))
+  figures/data_lma_ll_trade_off_narea_slope_elev.pdf:
+    command: figure_lma_tradeoff_narea_slope_elev(leaf_traits)
+    plot: wide
 
-  list_FvCB_FvCB_lma_Narea_dist40_vpd:
-    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_dist40_vpd"))
+  figures/data_B_kl_narea.pdf:
+    command: figure_B_kl_narea(leaf_traits)
+    plot: wide
 
-  list_FvCB_FvCB_lma_Narea_Tleaf_dist5_vpd:
-    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist5_vpd"))
+  output/data_slope_narea.csv:
+    command: param_B_kl_narea(leaf_traits)
 
-  list_FvCB_FvCB_lma_Narea_Tleaf_dist40_vpd:
-    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist40_vpd"))
 
+#### community assembly FvCB from cluster
+
+  list_assembly_FvCB_single_lma_cluster:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_dist5_vpd"))
+
+  list_assembly_FvCB_multi_lma_cluster:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_dist40_vpd"))
+
+  list_assembly_FvCB_single_narea_lma_Tleaf_cluster:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist5_vpd"), I(seq_vpd = seq(5, 30, by = 5)/10))
+
+  list_assembly_FvCB_multi_narea_lma_Tleaf_cluster:
+    command: format_list_res_vpd_cluster(name = I("FvCB_lma_Narea_Tleaf_dist40_vpd"), I(seq_vpd = seq(5, 30, by = 5)/10))
+
+  list_assembly_FvCB_single_narea_lma_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist5_vpd"))
+
+  list_assembly_FvCB_multi_narea_lma_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist40_vpd"))
+
+
+## FvCB assembly figures
+
+  figures/gradient_lma_single_lma_FvCB.pdf:
+    command: plot_trait_vpd(list_assembly_FvCB_single_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_lma_multi_lma_FvCB.pdf:
+    command: plot_trait_vpd(list_assembly_FvCB_multi_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_narea_lma_multi_narea_lma2_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: tall
+
+  figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: tall
+
+  figures/gradient_narea_lma_multi_narea_lma_FvCB_Tleaf.pdf:
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_Tleaf_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+  figures/gradient_narea_lma_single_narea_lma_FvCB_Tleaf.pdf:
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_Tleaf_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
+
+## Data
+
+  leaf_traits:
+    packages: xlsx
+    command: >
+      process_wright_2004("download/wright-2004.xls",
+                          "data/wright_2004_locations.csv",
+                          AridityIndex)
+
+  AridityIndex:
+    command: download_aridity_index()
+    packages: raster
+
+  output/vpd_raster.rds:
+    command: vpd_tavg_data()
+    depends:
+    - download/wc2.0_2.5m_vapr_01.tif
+    - download/wc2.0_2.5m_tmin_01.tif
+    - download/wc2.0_2.5m_tmax_01.tif
+    - download/wc2.0_2.5m_tavg_01.tif
+
+  df_mean_vpd_t_cor:
+    command: mean_vpd_t_cor()
+    depends:
+    - output/vpd_raster.rds
+
+  output/coef_T_vpd.rds:
+    command: plot_reg_vpd_t_mean(df_mean_vpd_t_cor)
+
+  plot_vpd_t_cor_mean_zero:
+    command: plot_reg_vpd_t_mean_zero(df_mean_vpd_t_cor)
+
+  download/wc2.0_2.5m_vapr_01.tif:
+    command: fun_unzip("download/wc2.0_2.5m_vapr.zip")
+
+  download/wc2.0_2.5m_tmin_01.tif:
+    command: fun_unzip("download/wc2.0_2.5m_tmin.zip")
+
+  download/wc2.0_2.5m_tmax_01.tif:
+    command: fun_unzip("download/wc2.0_2.5m_tmax.zip")
+
+  download/wc2.0_2.5m_tavg_01.tif:
+    command: fun_unzip("download/wc2.0_2.5m_tavg.zip")
+
+  download/wright-2004.xls:
+    download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
+
+  download/wc2.0_2.5m_vapr.zip:
+    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_vapr.zip"
+
+  download/wc2.0_2.5m_tmin.zip:
+    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tmin.zip"
+
+  download/wc2.0_2.5m_tmax.zip:
+    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tmax.zip"
+
+  download/wc2.0_2.5m_tavg.zip:
+    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tavg.zip"
+
+
+
+### OLD run with FF16
+
+
+
+## run community assembly
+
+  list_assembly_lma_single:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_single_P:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_P:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_single_TP:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_TP:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_single_narea:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_narea:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_single_narea_lma:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 5)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_lma_multi_narea_lma:
+    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
+    check: exists
+    cleanup_level: purge
+
+  list_assembly_FvCB_lma_single_narea_lma:
+    command: run_assembly_vpd_list(I(vec_vpd = c(0, 2.0) ),  I(disturbance_mean_interval = 5))
 
 #### plots of community assembly
   figures/fitness_lma_single.pdf:
@@ -338,14 +490,6 @@ targets:
     command: plot_trait_gradient_narea_lma(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: square
 
-  figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_lma_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
-    plot: square
-
-  figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_lma_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
-    plot: square
-
   figures/gradient_narea_lma_multi_narea_lma2.pdf:
     command: plot_trait_gradient_narea_lma2(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
     plot: large_square
@@ -355,74 +499,6 @@ targets:
     plot: square
 
 
-## run community assembly
-
-  list_assembly_lma_single:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_P:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_P:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_TP:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_TP:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_narea:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_narea:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_narea_lma:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_narea_lma:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_FvCB_lma_single_narea_lma:
-    command: run_assembly_vpd_list(I(vec_vpd = c(0, 2.0) ),  I(disturbance_mean_interval = 5))
-
-  list_assembly_FvCB_lma_multi_narea_lma:
-    command: run_assembly_vpd_list(I(vec_site_prod = c(0, 2.0)), I( disturbance_mean_interval = 40))
-
-  list_assembly_FvCB_lma_single_narea_lma_cluster:
-    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist5_vpd"))
-
-  list_assembly_FvCB_lma_multi_narea_lma_cluster:
-    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist40_vpd"))
-
-  assembly_FvCB_lma_single_narea_lma:
-    command: run_assembly_FvCB_narea_lma(disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
 
 # Data sources and figures for traits patterns  ###################################################
 
@@ -446,16 +522,8 @@ targets:
     command: figure_lma_tradeoff_climate_slope_elev(leaf_traits)
     plot: tall
 
-  figures/data_lma_ll_trade_off_narea_slope_elev.pdf:
-    command: figure_lma_tradeoff_narea_slope_elev(leaf_traits)
-    plot: wide
-
   figures/data_B_kl_climate.pdf:
     command: figure_B_kl_climate(leaf_traits)
-    plot: wide
-
-  figures/data_B_kl_narea.pdf:
-    command: figure_B_kl_narea(leaf_traits)
     plot: wide
 
   figures/leaf_climate.pdf:
@@ -470,63 +538,19 @@ targets:
   output/data_slope_TP.csv:
     command: param_B_kl_climate_TP(leaf_traits)
 
-  output/data_slope_narea.csv:
-    command: param_B_kl_narea(leaf_traits)
 
-  leaf_traits:
-    packages: xlsx
-    command: >
-      process_wright_2004("download/wright-2004.xls",
-                          "data/wright_2004_locations.csv",
-                          AridityIndex)
+#### plots of physological models
+  figures/tradeoff_shade_light.pdf:
+    command: plot_lma_shade_tradeoff()
+    plot: square
 
-  AridityIndex:
-    command: download_aridity_index()
-    packages: raster
+  figures/WaterS_LeafN_contour.pdf:
+    command: plot_contour_waterStress_LeafN(res_photo)
+    plot: square
 
-  output/vpd_raster.rds:
-    command: vpd_tavg_data()
-    depends:
-    - download/wc2.0_2.5m_vapr_01.tif
-    - download/wc2.0_2.5m_tmin_01.tif
-    - download/wc2.0_2.5m_tmax_01.tif
-    - download/wc2.0_2.5m_tavg_01.tif
+  res_photo:
+    command: data_contour()
 
-  df_mean_vpd_t_cor:
-    command: mean_vpd_t_cor()
-    depends:
-    - output/vpd_raster.rds
-
-  output/coef_T_vpd.rds:
-    command: plot_reg_vpd_t_mean(df_mean_vpd_t_cor)
-
-  plot_vpd_t_cor_mean_zero:
-    command: plot_reg_vpd_t_mean_zero(df_mean_vpd_t_cor)
-
-  download/wc2.0_2.5m_vapr_01.tif:
-    command: fun_unzip("download/wc2.0_2.5m_vapr.zip")
-
-  download/wc2.0_2.5m_tmin_01.tif:
-    command: fun_unzip("download/wc2.0_2.5m_tmin.zip")
-
-  download/wc2.0_2.5m_tmax_01.tif:
-    command: fun_unzip("download/wc2.0_2.5m_tmax.zip")
-
-  download/wc2.0_2.5m_tavg_01.tif:
-    command: fun_unzip("download/wc2.0_2.5m_tavg.zip")
-
-  download/wright-2004.xls:
-    download: "http://www.nature.com/nature/journal/v428/n6985/extref/nature02403-s2.xls"
-
-  download/wc2.0_2.5m_vapr.zip:
-    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_vapr.zip"
-
-  download/wc2.0_2.5m_tmin.zip:
-    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tmin.zip"
-
-  download/wc2.0_2.5m_tmax.zip:
-    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tmax.zip"
-
-  download/wc2.0_2.5m_tavg.zip:
-    download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tavg.zip"
-
+  figures/WaterS_LeafN.pdf:
+    command: plot_water_LeafN()
+    plot: square
