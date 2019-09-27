@@ -87,73 +87,69 @@ targets:
 ## Plant simuls
 
 
-## compare FF16FvCB and FF16
+#### plots of physological models
+  figures/tradeoff_shade_light.pdf:
+    command: plot_lma_shade_tradeoff()
+    plot: large_square
 
-  figures/FvC_FF16_FF16FvCB_Growth.pdf:
-    command: compare_strategy_growth()
+  figures/WaterS_LeafN_contour.pdf:
+    command: plot_contour_waterStress_LeafN(res_photo)
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_Growth_Light.pdf:
-    command: compare_strategy_light_growth()
+  res_photo:
+    command: data_contour()
+
+  figures/WaterS_LeafN.pdf:
+    command: plot_water_LeafN()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_Growth_Narea.pdf:
-    command: compare_strategy_growth_narea()
+## FF16FvCB strategy physio
+
+  figures/FF16FvCB_Growth.pdf:
+    command: FF16FvCB_strategy_growth()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_LCP.pdf:
-    command: compare_strategy_lcp()
+  figures/FF16FvCB_Growth_Light.pdf:
+    command: FF16FvCB_strategy_light_growth()
     plot: square
 
-  matrix_lcp_narea_vpd:
-    command: compare_strategy_lcp_narea_vpd()
-
-  matrix_growth_narea_vpd:
-    command: compare_strategy_growth_narea_vpd()
-
-  figures/plot_lcp_narea_vpd.pdf:
-    command: plot_strategy_lcp_narea_vpd(matrix_lcp_narea_vpd)
+  figures/FF16FvCB_Growth_Narea.pdf:
+    command: FF16FvCB_strategy_growth_narea()
     plot: square
 
-  figures/plot_growth_narea_vpd.pdf:
-    command: plot_strategy_growth_narea_vpd(matrix_growth_narea_vpd)
+  figures/FF16FvCB_Growth_Lma.pdf:
+    command: FF16FvCB_strategy_growth_lma()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_LCP_Narea.pdf:
-    command: compare_strategy_lcp_narea()
+  figures/FF16FvCB_LCP.pdf:
+    command: FF16FvCB_strategy_lcp()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_Patch.pdf:
-    command: compare_strategy_patch()
+  figures/FF16FvCB_LCP_Narea.pdf:
+    command: FF16FvCB_strategy_lcp_narea()
     plot: square
 
-  figures/FvC_FF16_FF16FvCB_Patch__F.pdf:
-    command: compare_strategy_patch_Fecundity()
+  figures/FF16FvCB_tradeoff_shade_light_lma.pdf:
+    command: plot_lma_shade_tradeoff_FF16FvCB()
+    plot: large_square
+
+  figures/FF16FvCB_tradeoff_shade_light_narea.pdf:
+    command: plot_narea_shade_tradeoff_FF16FvCB()
+    plot: large_square
+
+  FF16FvCB_matrix_lcp_narea_vpd:
+    command: FF16FvCB_strategy_lcp_narea_vpd()
+
+  FF16FvCB_matrix_growth_narea_vpd:
+    command: FF16FvCB_strategy_growth_narea_vpd()
+
+  figures/plot_lcp_narea_vpd_FF16FvCB.pdf:
+    command: plot_strategy_lcp_narea_vpd_FF16FvCB(FF16FvCB_matrix_lcp_narea_vpd)
     plot: square
 
-  dataFF16_l_FH:
-    command: data_patch_FF16(I(prod = -0.3))
-
-  dataFF16_h_FH:
-    command: data_patch_FF16(I(prod = 0.3))
-
-  dataFF16_l_FC:
-    command: data_patch_FF16(I(prod = -0.3), I(cancel_F = TRUE))
-
-  dataFF16_h_FC:
-    command: data_patch_FF16(I(prod = 0.3), I(cancel_F = TRUE))
-    check: exists
-    cleanup_level: purge
-
-  dataFF16FvCB_l_FH:
-    command: data_patch_FF16FvCB(I(vpd = 0.0))
-    check: exists
-    cleanup_level: purge
-
-  dataFF16FvCB_h_FH:
-    command: data_patch_FF16FvCB(I(vpd = 3))
-    check: exists
-    cleanup_level: purge
+  figures/plot_growth_narea_vpd_FF16FvCB.pdf:
+    command: plot_strategy_growth_narea_vpd_FF16FvCB(FF16FvCB_matrix_growth_narea_vpd)
+    plot: square
 
   dataFF16FvCB_l_FC:
     command: data_patch_FF16FvCB(I(vpd = 0), I(cancel_F = TRUE))
@@ -164,18 +160,6 @@ targets:
     command: data_patch_FF16FvCB(I(vpd = 3), I(cancel_F = TRUE))
     check: exists
     cleanup_level: purge
-
-  figures/Patch_FF16_FH.pdf:
-    command: plot_patch_data_grad(dataFF16_l_FH, dataFF16_h_FH, I(title = "FF16 FH"))
-    plot: Bwide
-
-  figures/Patch_FF16_FC.pdf:
-    command: plot_patch_data_grad(dataFF16_l_FC, dataFF16_h_FC, I(title = "FF16 FC"))
-    plot: Bwide
-
-  figures/Patch_FF16FvCB_FH.pdf:
-    command: plot_patch_data_grad(dataFF16FvCB_h_FH, dataFF16FvCB_l_FH, I(title = "FF16FvCB FH"))
-    plot: Bwide
 
   figures/Patch_FF16FvCB_FC.pdf:
     command: plot_patch_data_grad(dataFF16FvCB_h_FC, dataFF16FvCB_l_FC, I(title = "FF16FvCB FC"))
@@ -269,6 +253,12 @@ targets:
   list_assembly_FvCB_multi_narea_lma_cluster:
     command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_dist40_vpd"))
 
+  list_assembly_FvCB_single_narea_lma_NvLTR_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist5_vpd"))
+
+  list_assembly_FvCB_multi_narea_lma_NvLTR_cluster:
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist40_vpd"))
+
 
 ## FvCB assembly figures
 
@@ -303,6 +293,14 @@ targets:
   figures/gradient_narea_lma_single_narea_lma_FvCB_Tleaf.pdf:
     command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_Tleaf_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
+
+## Traits pattern along climate
+
+  figures/leaf_climate.pdf:
+    command: figure_lma_climate(leaf_traits)
+    plot: wide
+    depends:
+    - output/vpd_raster.rds
 
 
 ## Data
@@ -365,192 +363,3 @@ targets:
     download: "http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_2.5m_tavg.zip"
 
 
-
-### OLD run with FF16
-
-
-
-## run community assembly
-
-  list_assembly_lma_single:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_P:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_P:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_P.csv"), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_TP:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_TP:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_elev_slope), I(name_data_param = "output/data_slope_TP.csv"), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_narea:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_narea:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_single_narea_lma:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 5)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_lma_multi_narea_lma:
-    command: run_assembly_list(I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(FUN = run_assembly_narea_lma), disturbance_mean_interval = 40)
-    check: exists
-    cleanup_level: purge
-
-  list_assembly_FvCB_lma_single_narea_lma:
-    command: run_assembly_vpd_list(I(vec_vpd = c(0, 2.0) ),  I(disturbance_mean_interval = 5))
-
-#### plots of community assembly
-  figures/fitness_lma_single.pdf:
-    command: plot_fitness_assembly(list_assembly_lma_single, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/fitness_lma_multi.pdf:
-    command: plot_fitness_assembly(list_assembly_lma_multi, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_single.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_multi.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_single_P.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_P, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_multi_P.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_P, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-  figures/gradient_lma_single_TP.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_TP, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_multi_TP.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_TP, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-  figures/gradient_lma_single_narea_lma.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)))
-    plot: square
-
-  figures/gradient_lma_multi_narea_lma.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-  figures/gradient_narea_single.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
-    plot: square
-
-  figures/gradient_narea_multi.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_narea, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
-    plot: square
-
-  figures/gradient_narea_single_narea_lma.pdf:
-    command: plot_trait_gradient(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3)), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
-    plot: square
-
-  figures/gradient_narea_multi_narea_lma.pdf:
-    command: plot_trait_gradient(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ), I(var = "narea"), I(varlab = expression(paste("Nitrogen per area (kg ", m^-2,")"))))
-    plot: square
-
-  figures/gradient_narea_lma_multi_narea_lma.pdf:
-    command: plot_trait_gradient_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-  figures/gradient_narea_lma_single_narea_lma.pdf:
-    command: plot_trait_gradient_narea_lma(list_assembly_lma_single_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-  figures/gradient_narea_lma_multi_narea_lma2.pdf:
-    command: plot_trait_gradient_narea_lma2(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: large_square
-
-  figures/cor_narea_lma_multi.pdf:
-    command: plot_cor_narea_lma(list_assembly_lma_multi_narea_lma, I(vec_site_prod = c(-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3) ))
-    plot: square
-
-
-
-# Data sources and figures for traits patterns  ###################################################
-
-  figures/data_lma_ll_trade_off.pdf:
-    command: figure_lma_tradeoff(leaf_traits)
-    plot: square
-
-  figures/data_lma_ll_trade_off_climate_elev_T_P.pdf:
-    command: figure_lma_tradeoff_climate(leaf_traits)
-    plot: tall
-
-  figures/data_lma_ll_trade_off_climate_elev_P.pdf:
-    command: figure_lma_tradeoff_climate(leaf_traits, I(var_clim = 'map'))
-    plot: tall
-
-  figures/data_lma_ll_trade_off_narea.pdf:
-    command: figure_lma_tradeoff_narea(leaf_traits)
-    plot: tall
-
-  figures/data_lma_ll_trade_off_climate_slope_elev.pdf:
-    command: figure_lma_tradeoff_climate_slope_elev(leaf_traits)
-    plot: tall
-
-  figures/data_B_kl_climate.pdf:
-    command: figure_B_kl_climate(leaf_traits)
-    plot: wide
-
-  figures/leaf_climate.pdf:
-    command: figure_lma_climate(leaf_traits)
-    plot: wide
-    depends:
-    - output/vpd_raster.rds
-
-  output/data_slope_P.csv:
-    command: param_B_kl_climate_P(leaf_traits)
-
-  output/data_slope_TP.csv:
-    command: param_B_kl_climate_TP(leaf_traits)
-
-
-#### plots of physological models
-  figures/tradeoff_shade_light.pdf:
-    command: plot_lma_shade_tradeoff()
-    plot: square
-
-  figures/WaterS_LeafN_contour.pdf:
-    command: plot_contour_waterStress_LeafN(res_photo)
-    plot: square
-
-  res_photo:
-    command: data_contour()
-
-  figures/WaterS_LeafN.pdf:
-    command: plot_water_LeafN()
-    plot: square

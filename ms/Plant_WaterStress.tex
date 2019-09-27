@@ -152,6 +152,22 @@ $N_{area}$ could be divided in structural and rubisco related N (using
 the relationship of \citet{Onoda-2004}) but this distinction of N in to group is beyond the current implementation of \plant\ .
 
 
+MECA INCLUDED HERE
+
+HIGH LMA HIGH SHADE TOLERANCE AND SLOW HEIGHT GROWTH IN LOW LIGHT
+
+HIGH LMA FAVOURED IN LESS PRODUCTIVE AREA = drought
+
+=> both shade and drought tolerance
+
+High Narea low shade tolerance and fast growth rate
+
+High Narea hight tolerance to drought
+
+=> shade intol but drought tol
+
+WHAT EPECTATION BUIL ON THAT
+
 
 \section{Key questions}
 
@@ -758,173 +774,6 @@ In the long-term it would be interesting to think about:
 
 \clearpage
 
-\section{Old materials based on current version of plant to recall previous work}
-
-
-List of hypo that I proposed to test with current version of plant in previous analysis. At the moment I'm not planning to keep that in the analysis because the effect of drought stress on growth is not based on first principle.
-
-The assumption that we could test using the current version of \plant\ :
-
-\begin{itemize}
-
-\item First focusing only on $LMA$, the aridity gradient can simply affect
-the productivity with consequence on the process of light competition thus changing the evolved mixture of $LMA$ (as already shown by \citep{Falster-2017}). This would allow to explore the idea that high $LMA$ is favoured at high aridity because it lead to slow leaf turnover \citep{Wright-2002b}.
-
-\item Secondly, the environmental gradient can affect the
-trade-off underpinning the light use strategy (by changing the
-trade-off between LMA and LLS). For instance, it has been reported
-that the coordination between $LLS$ and $LMA$ is changing along
-aridity gradient both in regional \citep{Wright-2002b} and global
-studies \citep{Wright-2004}. The elevation of the relation between
-$LMA$ and $LLS$ decreases with aridity (precipitation or other aridity index) resulting in a lower leaf life
-span for a given $LMA$. This could be due to a higher
-investment in leaf nitrogen per area $N_{area}$ at higher aridity
-\citep{Wright-2002b} that would results in a decrease leaf life span. Some studies have also reported potential
-effect on the slope of the relationship. We will thus explore how the
-change in the trade-off between $LMA$ and $LLS$ can influence shift in
-trait assembly predicted by \plant\ . The problem is that we don't know how to model the effect of aridity on Amax and the relative effect of the aridity index on the tradeoff and Amax is likely crucial.
-
-\item Finally, we could explore the role of $N_{area}$, which can have direct influence on the species tolerance to aridity as proposed by \citet{Wright-2003}. Briefly, $N_{area}$ is strongly related to the
-  abundance of photosynthetic apparatus in the leaf and allow the
-  plant to achieve higher photosynthesis for a given stomatal
-  conductance. Higher $N_{area}$ come however with the cost of a high
-  respiration rate. We will use \plant\ to predict assembly of these
-  two traits along an aridity gradients. We can use the empirical photosynthesis model with a theoretical effect of
-  water stress and $N_{area}$ on productivity as currently implement in \plant\. The effect of the index of productivity in plant on Amax is not based on any mechanisms on we don't know how this scale with $N_{area}$ effect. 
-\end{itemize}
-
-\section{Overview of analysis and first results for the current version of plant}
-
-
-\subsection{$LMA$ only and productivity gradient}
-
-In a first set of assumption we consider a model where there is only one trait LMA. In the most simple version environmental gradients changes productivity (photosynthesis $A_{max}$ through a linear effect of a theoretical productivity gradient $p$) and
-thus competition for light and selection on LMA (this is already presented in \citet{Falster-2017}) (high LMA as adaptation to both low light and low productivity).
-
-The figure \ref{fig:lma} represents how the evolved community mixture
-of LMA change along a productivity gradient. This is essentially
-representing the results of \citet{Falster-2017} only over LMA
-(leaving out size at maturity). Low LMA strategies, coressponding to
-fast-growing light demanding species are only possible in productive sites.
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_lma_multi.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient controlled by aridity by 'Plant' \citep[see][]{Falster-2016}}
-\label{fig:lma}}
-\end{figure}
-
-\clearpage
-
-\subsection{$LMA$ only and changes in $LMA$ \textit{vs.} $LTR$}
-
-In second version, the aridity gradient affect the productivity ($A_{max}$) but also change the trade-off underpinning LMA-LLS in term of its elevation or its slope.
-
-\citet{Wright-2005} reported that the trade-off between LMA and Leaf Turnover Rate, LTR ($1/LLS$), is changing with aridity with higher aridity sites having higher LTR at a given LMA and a shallower slope. \footnote{There is also a shift in the link $A_{mass}$ and LMA (with higher in dry sites), probably because leaf N, but in a first step we will ignore that as the current version consider $A_{area}$ constant and the photosynthesis integrated over the year (as implemented in \plant\ ) is probably lower in dry sites. So we will keep the link between $a_{p1}$ and stress gradient as above. Note that \citet{Sakschewski-2015} implement a link between LMA and $v_{cmax_{area}}$.}
-
-This can be seen In Glopnet as (i) the elevation of the LTR \textit{vs.} LMA is changing with mean annual precipitation (MAP) (see Figure \ref{fig:MAP}) and (ii) the slope of the LTR \textit{vs.} LMA is changing with the ratio MAT/MAP (see Figure \ref{fig:MAT_MAP}). To implement these two distinct options in `plant` we first regressed the elevation and the slope of the site level LTR \textit{vs.} LMA relationship against MAP or MAT/MAP and then included this in `plant` (see Figure \ref{fig:elev_slope}). One key issue here is how to scale the theoretical aridity gradient we used in the previous model ($A{max}_{area}$ is a linear function with slope one of this gradient) with MAP or MAT/MAP. \footnote{So far I have just assumed that the range of MAP or MAT/MAP analyzed was restricted to the part of the theoretical gradient where growth was positive (above -0.3) and thus re-scaled the range of MAP or MAT/MAP to a variation of $p$ from -0.3 to 0.3. This is clearly not perfect.}
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/data_lma_ll_trade_off_climate_elev_P.pdf}
-\caption{\textbf{LTR vs LMA tradeoff per classes of MAP}
-\label{fig:MAP}}
-\end{figure}
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/data_lma_ll_trade_off_climate_elev_T_P.pdf}
-\caption{\textbf{LTR vs LMA tradeoff per classes of MAT/MAP}
-\label{fig:MAT_MAP}}
-\end{figure}
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/data_lma_ll_trade_off_climate_slope_elev.pdf}
-\caption{\textbf{Regression of site level elevation and slope parameters of the LTR \textit{vs.} LMA relationship (estimated with smatr::sma) against MAP or MAT/MAP. }
-\label{fig:elev_slope}}
-\end{figure}
-
-
-The figure \ref{fig:lma_map} represents how the evolved community
-mixture of LMA change along a productivity gradient when the elevation
-and slope (but mainly elevation) of LMA vs LTR were changing with
-precipitation MAP.
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_lma_multi_elev.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area
-    along a productivity gradient controlled by aridity by 'Plant'
-    with a variation of LTR \textit{vs.} LMA relationship with precipitation (mainly elevation).}
-\label{fig:lma_map}}
-\end{figure}
-
-The figure \ref{fig:lma_mat_o_map} represents how the evolved
-community mixture of LMA change along a productivity gradient when the
-elevation and slope of LMA vs LTR were changing with MAT/MAP. In both case the gradient of $LMA$ is steeper than
-with a constant $LMA$ \textit{vs.} $LTR$ relationship. With MAP (Figure \ref{fig:lma_map}) the $LMA$ is
-higher at low productivity and lower at high productivity than with a
-constant $LMA$ \textit{vs.} $LTR$ relationship. With MAT over MAP this
-is mainly lower value at high productivity.
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_lma_multi_slope.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area
-    along a productivity gradient controlled by aridity by 'Plant'
-    with a variation of LTR \textit{vs.} LMA relationship with MAT/MAP
-    (mainly slope).}
-\label{fig:lma_mat_o_map}}
-\end{figure}
-
-
-\clearpage
-
-\subsection{$LMA$ and $N_{area}$}
-
-A third set of models could explore how LMA interact with Leaf N, a second trait controlling the response to the environmental gradient. Aridity gradients affect productivity (photosynthesis) but a
-high leaf N allow to maintain a high photosynthesis even at low
-stomatal conductance (so in condition of high aridity). This is
-however coming with a higher respiration cost (potentially also a higher leaf turnover \citep{Wright-2002a,Wright-2002b}, but this is not modelled in plant). This may results in LMA shifting less than would have been otherwise, but instead differentiate species in N (with flow on effect to shade tolerance).
-
-
- \citet{Wright-2003} explore how N can substitute for water. Assuming that $A_{area} \propto N_{area} \, g_s$ (with $g_s$ stomatal conductance, and $N_{area}$ being related to $V_{cmax}$ and thus $c_a - c_i = c(1-\chi)$). One solution would be to assume that the water stress is represented by $1/g_s$ and $N_{area}$ could off-set the effect of water stress on $A_{area}$ (in our case $A_{max}$). The cost of leaf N comes from the higher dark leaf respiration per area for higher $N_{area}$ and is already include in \plant\ . \footnote{Prentice et al. 2014 expanded this prediction in term of an optimization with a details Farquhar model for C3 plant, but focusing directly on $V_{cmax}$ rather than $N_{area}$.}
-
- The current implementation of Leaf nitrogen per area in `plant` already captures some of the effect proposed by \citet{Wright-2003}. This is build on an empirical relationship between $A_{max}$ and $N_{area}$
-($A_{max} = b_{lf1} \times \frac{N_{area}}{N^0_{area}}^{b_{lf5}}$ \citep{Falster-2016}). There is however no quantitative prediction of how water stress influence $A_{max}$ for different level of $N_{area}$. A first option would be to simply consider that $A_{max}$ is linearly influenced by a water stress index  as follow $A_{max} = (1+WS) * b_{lf1} \frac{N_{area}}{N^0_{area}}^{b_{lf5}}$ ($WS$ is an aridity index ranging between -0.6 high aridity to 0.6 low aridity). This model is presented in the figure \ref{fig:leafN_water}. This could allow a first exploration of the implication of this assumption on community assembly.
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/WaterS_LeafN_contour.pdf}
-\caption{\textbf{Variation of $A{max}_{area}$ with leaf nitrogen per area and water availability (productivity gradient) predicted by `plant`.}
-\label{fig:leafN_water}}
-\end{figure}
-
-The figures \ref{fig:lma_narea1} and \ref{fig:lma_narea2} show that
-the gradient of $LMA$ is weaker than in the previous models but that a gradient of $N_{area}$ is predicted. There is also a negative correlation between $N_{area}$ and $LMA$ within sites.
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant'.}
-\label{fig:lma_narea1}}
-\end{figure}
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_narea_lma_multi_narea_lma.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant'. The size of the point represent the variation of LMA.}
-\label{fig:lma_narea2}}
-\end{figure}
-
-The figure \ref{fig:lma_narea2} shows that $LMA$ and $N_{area}$ are negatively correlated which is in contradiction with the weak but positive correlation reported between in empirical data \citep{Wright-2004}.
-
-
-\clearpage
 
 
 \bibliographystyle{amnat}
