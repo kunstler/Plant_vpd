@@ -99,7 +99,7 @@ plot_cor_narea_lma<- function(list_assembly_lma,
   plot(unlist(y), unlist(z), type="n", log="y", las=1,
     xlab = expression(paste("Nitrogen per area (kg ", m^-2,")")),
     ylab = expression(paste("Leaf-mass per area (kg ", m^-2,")")))
-colfunc <- colorRampPalette(c("red", "green"))
+colfunc <- colorRampPalette(c("green", "red"))
 cols <- colfunc(length(list_data))
   for(i in seq_along(list_data)) {
     points(y[[i]] , z[[i]], type='p', col=cols[i],
@@ -175,7 +175,7 @@ plot_trait_vpd_narea_lma2<- function(list_assembly_lma,
            pch=16)
   }
 
-title(xlab = "Site productivity",
+title(xlab = "vpd",
       outer = TRUE, line = 3)
 }
 

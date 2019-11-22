@@ -49,6 +49,12 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/Plant_WaterStress.tex", "ms/references.bib", clean=TRUE)
 
+  ms/Plant_WaterStress_SupplMat.pdf:
+    depends:
+      - ms/ms.sty
+      - ms/amnat.bst
+    command: latex_build("ms/Plant_WaterStress_SupplMat.tex", "ms/references.bib", clean=TRUE)
+
 
   figures_plant:
     depends:
@@ -285,6 +291,14 @@ targets:
   figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf:
     command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: tall
+
+  figures/gradient_narea_lma_single_FvCB_cor.pdf:
+    command: plot_cor_narea_lma(list_assembly_FvCB_single_narea_lma_cluster)
+    plot: square
+
+  figures/gradient_narea_lma_multi_FvCB_cor.pdf:
+    command: plot_cor_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster)
+    plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB_Tleaf.pdf:
     command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_Tleaf_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))

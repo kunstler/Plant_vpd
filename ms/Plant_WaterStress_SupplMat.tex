@@ -1,0 +1,628 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[osf]{mathpazo}
+\usepackage{ms}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{hyperref}
+%% \usepackage{authblk}
+\usepackage[labelfont=bf]{caption} % make label for figure bold
+
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the MAPgins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\title{Supplementary Materials. Change of LMA and Leaf N per area along a water stress gradient}
+
+\author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
+\date{}
+\affiliation{Irstea, Grenoble, France and Department of Biological Sciences, Macquarie University,
+  Sydney, Australia}
+\date{}
+\runninghead{}
+\keywords{}
+
+\usepackage{color}
+
+\input{common-defs}
+
+\begin{document}
+
+\mstitleshort
+%% \mstitlepage
+\parindent=1.5em
+\addtolength{\parskip}{.3em}
+
+% \begin{abstract}
+% Abstract goes here\ldots
+% \end{abstract}
+
+\section{Introduction}
+
+TODO
+
+\section{Development of the Farquhar photosynthesis model with water stress and Leaf N effects}
+
+
+\subsection{Development of the Farquhar photosynthesis model and plant photosynthesis model in \plant\ .}
+
+The FvC model describe leaf photosynthesis is describe as the minimum
+of three potential rates $J_E$ the light limited rate, $J_C$ the CO2
+rubisco limited rate, and $J_S$ the starch export limitation rate. The
+last limitation by starch export (or triose phosphate utilisation)
+limitation is generally neglected as it come into play only at very
+high level of $CO_2$.
+
+\begin{equation}
+\label{eq:An}
+A_n= min(J_E, J_C, J_s) - R_d.
+\end{equation}
+
+%% There is a lot of variant along this model but
+%% overall they would all predict that $N_{area}$ would influence
+%% $A_{max}$ by influencing either $J_C$ which is a function of $V_{cmax}$
+%% which is related to $N_{area}$ or $J_E$ which is related to $J_{max}$
+%% which related to $N_{area}$ as well. It is probably better to use
+%% hyperbolic minimum rather than minimum function to avoid
+%% discontinuity.
+
+%% The key mechanisms which support that $N_{area}$ might allow to
+%% adapt to low water availability is that increasing $N_{area}$ at a
+%% given stomatal conductance $g_s$
+%% increase $V_{cmax}$ and thus decrease the ratio $c_i/c_a$.
+
+
+%% \begin{equation}
+%% \label{eq:JC}
+%% J_E = Q_p \frac{a \alpha (p_i - \Gamma_*)}{p_i + 2 \Gamma_*}.
+%% \end{equation}
+
+%% , and $Q_p$ is the incident flux of photo-synthetically active photon.
+
+\begin{equation}
+\label{eq:JC}
+J_C= \frac{V_{cmax} (p_i - \Gamma_*)}{p_i + K_c (1+[o_2]/K_o)}.
+\end{equation}
+
+where $K_c$ and $K_o$ are the Michaelis constant for $CO_2$ and the competitive inhibition constant for $O_2$, and $V_{cmax}$ is the maximum catalytic capacity of Rubisco per leaf area.
+$p_i$ is given by $p_i = P c_i$. And $\Gamma_* = \frac{[O_2]}{2\tau}$ ($\tau$ is a ratio of kinetic parameters describing the partitioning of RuNP to the carboxylase or oxygenase)
+
+\begin{equation}
+\label{eq:JCb}
+J_E = J \frac{ c_i - \Gamma_*}{4c_i + 8 \Gamma_*}.
+\end{equation}
+
+where
+
+\begin{equation}
+\label{eq:Jlight}
+J = \frac{ \alpha I + J_{max} - \sqrt{(\alpha I + J_{max})^2 - 4 \theta \alpha I J_{max}}}{2\theta}.
+\end{equation}
+
+with $\alpha$ the initial quantum yield (in mol of electron per mol of photon), $\theta$ the curvature of the light response and $J_{max}$ the maximum electron transfer,
+see for instance \citet{Bernacchi-2009}.
+
+
+\begin{equation}
+\label{eq:JS}
+J_S= V_{cmax}/2.
+\end{equation}
+
+To have a more gradual transition than the minimum function it is possible to use the smaller roots of two quadratics functions:
+
+\begin{equation}
+\label{eq:Q1}
+\theta J_p^2 - J_p(J_E+J_C) + J_E J_C= 0.
+\end{equation}
+
+where $J_P$ is the min of $J_C$ and $J_E$.
+
+\begin{equation}
+\label{eq:Q2}
+\beta A^2 - A(J_P+J_S) + J_P J_S= 0.
+\end{equation}
+
+where $\theta$ and $\beta$ are constant describing the transition between limitation.
+
+The kinetic parameters $K_c$, $K_o$, $V_{cmax}$, and $\tau$ change with temperature according to a $Q_{10}$ function ($k = k_{25} Q_{10}^{(T-25)/10}$).
+
+\clearpage
+
+We can use the R package plantecophys \citep{Duursma-2015} to compare
+the current photosynthesis model of \plant\ and the FvC model for
+different parameters. In most of the cases I assumed as in
+\citet{Medlyn-2002} that $J_{max} = 1.67 \times V_{cmax}$. Several
+other equations have been proposed see
+\citet{Walker-2014,Kattge-2011}.
+% For the simulations with $N_{area}$ we will also need to express $V_{cmax}$ in function of $N_{area}$ \citep{Kattge-2009,Domingues-2010,Sakschewski-2015}. For instance, \citet{Sakschewski-2015} fitted the following relationship on the TRY data $V_{cmax25} = 31.62 N_{area}^{0.801}$.
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Photo_Plant_FvC.pdf}
+\caption{\textbf{Photosynthesis model of \plant\ and FvC for different parameterisation.}
+\label{fig:photo}}
+\end{figure}
+
+The figure \ref{fig:photo} show the light response curves for \plant\
+, the default FvC, FvC with the light parameters similar to \plant\ , the parameters used in \citet{Sterck-2011}, and the parameters used in Troll \citep{Marechaux-2017}.
+
+Then we can see how this scale up to the annual photosynthesis rate using the integration approach of \plant\ . \plant\ use a Michaelis Menten function to approximate the annual photosynthesis rate see figure \ref{fig:photo_annu_plant}. The Michaelis Menten approximation is not working well for the FvC model, see Figure \ref{fig:photo_annu_fvc}. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figure \ref{fig:photo_annu_fvc}.
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Annual_Photo_Plant.pdf}
+\caption{\textbf{Annual photosynthesis model of \plant\ .}
+\label{fig:photo_annu_plant}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Annual_Photo_FvC_vpd0.pdf}
+\caption{\textbf{Annual photosynthesis model of FvC with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
+\label{fig:photo_annu_fvc}}
+\end{figure}
+
+\clearpage
+
+\subsection{Coupled photosynthesis and water stress models}
+
+To include the effect of aridity it is need to couple the photosynthesis model with a stomatal conductance model. In most approaches the stomatal conductance model is linked with FvC model with the Fick law:
+
+\begin{equation}
+\label{eq:fick}
+A_n = g_s (c_a - c_i) = g_s c_a (1-\chi).
+\end{equation}
+
+Where $c_a$ and $c_i$ are respectively the $CO_2$ mole fraction of the air and in the leaf.
+
+
+For the stomatal model a lot of different options have been proposed that range from empirical models to optimisation models and from models that include or not soil water stress. If soil water stress is include some approach also include competition for soil water between trees \citep{Farrior-2013}. My general idea would be to start by a relatively simple model for a first paper and then build on to include more complex processes. In the first model there would be not effect of soil water stress and no representation of competition for water.
+
+I will give a brief overview of the existing stomatal models.
+
+One of the first and most classical model is the one of \citet{Collatz-1991} which connect the FvC photosynthesis model with the Ball Berry model which predict $g_s$. This is an empirical relationship based on the following equation:
+
+\begin{equation}
+\label{eq:gs-Ball}
+g_s= g_0 + g_1 \frac{A_n h_s}{c_a}.
+\end{equation}
+
+where $h_s$ relative humidity at the leaf surface, and $c_a$ $CO_2$ mole fraction of the air (at leaf surface).
+
+This has been modified by \citet{Leuning-1995} as the following empirical equation:
+
+\begin{equation}
+\label{eq:gs-Leuning}
+g_s= g_0 + g_1 \frac{A_n }{(c_a - \Gamma)(1+D/D_0)}.
+\end{equation}
+
+Where $D$ is the air vapour pressure deficit (VPD).
+
+Then several approach have been developed to predict stomatal conductance based on the optimisation of the summed cost of water loss and carbon gain \citep{Medlyn-2002,Prentice-2014,Wolf-2016,Sperry-2017}. One of the most used approach is the one developed by \citet{Medlyn-2011} as :
+
+\begin{equation}
+\label{eq:gs-Medlyn}
+g_s \approx g_0 + (1 + \frac{g_1}{\sqrt{D}}) \frac{A_n }{c_a}.
+\end{equation}
+
+
+Then other authors have proposed to account for the impact of xylem cavitation \citet{Wolf-2016,Sperry-2016,Sperry-2017} in the model and also to maximise carbon gain rather than the water use efficiency \citet{Wolf-2016}. I think that \citep{Sperry-2016} propose a framework that would be easy to implement and to connect to a water budget in \plant\ .
+
+But as an initial step we could use either the model of \citet{Medlyn-2011} or \citet{Leuning-1995}. We need to keep in mind that these models that are based only on vpd are supposed to be applicable only to plant without soil water stress.
+
+The figures \ref{fig:photo_stomat}, \ref{fig:photo_stomat_BB}, \ref{fig:photo_stomat_Leuning}, and \ref{fig:photo_stomat_opti} show the different coupled models in plantecophys.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/FvC_stomatal_BallBerry.pdf}
+\caption{\textbf{Coupled FvC and Ball Berry models with effect of $V_{cmax}$ and VPD.}
+\label{fig:photo_stomat_BB}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/FvC_stomatal_BBLeuning.pdf}
+\caption{\textbf{Coupled FvC and Leuning models with effect of $V_{cmax}$ and VPD.}
+\label{fig:photo_stomat_Leuning}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/FvC_stomatal_BBOpti.pdf}
+\caption{\textbf{Coupled FvC and Medlyn models with effect of $V_{cmax}$ and VPD.}
+\label{fig:photo_stomat_opti}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/FvCstomatal.pdf}
+\caption{\textbf{Coupled FvC and Medlyn models with effect of $V_{cmax}$ and VPD.}
+\label{fig:photo_stomat}}
+\end{figure}
+
+\clearpage
+
+The variation of the Leuning model with vpd seems to give rise to an annual model that is well approximated by the non-rectangular hyperbola (see Figure \ref{fig:photo_annu_fvc_vpd3}).
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Annual_Photo_FvC_vpd3.pdf}
+\caption{\textbf{Annual photosynthesis model of FvC with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ coupled with the Leuning stomatal model and integrated over one year in the left panel.}
+\label{fig:photo_annu_fvc_vpd3}}
+\end{figure}
+
+So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Sakschewski-2015}.
+
+\pagebreak
+
+
+\subsection{Parametrisation of the FvCB}
+
+
+Choice of parameters of the FvCB model to use for
+forest trees? Here is a short list of existing parametrisation for the
+light response part:
+\begin{itemize}
+
+\item In plantecophys \citep{Duursma-2015}  $\alpha = 0.24$ and $\theta = 0.85$
+
+\item In \citet{Medlyn-2002} $\alpha = 0.3$ and $\theta = 0.9$
+
+\item In Plant $\theta = 0.5$ and $\alpha= 0.04$ not on the same unite
+  (mol of CO2 per mol of photon wherease in FvCB in mol electron per
+  mol photon)  (conversion see Mercado et al 2009, the conversion of
+  the apparent quantum yield in micromolCO2/micromol quantum into
+  $\mu$ mol e-/micxromol quantum is done by multipliyng by 4, since
+  four electrons are needed to regenerate RuBP $4*0.04 = 0.16$ but we
+  also probably need to correct for leaf absorbance for instance 0.8 in \citet{Medlyn-2002})
+
+\item In \citet{Sterck-2011} $\theta = 0.5$ and $\alpha = 0.25$ (not exactly the same alpha ...)
+
+\item  In \citet{Valladares-1997} for tropical shrubs $\theta$ ranges between 0.51 and 0.8 and $\alpha$ (in mol CO2) between 0.048 and 0.066
+
+\item In TROLL \citet{Marechaux-2017} $\alpha = 0.075*4 = 0.3$ and $\theta = 0.7$ based on von Caemmerer 2000
+
+\item In \citet{vonCaemmerer-2000} the non rectangular hyperbola light response curve has an initial slope $\alpha_1 \times \Phi_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\Phi_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
+
+\end{itemize}
+
+I propose to use the parametrisation of \citet{Marechaux-2017}.
+
+
+\subsection{Parametrisation of Jmax \textit{vs.} Vcmax}
+
+The hypothesis of a coordination between Calvin-Benson cycle limited
+rate of assimilation and electron transport limited rate of
+assimilation, lead to the assumption of a correlation between Vcmax and
+Jmax. Different model to link them have been proposed in the
+litterature.
+
+\begin{itemize}
+
+\item In \citet{Medlyn-2002} $J_{max} = 1.67 \times  V_{cmax}$.
+
+\item In \citet{Walker-2014} the relationship is a power function of $V_{cmax}$ $J_{max} = exp(1.01) \times V_{cmax}^{0.89}$.
+
+\item In Try data from \citet{Kattge-2011} this is $J_{max} = exp(1.669) \times V_{cmax}^{0.75}$.
+
+\item In \citet{Wullschleger-1993} this is $J_{max} = exp(1.425) \times V_{cmax}^{0.837}$.
+
+\end{itemize}
+
+The Figure \ref{fig:Vcmax_Jmax} show the different parametrisation.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Vcmax_Jmax.pdf}
+\caption{\textbf{Different parametrisation of the link between $J_{max}$ and $V_{cmax}$.}
+\label{fig:Vcmax_Jmax}}
+\end{figure}
+
+I propose to use either \citet{Medlyn-2002} or \citet{Walker-2014}.
+
+The slope of Jmax vs Vcamx (in log log) affect the light level at which photosynthesis become RuBisCO limited. A shallower slope shift the light level to higher light value and a steeper slope to a lower light value. This will thus affect shade tolerance.
+
+The link between Vcmax and Jmax might however be more complexe and depend on the light level and leaf P. According to Walker et al. 2014 the effect of SLA and leaf P are however relatively small. So this is ok to use only Jmax in function of Vcmax.
+
+\subsection{Parametrisation of Vcmax \textit{vs.} Narea}
+
+Photosynthetic rate should scale positively with leaf Nitrogen (N) because of the large amount of N invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
+
+\begin{itemize}
+
+\item \citet{Sakschewski-2015} proposed that $V_{cmax} = 31.62 \times N_{area}^{0.801}$ (unit g per m2 need to be converted in kg per m2 as $*1000^{0.801}$.
+
+\item  \citet{Walker-2014} proposed that $ln(Vcmax) = 3.946 + 0.921 \times log(N) + 0.121 \times log(P) + 0.281 \times log(N) \times log(P)$ and explored other model that include also LMA. To get a function of only N this should be $V_{cmax} = exp(3.712) \times N^{0.650}$ see  \citet{Walker-2017}.
+
+\item \citet{Kattge-2011} proposed $V_{cmax} = a + b \times N_{area}$ with different value per biomes estimated either with $V_{cmax}$ only or also constrained by $A_{max}$.
+
+\item \citet{Domingues-2010} proposed several model based on N and P.  If we look only at the one based only on N this is: $V_{cmax} = 10^{1.57} \times N_{area}^{0.55}$ (Appendix C Table A2).
+
+\end{itemize}
+
+The Figure \ref{fig:Narea_Vcmax} show the different parametrisation.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Narea_Vcmax.pdf}
+\caption{\textbf{Different parametrization of the link between Narea and Vcmax.}
+\label{fig:Narea_Vcmax}}
+\end{figure}
+
+Other traits such as leaf P and SLA could also influence Vcmax \citep{Walker-2014,Domingues-2010}. LMA has little effect on the link between Vcmax and Narea.  Leaf P has little direct effect on Vcmax but an important interaction with Narea: at low leaf P the slope of Vcmax \textit{vs} Narea is shallow but at high leaf P this slope is steeper \citep{Walker-2014}.
+It is also possible to use an other approach where both Vcmax and Jmax
+are function of N and P rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
+
+I propose to use \citet{Sakschewski-2015}.
+
+\pagebreak
+
+\subsection{Correlation of vpd and T}
+
+On the short term time scale vpd and T covary strongly. Photosynthetic rate should scale positively with leaf Nitrogen (N) because of the large amount of N invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
+
+VPD covaries with Temperature from its definition, but the correlation is not one.
+
+One solution to compute vpd is
+
+$$e_s = 0.6108 * exp(17.27 * T / (T + 237.3))$$
+
+$$e_a = RH / 100 * e_s $$
+
+$$vpd = e_a - e_s$$
+
+So clearly there is an effect of T but also of relative humidity RH.
+So we need actual data to estimate the correlation between vpd and T.
+
+I looked at the correlation between vpd and T using WC and a method to compute saturated water pressure based on Tmin and Tmax as recommended by
+Allen, RG, Pereira, LS, Raes, D, Smith, M (1998) Meteorological data, Chapter 3. In: Crop evapotranspiration - Guidelines for computing crop water requirements. Food and Agricuture Organization (FAO) Irrigation and Drainage Paper 56. United Nations, FAO, Rome, Italy. 
+
+$$e_s(T) = 0.6108 * exp(17.27 * T / (T + 237.3))$$
+
+$$e_s = (e_s(Tmin)+e_s(Tmax))/2 $$
+
+$$e_a = RH / 100 * e_s $$
+
+$$vpd = e_a - e_s$$
+
+At the world scale this gives the following pattern (see Figure \ref{fig:vpd_t}):
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/vpd_t_mean.png}
+\caption{\textbf{Link between vpd and T at global scale.}
+\label{fig:vpd_t}}
+\end{figure}
+
+ For T = 25C it is possible to vary vpd between -0.25 and -3 following the green line up to the purple line (-0.25). I propose to use this option.
+ 
+\pagebreak
+ 
+ \subsection{$N_{area}$ effect of leaf lifespan}
+
+The elevation of LMA vs leaf turnover clearly vary with $N_{area}$ see Figure \ref{fig:narea_tradeoff}. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/data_lma_ll_trade_off_narea.pdf}
+\caption{\textbf{Link between vpd and T at global scale.}
+\label{fig:narea_tradeoff}}
+\end{figure}
+
+The intercept of the LMA vs LT tradeoff is linearly related to $N_{area}$ as shown on the figure \ref{fig:narea_intercept} and there is no significant effect on the slope. I propose to test this in the Farquahr model as an additionnal cost of high $N_{area}$.  Here I used $N_{area}$ divided by $N_{area}$ mean in FF16 in plant. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/data_lma_ll_trade_off_narea_slope_elev.pdf}
+\caption{\textbf{Link between $N_{area}$ and intercept and slope of the LMA vs leaf turnover tradeoff (using 14 bins of $N_{area}$ with equal number of observations per bin.}
+\label{fig:narea_intercept}}
+\end{figure}
+
+
+\clearpage
+
+\subsection{$LMA$ and $N_{area}$ along a vpd gradient}
+
+Here are some first results for low or perturbation rate.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFl}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_narea_lma_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFh}}
+\end{figure}
+
+\clearpage
+
+\subsection{TODO SHORT-TERM}
+
+In the short-term it would be interesting to think about:
+
+\begin{itemize}
+
+\item re-run all simulation on cluster with vpd, for LMA only, LMA and $N_{area}$, and $N_{area}$ effect on leal lifespan.
+
+\item run simulation with this FvC model in plant without boundary to try to solve pb
+
+\end{itemize}
+
+
+\subsection{TODO LONG-TERM}
+
+In the long-term it would be interesting to think about:
+
+\begin{itemize}
+
+\item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}).
+
+\item using stomatal model that is linked to the soil water potential (as in \citet{Sperry-2016} or
+\citet{Sterck-2011})
+
+\item include a simple water budget to model tree competition for water
+
+\end{itemize}
+
+
+
+%% The Fick's law close the system of equation:
+%% \begin{equation}
+%% \label{eq:fick}
+%% g_s=\frac{A_d}{c_a - c_i}.
+%% \end{equation}
+
+%% $p_i = P c_i$
+
+%% The models are combined by solving simultaneously for $c_i$ and $g_s$.
+
+%% \citet{Scheiter-2009} use this photsynthesis model (with a min function).
+
+%% Other version of the model consider that instead a of $Q_p$ the light incidence, $J_E$ is a function $J$ the electron transport rate which is it self a function of incident light (with non rectangular hyperbola) \citep{Sharkey-2007}.
+
+
+
+%% \subparagraph{\citet{Haxeltine-1996}, photosynthesis model assuming optimal allocation of Leaf N and then all LPJ models}
+
+%% In LPJ no $J_S$ and $V_{cmax}$ is optimised to maximise photosynthesis (thus optimum allocation of Leaf N). This optimum allocation results in equation 14 of \citet{Sitch-2008}.
+
+%% Water stress is tracked by a water balaence model with a demand evapotranspiration $E_d$ and a supply determined $E_s$ by the water availability. Water stress occurs when $E_d > E_s$.
+
+%% Then if non water stress conductance is given by the photosynthesis equation by:
+
+%% \begin{equation}
+%% \label{eq:fickLPJ}
+%% g_s=g_{min} + \frac{1.6A_d}{c_a - c_i}.
+%% \end{equation}
+
+%% and for C3 plant the ratio $c_i / c_a$ is set to 0.7.
+
+%% The equation \ref{eq:fickLPJ} provides non water stressed $g_s$ which then gives $E_{d}$ by
+
+%% \begin{equation}
+%% \label{eq:12Sitch}
+%% E=E_p \alpha_m [1 - exp(\frac{- g_s}{g_m})].
+%% \end{equation}
+
+%% If the condition are water stressed ($E_{supply} < E_{demand}$ value
+%% of $g_s$ is given by the equation \ref{eq:12Sitch} (assuming $E$ is
+%% equal to $_{supply}$. Then $g_s$ can be used to solve Fick law and the
+%% photosynthesis model.
+
+%% \subparagraph{\citet{Sakschewski-2015}, add Leaf N in LPG photosynthesis deacreasing below optimal Leaf N}
+
+%% $V_{cmax}$ is a power function of Leaf N (a function of SLA , even if
+%% not the case in Wright et al. 2004). The photosynthesis model of LPJ
+%% is based on optimum allocation to Leaf N (so optimal $V_{cmax opt}$) so
+%% the actual $V_{cmax}$ is the munimum between the optimum and the one
+%% predicted by leaf N. This is some how strange as the effect of leaf N
+%% on $V_{cmax}$ is limited by the optimal value.
+
+%% \subparagraph{\citet{Prentice-2014}, optimal $c_i/c_a$ for $V_{cmax}$ vs $g_s$}
+
+%% Predict optimal $c_i/c_a$ to optimise $V_{cmax}$ and $G_s$ (evaporation) for different $D$ vapour pressure deficit.
+
+%% \subparagraph{\citet{Johnson-1984}, model and its use in more recent model}
+
+%% In this alternative model of photosynthesis, only the response to
+%% light is considered (and this match the euqation of the light effect
+%% on $J$). This is the model used in 'Plant'.
+
+%% \begin{equation}
+%% \label{eq:Johnson}
+%% A_{N,PAR} = \frac{ \alpha I + A_{max} - \sqrt{(\alpha I + A_{max})^2 - 4 \theta \alpha I A_{max}}}{2\theta}.
+%% \end{equation}
+
+%% \subparagraph{\citet{Farrior-2013}}
+
+%% Use a simpler version of the light response curve (instead of using
+%% \citet{Johnson-1984}) they use a simpled staturantion function
+%% ($A_L = min(AL, A_{max})$). Then water demande is linearly related to
+%% $A_L$ and water supply is related to soil water potential with a two
+%% step function no supply if below a treshold, above this treshold
+%% increase with soil water potential (see Fig. A2). Soil water content
+%% is lenearly related to soil water potential.
+
+%% TODO \citet{Zavala-2005} based on \citet{Leuning-1995} for stomatial
+%% conductance (a new version of \citet{Collatz-1991}).
+
+%% \subparagraph{Summary and what to do next}
+
+%% Water availability affect photosynthesis in two way. During the period
+%% of non water stress how photosynthesis work (the paper of
+%% \citet{Wright-2003} deal with that. \citet{Medlyn-2011} also deal
+%% with optimal conductance in soil water limited plant.  For
+%% \citet{Prentice-2014} as well, ?, but they also argue that vpd
+%% represent the long term water availability.
+
+%% In period of non water stress all plant have non limited supply of
+%% water from the soil but the vpd is different inducing different
+%% transpiration at the same $g_s$. In that case leaf N area control the
+%% water use efficiency. Then water availability control also
+%% the duration of the year over which soil water is limiting. For a non water
+%% stressed plant, soil water supply limit the photosynthesis by
+%% constraining the stomatal conducatance to match the supply.
+
+
+
+%% There is two different approaches. In the first one, a water budget model
+%% predict when soil water is limiting the value of $g_s$ that match
+%% evapotranspiration allowed by the supply. (PhD of Lohier differ in the
+%% sens that transpiration is not computed as a function of PET).
+
+%% In the second one there is a direct effect of $A$, $c_a$ and the
+%% relative humidity on the $g_s$ but not effect of soil water stress.
+
+%% What we need is to have a Photosynthesis model with light effect and
+%% $A_{max}$ related to Leaf N as it is currently the case that would be
+%% $A_L$ and then add an effectof water stress that would limit to
+%% $A_W$. The $A = min(A_L , A_N)$ thus this is different than affecting
+%% directly $A_{max}$ as at low light level $A$ will not be affected.
+
+%% Then we need to have a link between Leaf N and the way plant tolerate
+%% water stress
+
+
+%% One approach is to say that there two A one for non water stressed
+%% conditions $A_L$ and one for water stressed conditions $A_W$. The
+%% water availability variable is $E_S$ evapotransipiration supply
+%% (daily, monthly ???) per unit area of leaf. Assuming non water
+%% stressed condition we can
+%% compute $A_L = f(V_{cmax}, c_i, I)$ assuming $c_i/c_a = 0.7$ (not
+%% perfect as Leaf N shouild affect that and thus when water stress
+%% occurs). Based on $A_L$ compute $g_{s pot}$ and $E_S$ per unit area of
+%% leaf. Then compute $\omega = min(1, E_S/E_D)$. If $\omega = 1$ then $A
+%% = A_L$. If $\omega < 1$ then compute $g_s$ from $E_S$ and then for
+%% $c_i$ giving the lowest $A$.
+
+
+
+%% I don't think that is necessarely need to have $J_C$ $J_E$ (and a
+%% proper light response). Weed need water stress reducing $g_s$ and thus $A$ in function of water stress AET/PET. If we derive this model this give use for each AET a prediction $A$ at different leaf N predicting $V_{cmax}$ as in \citet{Sakschewski-2015}.
+
+%% How to simplify that ??? we can
+
+
+%% Check correspondance to Plant photsynthesis model which is based on Johnson, I. R. and Thornley, J. H. M. 1984. A model of instantaneous and daily canopy photosynthesis. - Journal of Theoretical Biology 107: 531–545.
+%%  and is a non-rectangular hyperbola response to light where we could assume that $A_{max}$ is related to $V_{cmax}$ and thus leaf N.
+
+\clearpage
+
+
+
+\bibliographystyle{amnat}
+\bibliography{references}
+\end{document}
