@@ -266,7 +266,7 @@ targets:
     command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist40_vpd"))
 
   test_assembly_FvCB_multi_narea_lma_NvLTR:
-    command: run_assembly_FvCB_narea_lma_Narea_LTR(I(vpd = "3"), I(disturbance_mean_interval = "40"))
+    command: run_assembly_FvCB_narea_lma_Narea_LTR(I(vpd = 3), I(disturbance_mean_interval = 40))
 
 
 ## FvCB assembly figures

@@ -322,8 +322,10 @@ trait_gradients_FvCB_NareaLTR_parameters <- function(name_data_param, ...) {
   #plant_log_console()
   ctrl <- equilibrium_verbose(fast_control())
   ctrl$schedule_eps <- 0.001
+  ctrl$schedule_eps <- 0.001
   ctrl$equilibrium_eps <- 1e-5
-
+  # TO TRY TO SOLVE ERROR MESSAGE
+  ctrl$ode_step_size_min <- 1e-8
   ctrl$equilibrium_nsteps  <- 80
   ctrl$equilibrium_solver_name <- "iteration"
   ## ctrl$equilibrium_solver_name <- "hybrid"
