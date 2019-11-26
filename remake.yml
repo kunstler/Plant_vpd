@@ -265,6 +265,9 @@ targets:
   list_assembly_FvCB_multi_narea_lma_NvLTR_cluster:
     command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist40_vpd"))
 
+  test_assembly_FvCB_multi_narea_lma_NvLTR:
+    command: run_assembly_FvCB_narea_lma_Narea_LTR(I(vpd = "3"), I(disturbance_mean_interval = "40"))
+
 
 ## FvCB assembly figures
 
@@ -306,6 +309,10 @@ targets:
 
   figures/gradient_narea_lma_multi_FvCB_cor.pdf:
     command: plot_cor_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster)
+    plot: square
+
+  figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf:
+    command: plot_cor_narea_lma(list_assembly_FvCB_single_narea_lma_NvLTR_cluster)
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB_Tleaf.pdf:

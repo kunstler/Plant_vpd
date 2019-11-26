@@ -169,13 +169,13 @@ Using this model how the assemblage of LMA and $N_{area}$ change along a gradien
  
 \begin{itemize}
 
-\item Light competition selects for a negative correlation between $LMA$ and $N_{area}$.
+\item Light competition selects for a negative correlation between $LMA$ and $N_{area}$ as shade tolerance is related to high $LMA$ and low $N_{area}$ (and the inverse for high light staregies).
 
 \item Higher vpd shift community assembly toward higher $N_{area}$ and smaller range of traits.
 
-\item Higher vpd shift community assembly toward higher $LMA$.
+\item Higher vpd shift community assembly toward higher $LMA$ but only slightly i comparison to the range of $LMA$ coexisting in a given meta-community.
 
-\item Accounting for $N_{area}$ effect on leaf turnover rate DO WHAT ???CHANGE CORRELATION LESS SHADE TOL TODO REFINE THAT .
+\item Accounting for $N_{area}$ effect on leaf turnover rate had an additional cost of high $N_{area}$ due to faster leafturnover rate. This should counter select $N_{area}$ in low water stress area even for high light strategies but also affect $LMA$.
 
 \end{itemize}
 
@@ -199,20 +199,49 @@ Using this model how the assemblage of LMA and $N_{area}$ change along a gradien
 
 
 
-- .
+\clearpage
+
+\subsection{$LMA$ and $N_{area}$ correlation}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for FVCB model with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_single}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for FVCB model with low disturbance rate (Disturbance mean interval 40 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_multi}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for model with link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_single_NvLTR}}
+\end{figure}
 
 \clearpage
 
 \subsection{$LMA$ and $N_{area}$ along a vpd gradient}
-
-Here are some first results for low or perturbation rate.
-
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_narea_lma_FvCB.pdf}
 \caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
 \label{fig:lma_nareaFh}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFh2}}
 \end{figure}
 
 
@@ -223,178 +252,51 @@ Here are some first results for low or perturbation rate.
 \label{fig:lma_nareaFl}}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFl2}}
+\end{figure}
+
 
 \clearpage
 
-\subsection{TODO SHORT-TERM}
+\subsection{$LMA$ and $N_{area}$ along a vpd gradient with N area impact on leaf turnover rate}
 
-In the short-term it would be interesting to think about:
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_narea_lma_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFh}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_narea_lma2_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFh2}}
+\end{figure}
+
+
+
+\clearpage
+
+\subsection{Discussion}
+
+
 
 \begin{itemize}
 
-\item re-run all simulation on cluster with vpd, for LMA only, LMA and $N_{area}$, and $N_{area}$ effect on leal lifespan.
+\item explain range
+
+\item interactions between traits in assembly
+
+\item strong effect of N area - LTR model
 
 \end{itemize}
 
-
-%% \subsection{TODO LONG-TERM}
-
-%% In the long-term it would be interesting to think about:
-
-%% \begin{itemize}
-
-%% \item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}).
-
-%% \item using stomatal model that is linked to the soil water potential (as in \citet{Sperry-2016} or
-%% \citet{Sterck-2011})
-
-%% \item include a simple water budget to model tree competition for water
-
-%% \end{itemize}
-
-
-
-%% The Fick's law close the system of equation:
-%% \begin{equation}
-%% \label{eq:fick}
-%% g_s=\frac{A_d}{c_a - c_i}.
-%% \end{equation}
-
-%% $p_i = P c_i$
-
-%% The models are combined by solving simultaneously for $c_i$ and $g_s$.
-
-%% \citet{Scheiter-2009} use this photsynthesis model (with a min function).
-
-%% Other version of the model consider that instead a of $Q_p$ the light incidence, $J_E$ is a function $J$ the electron transport rate which is it self a function of incident light (with non rectangular hyperbola) \citep{Sharkey-2007}.
-
-
-
-%% \subparagraph{\citet{Haxeltine-1996}, photosynthesis model assuming optimal allocation of Leaf N and then all LPJ models}
-
-%% In LPJ no $J_S$ and $V_{cmax}$ is optimised to maximise photosynthesis (thus optimum allocation of Leaf N). This optimum allocation results in equation 14 of \citet{Sitch-2008}.
-
-%% Water stress is tracked by a water balaence model with a demand evapotranspiration $E_d$ and a supply determined $E_s$ by the water availability. Water stress occurs when $E_d > E_s$.
-
-%% Then if non water stress conductance is given by the photosynthesis equation by:
-
-%% \begin{equation}
-%% \label{eq:fickLPJ}
-%% g_s=g_{min} + \frac{1.6A_d}{c_a - c_i}.
-%% \end{equation}
-
-%% and for C3 plant the ratio $c_i / c_a$ is set to 0.7.
-
-%% The equation \ref{eq:fickLPJ} provides non water stressed $g_s$ which then gives $E_{d}$ by
-
-%% \begin{equation}
-%% \label{eq:12Sitch}
-%% E=E_p \alpha_m [1 - exp(\frac{- g_s}{g_m})].
-%% \end{equation}
-
-%% If the condition are water stressed ($E_{supply} < E_{demand}$ value
-%% of $g_s$ is given by the equation \ref{eq:12Sitch} (assuming $E$ is
-%% equal to $_{supply}$. Then $g_s$ can be used to solve Fick law and the
-%% photosynthesis model.
-
-%% \subparagraph{\citet{Sakschewski-2015}, add Leaf N in LPG photosynthesis deacreasing below optimal Leaf N}
-
-%% $V_{cmax}$ is a power function of Leaf N (a function of SLA , even if
-%% not the case in Wright et al. 2004). The photosynthesis model of LPJ
-%% is based on optimum allocation to Leaf N (so optimal $V_{cmax opt}$) so
-%% the actual $V_{cmax}$ is the munimum between the optimum and the one
-%% predicted by leaf N. This is some how strange as the effect of leaf N
-%% on $V_{cmax}$ is limited by the optimal value.
-
-%% \subparagraph{\citet{Prentice-2014}, optimal $c_i/c_a$ for $V_{cmax}$ vs $g_s$}
-
-%% Predict optimal $c_i/c_a$ to optimise $V_{cmax}$ and $G_s$ (evaporation) for different $D$ vapour pressure deficit.
-
-%% \subparagraph{\citet{Johnson-1984}, model and its use in more recent model}
-
-%% In this alternative model of photosynthesis, only the response to
-%% light is considered (and this match the euqation of the light effect
-%% on $J$). This is the model used in 'Plant'.
-
-%% \begin{equation}
-%% \label{eq:Johnson}
-%% A_{N,PAR} = \frac{ \alpha I + A_{max} - \sqrt{(\alpha I + A_{max})^2 - 4 \theta \alpha I A_{max}}}{2\theta}.
-%% \end{equation}
-
-%% \subparagraph{\citet{Farrior-2013}}
-
-%% Use a simpler version of the light response curve (instead of using
-%% \citet{Johnson-1984}) they use a simpled staturantion function
-%% ($A_L = min(AL, A_{max})$). Then water demande is linearly related to
-%% $A_L$ and water supply is related to soil water potential with a two
-%% step function no supply if below a treshold, above this treshold
-%% increase with soil water potential (see Fig. A2). Soil water content
-%% is lenearly related to soil water potential.
-
-%% TODO \citet{Zavala-2005} based on \citet{Leuning-1995} for stomatial
-%% conductance (a new version of \citet{Collatz-1991}).
-
-%% \subparagraph{Summary and what to do next}
-
-%% Water availability affect photosynthesis in two way. During the period
-%% of non water stress how photosynthesis work (the paper of
-%% \citet{Wright-2003} deal with that. \citet{Medlyn-2011} also deal
-%% with optimal conductance in soil water limited plant.  For
-%% \citet{Prentice-2014} as well, ?, but they also argue that vpd
-%% represent the long term water availability.
-
-%% In period of non water stress all plant have non limited supply of
-%% water from the soil but the vpd is different inducing different
-%% transpiration at the same $g_s$. In that case leaf N area control the
-%% water use efficiency. Then water availability control also
-%% the duration of the year over which soil water is limiting. For a non water
-%% stressed plant, soil water supply limit the photosynthesis by
-%% constraining the stomatal conducatance to match the supply.
-
-
-
-%% There is two different approaches. In the first one, a water budget model
-%% predict when soil water is limiting the value of $g_s$ that match
-%% evapotranspiration allowed by the supply. (PhD of Lohier differ in the
-%% sens that transpiration is not computed as a function of PET).
-
-%% In the second one there is a direct effect of $A$, $c_a$ and the
-%% relative humidity on the $g_s$ but not effect of soil water stress.
-
-%% What we need is to have a Photosynthesis model with light effect and
-%% $A_{max}$ related to Leaf N as it is currently the case that would be
-%% $A_L$ and then add an effectof water stress that would limit to
-%% $A_W$. The $A = min(A_L , A_N)$ thus this is different than affecting
-%% directly $A_{max}$ as at low light level $A$ will not be affected.
-
-%% Then we need to have a link between Leaf N and the way plant tolerate
-%% water stress
-
-
-%% One approach is to say that there two A one for non water stressed
-%% conditions $A_L$ and one for water stressed conditions $A_W$. The
-%% water availability variable is $E_S$ evapotransipiration supply
-%% (daily, monthly ???) per unit area of leaf. Assuming non water
-%% stressed condition we can
-%% compute $A_L = f(V_{cmax}, c_i, I)$ assuming $c_i/c_a = 0.7$ (not
-%% perfect as Leaf N shouild affect that and thus when water stress
-%% occurs). Based on $A_L$ compute $g_{s pot}$ and $E_S$ per unit area of
-%% leaf. Then compute $\omega = min(1, E_S/E_D)$. If $\omega = 1$ then $A
-%% = A_L$. If $\omega < 1$ then compute $g_s$ from $E_S$ and then for
-%% $c_i$ giving the lowest $A$.
-
-
-
-%% I don't think that is necessarely need to have $J_C$ $J_E$ (and a
-%% proper light response). Weed need water stress reducing $g_s$ and thus $A$ in function of water stress AET/PET. If we derive this model this give use for each AET a prediction $A$ at different leaf N predicting $V_{cmax}$ as in \citet{Sakschewski-2015}.
-
-%% How to simplify that ??? we can
-
-
-%% Check correspondance to Plant photsynthesis model which is based on Johnson, I. R. and Thornley, J. H. M. 1984. A model of instantaneous and daily canopy photosynthesis. - Journal of Theoretical Biology 107: 531–545.
-%%  and is a non-rectangular hyperbola response to light where we could assume that $A_{max}$ is related to $V_{cmax}$ and thus leaf N.
-
-\clearpage
 
 
 
