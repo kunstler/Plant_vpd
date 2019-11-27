@@ -56,12 +56,6 @@ targets:
     command: latex_build("ms/Plant_WaterStress_SupplMat.tex", "ms/references.bib", clean=TRUE)
 
 
-  figures_plant:
-    depends:
-    - figures/tradeoff_shade_light.pdf
-    - figures/data_climate.pdf
-    - figures/data_B_kl_climate.pdf
-
   figures_plant_FvC:
     depends:
     - figures/FvC_stomatal_BBLeuning.pdf
@@ -227,9 +221,9 @@ targets:
 
 # Narea vs LTR
 
-  figures/data_lma_ll_trade_off_narea_slope_elev.pdf:
-    command: figure_lma_tradeoff_narea_slope_elev(leaf_traits)
-    plot: wide
+  figures/data_lma_ll_trade_off_narea.pdf:
+    command: figure_lma_tradeoff_narea(leaf_traits)
+    plot: square
 
   figures/data_B_kl_narea.pdf:
     command: figure_B_kl_narea(leaf_traits)
