@@ -133,7 +133,7 @@ trait_gradients_FvCB_LTR_Narea_parameters <- function(...) {
   ctrl$schedule_eps <- 0.001
   ctrl$equilibrium_eps <- 1e-5
   # TO TRY TO SOLVE ERROR MESSAGE
-  ctrl$ode_step_size_min <- 1e-8
+  ctrl$ode_step_size_min <- 1e-9
 
   ctrl$equilibrium_nsteps  <- 80
   ctrl$equilibrium_solver_name <- "iteration"
