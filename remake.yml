@@ -257,7 +257,7 @@ targets:
     command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist5_vpd"))
 
   list_assembly_FvCB_multi_narea_lma_NvLTR_cluster:
-    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist40_vpd"))
+    command: format_list_res_vpd_cluster(I(name = "FvCB_lma_Narea_NvLTR_dist40_vpd"), I(seq_vpd = seq(5, 30, by = 5)/10))
 
   test_assembly_FvCB_multi_narea_lma_NvLTR:
     command: run_assembly_FvCB_narea_lma_Narea_LTR(I(vpd = 3), I(disturbance_mean_interval = 40))
@@ -274,7 +274,7 @@ targets:
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
 
   figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
@@ -282,7 +282,7 @@ targets:
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma2_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: tall
 
   figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf:
@@ -293,8 +293,16 @@ targets:
     command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: square
 
+  figures/gradient_narea_lma_multi_narea_lma_NvLTR_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: square
+
   figures/gradient_narea_lma_single_narea_lma2_NvLTR_FvCB.pdf:
     command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    plot: tall
+
+  figures/gradient_narea_lma_multi_narea_lma2_NvLTR_FvCB.pdf:
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
     plot: tall
 
   figures/gradient_narea_lma_single_FvCB_cor.pdf:

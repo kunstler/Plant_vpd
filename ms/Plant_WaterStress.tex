@@ -26,7 +26,7 @@
 
 \author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
 \date{}
-\affiliation{Irstea, Grenoble, France and Department of Biological Sciences, Macquarie University,
+\affiliation{INRAE, Grenoble, France and Department of Biological Sciences, Macquarie University,
   Sydney, Australia}
 \date{}
 \runninghead{}
@@ -57,10 +57,7 @@ classical example is the variation of leaf mass per area ($LMA$) and
 leaf nitrogen per area ($N_{area}$) with aridity. $LMA$
 \citep{Wright-2004,Onoda-2011,Moles-2014} and $N_{area}$
 \citep{Wright-2005,Maire-2015} both increase with aridity, but these
-patterns are very weak.
-
-
-Plot of pattern for leaf traits extracted from glopnet \citep{Wright-2004}.
+patterns are very weak (see plots of pattern for leaf traits extracted from glopnet \citep{Wright-2004} in Figure. \ref{fig:leafpattern}).
 
 \begin{figure}[ht]
 \centering
@@ -82,11 +79,11 @@ a higher resistance to dehydration
 under condition of low transpiration \citep{Leigh-2012}, and better photosynthesis performance at low stomatal conductance \citep{Wright-2003}.
 
 Optimisation approaches provide, however, no explanations for the large range of trait variation observed
-within each site. This is because they fail to account for the fact that
-traits also controls species interaction and the coexistence of
+within each site. This is because this approach fails to account for the fact that
+traits also control species interaction and the coexistence of
 species with different traits values. 
 Theoretical models \citep{Case-2000,Goldberg-2006,Leimar-2008} have shown that abiotic constrains and competitive interactions jointly control species coexistence \citep{Chesson-2018} and the range of traits
-value found along environmental gradients. Competition can clearly make the traits deviate from the climatic optimum.  Unfortunately, theses theoretical models are generally weakly connected with the physiological processes, real traits, and abiotic gradients and are of little help to interpret pattern observed in the field. 
+value found along environmental gradients. Competition can clearly make the traits deviate from the climatic optimum.  Unfortunately, theses theoretical models are generally weakly connected with the physiological processes, the traits measured in the field, and abiotic gradients observed in the field and are thus of little help to interpret patterns observed in the field. 
 
 Recently studies have started to connect physiological approach
 and the theoretical approach to build trait-based models at local \citep{Farrior-2013} and global
@@ -98,10 +95,10 @@ to both climate constraints and coexistence mechanisms. We propose to do this wi
 traits and simultaneously allows for coexistence within sites and
 variation across sites. Coexistence is driven by competition for light
 in size-structured meta-populations and the outcomes of competition is
-moderated by environmental conditions and disturbance regime. Here we focus on two traits, $LMA$ and $N_{area}$ which are know to be related to response to water stress and competition for light. These two traits are among the most common traits and we start to have a deep understanding of their effect on plant functioning. 
+moderated by environmental conditions and disturbance regime. Here we focus on two traits, $LMA$ and $N_{area}$ which are know to be related to response to water stress and competition for light. These two traits are among the most commonly measured traits in field studies and we start to have a deep understanding of their effects on plant functioning. 
 
 %% \subsection{$LMA$ and $N_{area}$ response to light}
-The coordination between $LMA$ and $LSS$ discriminates different strategies of light use \citep{Falster-2018}. Species with low $LMA$ have a greater potential maximum growth and are thus favoured in high light condition, whereas high $LMA$ species have longer leaf life span and thus are more conservative of their resource and are favoured in low light condition. High $N_{area}$ results in faster growth rate in high light, but this advantage comes at the cost of higher respiration rate resulting poor perfroamnce in low light \citep{Falster-2018}.
+The coordination between $LMA$ and $LSS$ discriminates different strategies of light use \citep{Falster-2018}. Species with low $LMA$ have a greater potential maximum growth and are thus favoured in high light condition, whereas high $LMA$ species have longer leaf life span and thus are more conservative of their resource and are favoured in low light condition. High $N_{area}$ results in faster growth rate in high light, but this advantage comes at the cost of higher respiration rate resulting in poor performance in low light \citep{Falster-2018}.
  
 %% \subsection{$LMA$ and $N_{area}$ response to aridity}
 
@@ -117,12 +114,12 @@ loss and carbon gain
 \citep{Medlyn-2002,Wright-2003,Prentice-2014,Lu-2016,Wang-2017,Dong-2017}. As
 higher $N_{area}$ translate into higher $V_{cmax}$ this allows the
 plant to achieve a high $A_{area}$ even at low stomatal conductance
-$g_s$. This optimisation approach capture only part of the mechanisms as water stress also comes through soil water limitation leading to both carbon gain limitation and cavitation and mortality \citep{Sperry-2016,Wolf-2016,Sperry-2017}. A side effect of $N_{area}$ increase along aridity gradient is that higher $N_{area}$ could results in lower mechanical resistance of leaf resulting shifting the LMA \textit{vs.} leaf lifespan tradeoff intercept toward shorter lifespan \citep{Wright-2002a}.
+$g_s$. This optimisation approach capture only part of the mechanisms as water stress also comes through soil water limitation leading to both carbon gain limitation and cavitation and mortality \citep{Sperry-2016,Wolf-2016,Sperry-2017}. A side effect of $N_{area}$ increase is that higher $N_{area}$ could results in lower mechanical resistance of leaf resulting shifting the LMA \textit{vs.} leaf lifespan tradeoff intercept toward shorter lifespan \citep{Wright-2002a}.
 
 \section{Key questions}
 
 We propose to extend \plant\ to evaluate how the evolutionary assemblage of $LMA$ and $N_{area}$ into meta-community competing for light change along a water stress gradient. To do that we include a direct effect of water stress on leaf photosynthesis in \plant\ by using a coupled Farquhar photosynthesis model and stomatal conductance model. Water stress affect photosynthesis though an increase of vapour pressure deficit 'vpd'. This approach
-is based on well know mechanisms implemented in most DGVMs (add ref) and represents a simple and well know effect water stress on plant functioning. vpd vary over short term depending on short term temperature changes and ignore soil water availability limitations. However, over the long term and large spatial scale variation in long-term mean vpd are expected to follows trends in the availability of water for evaporation and transpiration \citep{Prentice-2014}. We will explore the role of soil water stress and water competition in futur version of the model.
+is based on well know mechanisms implemented in most DGVMs (add ref) and represents a simple and well know effect of water stress on plant functioning. vpd vary over short term depending on short term temperature changes and ignore soil water availability limitations. However, over the long term and large spatial scale variation in long-term mean vpd are expected to follows trends in the availability of water for evaporation and transpiration \citep{Prentice-2014}. We will explore the role of soil water stress and water competition in futur version of the model.
 
 With this extended model we explore a classical mechanism which propose that higher $N_{area}$ could results in higher drought tolerance because higher $N_{area}$ is related to higher $V_{cmax}$ that allows the
 plant to achieve a high $A_{area}$ even at low stomatal conductance
@@ -136,15 +133,16 @@ Building on the adaptive dynamics framework we simulate evolutionary assemblage 
 
 \item Higher vpd shift community assembly toward higher $N_{area}$ and smaller range of traits.
 
-\item Higher vpd shift community assembly toward higher $LMA$ but only slightly i comparison to the range of $LMA$ coexisting in a given meta-community.
+\item Higher vpd shift community assembly toward higher $LMA$ but only slightly in comparison to the range of $LMA$ coexisting in a given meta-community.
 
-\item Accounting for $N_{area}$ effect on leaf turnover rate had an additional cost of high $N_{area}$ due to faster leafturnover rate. This should counter select $N_{area}$ in low water stress area even for high light strategies but also affect $LMA$.
+\item Accounting for $N_{area}$ effect on leaf turnover rate adds an additional cost of high $N_{area}$ due to faster leaf turnover rate. This should counter select $N_{area}$ in low water stress area even for high light strategies but also affect the $LMA$ selected.
 
 \end{itemize}
 
 
 \section{Materials and Methods}
 
+TODO
 
 \begin{itemize}
 
@@ -245,6 +243,21 @@ Building on the adaptive dynamics framework we simulate evolutionary assemblage 
 \end{figure}
 
 
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA. The run with vpd = 0 failed.}
+\label{fig:lma_nareaFl}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA. The run with vpd = 0 failed.}
+\label{fig:lma_nareaFl2}}
+\end{figure}
+
+
 
 \clearpage
 
@@ -256,13 +269,13 @@ Building on the adaptive dynamics framework we simulate evolutionary assemblage 
 
 \item Negative correlation emerge between $LMA$ and $N_{area}$ but this correlation break done when the additional cost of $N_{area}$ on leaf turnover rate is added.
 
-\item \textbf{Without leaf turnover cost of $N_{area}$.} With increasing vpd there is a shift toward higher values of $LMA$ and $N_{area}$ that mainly occurs because of an elimination of low values but no increase in the maximum values. This pattern of counter selection of low traits value at high vpd is stronger for $N_{area}$ than for $LMA$.
+\item \textbf{Without leaf turnover cost of $N_{area}$.} With increasing vpd there is a shift toward higher values of $LMA$ and $N_{area}$ that mainly occurs because of an elimination of low values but not an increase in the maximum values. This pattern of counter selection of low traits value at high vpd is stronger for $N_{area}$ than for $LMA$.
 
-\item \textbf{Without leaf turnover cost of $N_{area}$.} With increasing vpd there is a decrease of the range of both $LMA$ and $N_{area}$ and smaller number of 'species' coexisting. The range and number of species is larger when the disturbance return interval is infrequent as already shown by \citet{Falster-2017}.
+\item \textbf{Without leaf turnover cost of $N_{area}$.} With increasing vpd there is a decrease of the range of both $LMA$ and $N_{area}$ and smaller number of 'species' coexisting. The range and number of species is larger when the disturbance return interval is long as already shown by \citet{Falster-2017}.
 
-\item \textbf{With leaf turnover cost of $N_{area}$.} With increasing vpd there is a shift toward higher values of $LMA$ because both a change of minimal and maximal value. $N_{area}$ is stronger than without LTR cost bust still mainly because of a change of minimal values.
+\item \textbf{With leaf turnover cost of $N_{area}$.} With increasing vpd there is a shift toward higher values of $LMA$ because changes in both minimal and maximal values. $N_{area}$ changes are stronger than without LTR cost but are still resulting mainly from a change of minimal values.
 
-\item \textbf{With leaf turnover cost of $N_{area}$.} With increasing vpd the range of $N_{area}$ become extremely small..
+\item \textbf{With leaf turnover cost of $N_{area}$.} With increasing vpd the range of $LMA$ become extremely small.
 
 \end{itemize}
 
