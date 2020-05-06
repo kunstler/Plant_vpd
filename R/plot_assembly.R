@@ -33,6 +33,8 @@ plot_trait_vpd <- function(list_assembly_lma, vec_site_vpd, var = "lma",
   list_data <- list_assembly_lma
   grad <- vec_site_vpd
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
+  colfunc <- colorRampPalette(c("green", "red"))
+  cols <- colfunc(length(list_data))
 
   plot(NA, type="n", log="y", las=1, xlim = range(grad),
        ylim= range(unlist(y)),
@@ -41,7 +43,7 @@ plot_trait_vpd <- function(list_assembly_lma, vec_site_vpd, var = "lma",
 
 
   for(i in seq_along(list_data)) {
-    points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black", pch=16)
+    points(y[[i]]*0 + grad[i], y[[i]], type='p', col=cols[i], pch=16)
   }
 }
 
@@ -95,14 +97,19 @@ plot_cor_narea_lma<- function(list_assembly_lma,
   list_data <- list_assembly_lma
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
   z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
-
   plot(unlist(y), unlist(z), type="n", log="y", las=1,
     xlab = expression(paste("Nitrogen per area (kg ", m^-2,")")),
     ylab = expression(paste("Leaf-mass per area (kg ", m^-2,")")))
 colfunc <- colorRampPalette(c("green", "red"))
 cols <- colfunc(length(list_data))
   for(i in seq_along(list_data)) {
-    points(y[[i]] , z[[i]], type='p', col=cols[i],
+      yt <- y[[i]]
+      zt <- z[[i]]
+      ix <- sort(yt, index.return = TRUE)$ix
+      yt <- yt[ix]
+      zt <- zt[ix]
+
+    points(yt ,zt , type='b', col=cols[i],
            pch=16)
   }
 }
@@ -152,6 +159,8 @@ plot_trait_vpd_narea_lma2<- function(list_assembly_lma,
   grad <- vec_site_prod
   y <- lapply(list_data, function(x) x$community$traits[ ,var])
   z <- lapply(list_data, function(x) x$community$traits[ ,"lma"])
+  colfunc <- colorRampPalette(c("green", "red"))
+  cols <- colfunc(length(list_data))
 
   par(mfrow = c(2,1),
           oma = c(5,4,0,0) + 0.1,
@@ -163,7 +172,7 @@ plot_trait_vpd_narea_lma2<- function(list_assembly_lma,
   box()
 
   for(i in seq_along(list_data)) {
-    points(y[[i]]*0 + grad[i], y[[i]], type='p', col="black",
+    points(y[[i]]*0 + grad[i], y[[i]], type='p', col=cols[i],
            pch=16)
   }
   plot(NA, type="n", log="y", las=1, xlim=range(grad),
@@ -171,7 +180,7 @@ plot_trait_vpd_narea_lma2<- function(list_assembly_lma,
     xlab=NA)
 
   for(i in seq_along(list_data)) {
-    points(y[[i]]*0 + grad[i], z[[i]], type='p', col="black",
+    points(y[[i]]*0 + grad[i], z[[i]], type='p', col=cols[i],
            pch=16)
   }
 

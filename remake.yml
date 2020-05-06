@@ -49,11 +49,18 @@ targets:
       - ms/amnat.bst
     command: latex_build("ms/Plant_WaterStress.tex", "ms/references.bib", clean=TRUE)
 
-  ms/Plant_WaterStress_SupplMat.pdf:
+  ms/Plant_WaterStress_SupplMat_1.pdf:
     depends:
       - ms/ms.sty
       - ms/amnat.bst
-    command: latex_build("ms/Plant_WaterStress_SupplMat.tex", "ms/references.bib", clean=TRUE)
+    command: latex_build("ms/Plant_WaterStress_SupplMat_1.tex", "ms/references.bib", clean=TRUE)
+
+
+  ms/Plant_WaterStress_SupplMat_2.pdf:
+    depends:
+      - ms/ms.sty
+      - ms/amnat.bst
+    command: latex_build("ms/Plant_WaterStress_SupplMat_2.tex", "ms/references.bib", clean=TRUE)
 
 
   figures_plant_FvC:
@@ -207,6 +214,18 @@ targets:
     command: plot_photosyn_annual_FvC_Narea()
     plot: wide
 
+  figures/Photo_FvC_narea_vpd0.pdf:
+    command: plot_photosyn_Plant_FvC_Narea()
+    plot: wide
+
+  figures/Photo_FvC_narea_vpd1_5.pdf:
+    command: plot_photosyn_Plant_FvC_Narea(I(vpd = 1.5))
+    plot: wide
+    
+  figures/Photo_FvC_narea_vpd3.pdf:
+    command: plot_photosyn_Plant_FvC_Narea(I(vpd = 3))
+    plot: wide
+
   figures/Annual_Photo_FvC_narea_vpd3.pdf:
     command: plot_photosyn_annual_FvC_Narea(I(vpd = 3))
     plot: wide
@@ -219,7 +238,14 @@ targets:
     command: compare_fit_Narea_Vcmax()
     plot: wide
 
-# Narea vs LTR
+# LMA vs Narea
+
+  figures/data_lma_narea.pdf:
+    command: figure_lma_narea(leaf_traits)
+    plot: square
+
+
+# Narea effect on tradeoff LMA vs LTR
 
   figures/data_lma_ll_trade_off_narea.pdf:
     command: figure_lma_tradeoff_narea(leaf_traits)
@@ -266,43 +292,43 @@ targets:
 ## FvCB assembly figures
 
   figures/gradient_lma_single_lma_FvCB.pdf:
-    command: plot_trait_vpd(list_assembly_FvCB_single_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd(list_assembly_FvCB_single_lma_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_lma_multi_lma_FvCB.pdf:
-    command: plot_trait_vpd(list_assembly_FvCB_multi_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd(list_assembly_FvCB_multi_lma_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(-0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_narea_lma_single_narea_lma_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma2_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_cluster, I(vec_site_prod = c(-0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: tall
 
   figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: tall
 
   figures/gradient_narea_lma_single_narea_lma_NvLTR_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_NvLTR_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(-0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_narea_lma_single_narea_lma2_NvLTR_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, 0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_single_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: tall
 
   figures/gradient_narea_lma_multi_narea_lma2_NvLTR_FvCB.pdf:
-    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(0.5, 1, 1.5, 2, 2.5, 3) ))
+    command: plot_trait_vpd_narea_lma2(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster, I(vec_site_prod = c(-0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: tall
 
   figures/gradient_narea_lma_single_FvCB_cor.pdf:
@@ -315,6 +341,10 @@ targets:
 
   figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf:
     command: plot_cor_narea_lma(list_assembly_FvCB_single_narea_lma_NvLTR_cluster)
+    plot: square
+
+  figures/gradient_narea_lma_multi_NvLTR_FvCB_cor.pdf:
+    command: plot_cor_narea_lma(list_assembly_FvCB_multi_narea_lma_NvLTR_cluster)
     plot: square
 
   figures/gradient_narea_lma_multi_narea_lma_FvCB_Tleaf.pdf:

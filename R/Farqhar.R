@@ -196,6 +196,153 @@ legend(x = 1100, y = 2, lwd = c(2,2),
        bty = "n")
 }
 
+#TODO
+## Compare_Photo_Plant_FvC <- function(){
+## require(plantecophys)
+## require(plant)
+## x <- 10:1500
+## B_lf1<-5120.738 * 1.87e-3
+## B_lf2<- 0.5
+## B_lf3<- 0.04
+## B_lf5 <- 1
+## k_I <-  0.5
+## # Potential CO_2 photosynthesis at average leaf nitrogen [mol / d / m2]
+## # For comparison, convert Amax to ymol / m2 /s
+## Amax <- B_lf1
+
+## assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+##   x <- QY * I + Amax
+##   (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+## }
+## mar.default <- c(5,4,4,2) + 0.1
+## par(mar = mar.default + c(0, 0.3, 0, 0))
+
+## plot(x,
+##      assimilation_rectangular_hyperbolae(
+##        x*k_I, Amax, theta = B_lf2, QY = B_lf3),
+##      type = "l", ylim = c(0, 13), lwd = 2,
+##      xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
+##      ylab = expression(paste(A,"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )))
+## V <-  50
+## df_pred <- Photosyn(PPFD=x,Vcmax  = 50,
+##                     Jmax  = 100,
+##                     alpha = 0.24, theta = 0.85)
+## lines(x,df_pred$ALEAF + df_pred$Rd,
+##       lty = 1, col = "red", lwd = 2)
+## V <-  50
+## df_pred <- Photosyn(PPFD=x,Vcmax  = V,
+##                     Jmax  = V*1.67,# Jmax ~1.67 Vcmax in Medlyn et al. 2002
+##                     alpha = 0.24, theta = 0.85)
+## lines(x,df_pred$ALEAF + df_pred$Rd,
+##       lty = 2, col = "red", lwd = 2)
+## V <-  32.5
+## df_pred <- Photosyn(PPFD=x,Vcmax  = V,
+##                     Jmax  = V*1.67,# Jmax ~1.67 Vcmax in Medlyn et al. 2002
+##                     alpha = 0.04*4, theta = 0.5)
+## lines(x,df_pred$ALEAF + df_pred$Rd,
+##       lty = 3, col = "red", lwd = 2)
+## df_pred <- Photosyn(PPFD=x,Vcmax  = V,
+##                     Jmax  = 1.67*V,#exp(1.197)*V^0.8,
+##                     alpha = 0.075*4, theta = 0.7) # Jmax ~1.67 Vcmax in Medlyn et al. 2002
+## lines(x,df_pred$ALEAF + df_pred$Rd,
+##       lty = 1, col = "blue", lwd = 2)
+## df_pred <- Photosyn(PPFD=x,Vcmax  = V,
+##                     Jmax  = 1.67*V,#exp(1.197)*V^0.8,
+##                     alpha = 0.25, theta = 0.5) # Jmax ~1.67 Vcmax in Medlyn et al. 2002
+## lines(x,df_pred$ALEAF + df_pred$Rd,
+##       lty = 1, col = "green", lwd = 2)
+## legend(x = 400, y = max(assimilation_rectangular_hyperbolae(
+##        x*k_I, Amax, theta = B_lf2, QY = B_lf3))*0.6,
+##        lwd = 2, lty = c(1, 1, 2, 3, 1, 1), cex = 0.8,
+##        col = c("black", "red", "red", "red", "blue", "green"),
+##        legend = c("Plant", "FvC_plantecophys", "FvC_plantecophys V = 50 and J = 1.67 V",
+##                   "FvC Plant and V =32.5 and J = 1.67 V", "FvC Troll = von Caemmerer 2000", "Sterck et al. 2011" ),
+##        bty = "n")
+## }
+
+plot_photosyn_Plant_FvC_Narea<-  function(vpd = 0,
+                                              narea = 1.87e-3,
+                                              B_lf1= 31.62 *1000^0.801,
+                                          # HTTP://DOI.WILEY.COM/10.1111/GCB.12870 CONVERSION OF NARE IN G M-2
+                                              B_lf2=0.7,
+                                              B_lf3=0.3,
+                                              B_lf4=21000,
+                                              B_lf5=0.801, # http://doi.wiley.com/10.1111/gcb.12870
+                                              B_lf6=1.67){
+require(plantecophys)
+require(plant)
+
+x <- 10:1500
+B_lf1o<-5120.738 * 1.87e-3
+B_lf2o<- 0.5
+B_lf3o<- 0.04
+B_lf5o <- 1
+k_Io <-  0.5
+# Potential CO_2 photosynthesis at average leaf nitrogen [mol / d / m2]
+# For comparison, convert Amax to ymol / m2 /s
+Amax <- B_lf1o
+
+assimilation_rectangular_hyperbolae <- function(I, Amax, theta, QY) {
+  x <- QY * I + Amax
+  (x - sqrt(x^2 - 4 * theta * QY * I * Amax)) / (2 * theta)
+}
+
+assimilation_FvCB <- function(I, V, vpd, alpha, theta, lf6) {
+    df_pred <- Photosyn(PPFD=I,
+                        # conversion of light in mu mol /m2 /s is it ok ?
+                        VPD = vpd,
+                        Vcmax  = V,
+                        Jmax  = V*lf6,
+                        alpha = alpha,
+                        theta = theta,
+                        gsmodel = "BBLeuning")
+                        # Jmax ~1.67 Vcmax in Medlyn et al. 20
+ return((df_pred$ALEAF + df_pred$Rd))
+}
+
+
+mar.default <- c(5,4,4,2) + 0.1
+par(mar = mar.default + c(0, 0.3, 0, 0))
+
+plot(x,
+     assimilation_rectangular_hyperbolae(
+       x, Amax, theta = B_lf2o, QY = B_lf3o),
+     type = "l", ylim = c(0, 11), lwd = 2,
+     xlab = expression(paste("PPFD (", mu, "mol", " ",m^-2, " ", s^-1, ")" )),
+     ylab = expression(paste(A,"(", mu, "mol", " ", m^-2, " ",s^-1, ")" )))
+
+
+      Vcmax <- B_lf1 * (narea) ^  B_lf5
+      theta <- B_lf2
+      alpha <- B_lf3
+      lf6   <- B_lf6
+lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = alpha,
+                           theta = theta, lf6 = lf6 ),
+      lty = 1, col = "red", lwd = 2) #  Marechaux and Chave (2017)
+lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.24,
+                           theta = 0.85, lf6 = lf6 ),
+      lty = 1, col = "blue", lwd = 2) # Duursma (2015)
+
+lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.3,
+                           theta = 0.9, lf6 = lf6 ),
+      lty = 1, col = "green", lwd = 2) # Medlyn et al.(2002)
+lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.25,
+                           theta = 0.5, lf6 = lf6 ),
+      lty = 1, col = "purple", lwd = 2) # Sterck et al. (2011)
+
+
+legend(x = 400, y = 5,
+       lwd = 1, lty = 1,
+       col = c("black", "red", "blue", "green", "purple"),
+       legend = c("Plant Default Falster et al. (2017)",
+                  "Troll Marechaux and Chave (2017)",
+                  "Duursma (2015)",
+                  "Medlyn et al.(2002)",
+                  "Sterck et al. (2011)"),
+        bty = "n")
+
+
+}
 
 
 plot_photosyn_annual_plant<-  function(){
@@ -318,8 +465,6 @@ approximate_annual_assimilation <- function(V, latitude, vpd, alpha, theta) {
   D <- seq(0, 365/2, length.out = 10000)
   I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
   AA <- NA * E
-# TODO
-# add Vcmax dependence on Narea
   for (i in seq_len(length(E))) {
     AA[i] <- 2 * plant:::trapezium(D, assimilation_curve(
                                 k_I * I * E[i], V, vpd, alpha, theta))
@@ -628,8 +773,9 @@ lines(Narea, exp(3.712)*Narea^0.650, lty = 2)
 lines(Narea, 10^1.57*Narea^0.55, lty = 3)
 lines(Narea, mean(a1) + Narea*mean(b1), lty = 4 , col = 2)
 lines(Narea, mean(a2) + Narea*mean(b2), lty = 4 , col = 3)
+abline(v= 1.87e-3 *1000, col = "red")
 legend("topleft", legend = c("Sakschewski-TRY", "Walker2017",
-                             "Domingues2011", "Kattge2009_V_meanPFT",
+                             "Domingues2010", "Kattge2009_V_meanPFT",
                              "Kattge2009_VA_meanPFT"),
        lty = c(1:4,4), col = c(1,1,1,2,3))
 plot(Narea, 31.62*Narea^0.801, type = "l", lty = 0, xlab = "Narea (g m-2)",

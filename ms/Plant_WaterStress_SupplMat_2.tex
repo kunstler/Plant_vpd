@@ -17,7 +17,8 @@
 \makeatother
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
-\title{Supplementary Materials. Change of LMA and Leaf N per area along a water stress gradient}
+\title{Supplementary Materials 2. Modification of Plant model to
+  include vapour pressure deficit}
 
 \author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
 \date{}
@@ -44,14 +45,19 @@
 
 \section{Introduction}
 
-Supplementary materials presenting the callibation of the vpd dependent photosynthesis model in plant and details about the plant simulations.
+This supplementary materials presents the extension of the \plant\
+model. First the photosynthesis model is modified to use a coupled Farquhar
+photosynthesis - stomatal conductance model that include an effect of vapour pressure deficit
+(vpd). Then we present the choice of the parameters of the model and the link with
+$N_{area}$. Finally,  we include an effect of $N_{area}$ on the leaf
+turnover rate vs
+$LMA$ tradeoff.
 
 \section{Development of the Farquhar photosynthesis model with vpd and Leaf N effects}
 
+\subsection{Farquhar photosynthesis model  in \plant\ .}
 
-\subsection{Development of the Farquhar photosynthesis model and plant photosynthesis model in \plant\ .}
-
-The FvC model describe leaf photosynthesis is describe as the minimum
+The Farquhar model describes leaf photosynthesis as the minimum
 of three potential rates $J_E$ the light limited rate, $J_C$ the CO2
 rubisco limited rate, and $J_S$ the starch export limitation rate. The
 last limitation by starch export (or triose-phosphate utilization)
@@ -113,7 +119,9 @@ see for instance \citet{Bernacchi-2009}.
 J_S= V_{cmax}/2.
 \end{equation}
 
-To have a more gradual transition than the minimum function it is possible to use the smaller roots of two quadratics functions:
+To avoid discontinuity due to the minimum function between three
+limiting rates, the minimum function is generally replaced by
+hyperbolic minimums based on the following quadratics functions:
 
 \begin{equation}
 \label{eq:Q1}
@@ -127,54 +135,58 @@ where $J_P$ is the min of $J_C$ and $J_E$.
 \beta A^2 - A(J_P+J_S) + J_P J_S= 0.
 \end{equation}
 
-where $\theta$ and $\beta$ are constant describing the transition between limitation.
+where $A$ is the gross photosynthesis. $\theta$ and $\beta$ are constant describing the transition
+between limitation (classically $\theta =1 - 1E-04$ and $\beta = 1 -
+1E-07$). We used these hyperbolic minimum.
+
 
 The kinetic parameters $K_c$, $K_o$, $V_{cmax}$, and $\tau$ change with temperature according to a $Q_{10}$ function ($k = k_{25} Q_{10}^{(T-25)/10}$).
 
-\clearpage
-
-We can use the R package plantecophys \citep{Duursma-2015} to compare
-the current photosynthesis model of \plant\ and the FvC model for
-different parameters taken from the litterature. In most of the cases I assumed as in
-\citet{Medlyn-2002} that $J_{max} = 1.67 \times V_{cmax}$. Several
-other equations have been proposed see
-\citet{Walker-2014,Kattge-2011}.
-% For the simulations with $N_{area}$ we will also need to express $V_{cmax}$ in function of $N_{area}$ \citep{Kattge-2009,Domingues-2010,Sakschewski-2015}. For instance, \citet{Sakschewski-2015} fitted the following relationship on the TRY data $V_{cmax25} = 31.62 N_{area}^{0.801}$.
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/Photo_Plant_FvC.pdf}
-\caption{\textbf{Photosynthesis model of \plant\ and FvC for different parameterisation.}
-\label{fig:photo}}
-\end{figure}
-
-The figure \ref{fig:photo} show the light response curves for \plant\
-, the default FvC, FvC with the light parameters similar to \plant\ , the parameters used in \citet{Sterck-2011}, and the parameters used in Troll \citep{Marechaux-2017}.
-
-Then we can see how this scale up to the annual photosynthesis rate using the integration approach of \plant\ . \plant\ use a Michaelis Menten function to approximate the annual photosynthesis rate see figure \ref{fig:photo_annu_plant}. The Michaelis Menten approximation is not working well for the FvC model, see Figure \ref{fig:photo_annu_fvc}. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figure \ref{fig:photo_annu_fvc}. We will use a non-rectangular hyperbola.
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/Annual_Photo_Plant.pdf}
-\caption{\textbf{Annual photosynthesis model of \plant\ .}
-\label{fig:photo_annu_plant}}
-\end{figure}
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/Annual_Photo_FvC_vpd0.pdf}
-\caption{\textbf{Annual photosynthesis model of FvC with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
-\label{fig:photo_annu_fvc}}
-\end{figure}
+We used the default parameters of \citep{Duursma-2015}.
 
 \clearpage
 
-\subsection{Coupled photosynthesis and water stress models}
+\subsection{Link between $J_{max}$ \textit{vs.} $V_{cmax}$}
 
-To include the effect of aridity we need to couple the photosynthesis model with a stomatal conductance model. In most approaches the stomatal conductance model is linked with FvC model with the Fick law:
+The hypothesis of a coordination between Calvin-Benson cycle limited
+rate of assimilation and electron transport limited rate of
+assimilation, lead to the assumption of a correlation between $V_{cmax}$ and
+$J_{max}$. Different model to link them have been proposed in the
+litterature.
+
+\begin{itemize}
+
+\item $J_{max} = 1.67 \times  V_{cmax}$ in \citet{Medlyn-2002}.
+  
+\item A power function of $V_{cmax}$ $J_{max} = exp(1.01) \times
+  V_{cmax}^{0.89}$ in \citet{Walker-2014}.
+
+\item  $J_{max} = exp(1.669) \times V_{cmax}^{0.75}$ in \citet{Kattge-2011} based on the TRY data.
+
+\item $J_{max} = exp(1.425) \times V_{cmax}^{0.837}$ in \citet{Wullschleger-1993}.
+
+\end{itemize}
+
+The Figure \ref{fig:Vcmax_Jmax} show the different parametrisation.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Vcmax_Jmax.pdf}
+\caption{\textbf{Different parametrisation of the link between $J_{max}$ and $V_{cmax}$.}
+\label{fig:Vcmax_Jmax}}
+\end{figure}
+
+The slope of $J_{max}$ vs $V_{cmax}$ (in log log) affect the light level at which photosynthesis become RuBisCO limited. A shallower slope shift the light level to higher light value and a steeper slope to a lower light value. This will thus affect shade tolerance.
+
+The link between $J_{max}$ and $V_{cmax}$ might however be more
+complexe and depend on the light level and leaf P. According to
+\citet{Walker-2014} the effect of SLA and leaf P are however
+relatively small. So this is ok to use only $J_{max}$ in function of
+$V_{cmax}$. We propose to use the classical parameterisation of \citet{Medlyn-2002} .
+
+\subsection{Coupled photosynthesis and stomatal conductance models}
+
+To include the effect of aridity we need to couple the photosynthesis model with a stomatal conductance model. In most approaches the stomatal conductance model is linked with Farquhar model with the Fick law:
 
 \begin{equation}
 \label{eq:fick}
@@ -183,12 +195,17 @@ A_n = g_s (c_a - c_i) = g_s c_a (1-\chi).
 
 Where $c_a$ and $c_i$ are respectively the $CO_2$ mole fraction of the air and in the leaf.
 
+For the stomatal model several different models have been proposed
+that range from empirical models to optimisation models and from
+models that include or not soil water stress. If soil water stress is
+include some approach also include competition for soil water between
+trees \citep{Farrior-2013}. Here we will explore a relatively simple
+and classical implementation with no effect of soil water stress and
+no representation of water competition.
 
-For the stomatal model a lot of different options have been proposed that range from empirical models to optimisation models and from models that include or not soil water stress. If soil water stress is include some approach also include competition for soil water between trees \citep{Farrior-2013}. Here we will explore a relatively simple and classical implementation. In the first model there would be not effect of soil water stress and no representation of competition for water.
+Below are presented the three most classical stomatal models.
 
-Below are presented the most classical existing stomatal models.
-
-One of the first and most classical model is the one of \citet{Collatz-1991} which connect the FvC photosynthesis model with the Ball Berry model which predict $g_s$. This is an empirical relationship based on the following equation:
+The first model is the one of \citet{Collatz-1991} which connect the Farquhar photosynthesis model with the Ball Berry model which predict $g_s$. This is an empirical relationship based on the following equation:
 
 \begin{equation}
 \label{eq:gs-Ball}
@@ -204,7 +221,7 @@ This has been modified by \citet{Leuning-1995} as the following empirical equati
 g_s= g_0 + g_1 \frac{A_n }{(c_a - \Gamma)(1+D/D_0)}.
 \end{equation}
 
-Where $D$ is the air vapour pressure deficit (VPD).
+Where $D$ is the air vapour pressure deficit (vpd).
 
 Then several approach have been developed to predict stomatal conductance based on the optimisation of the summed cost of water loss and carbon gain \citep{Medlyn-2002,Prentice-2014,Wolf-2016,Sperry-2017}. One of the most used approach is the one developed by \citet{Medlyn-2011} as :
 
@@ -214,59 +231,125 @@ g_s \approx g_0 + (1 + \frac{g_1}{\sqrt{D}}) \frac{A_n }{c_a}.
 \end{equation}
 
 
-\textit{NOT TO KEEP Then other authors have proposed to account for the impact of xylem cavitation \citet{Wolf-2016,Sperry-2016,Sperry-2017} in the model and also to maximise carbon gain rather than the water use efficiency \citet{Wolf-2016}. I think that \citep{Sperry-2016} propose a framework that would be easy to implement and to connect to a water budget in \plant\ . But as an initial step we could use either the model of \citet{Medlyn-2011} or \citet{Leuning-1995}. We need to keep in mind that these models that are based only on vpd are supposed to be applicable only to plant without soil water stress.}
+% \textit{NOT TO KEEP Then other authors have proposed to account for the impact of xylem cavitation \citet{Wolf-2016,Sperry-2016,Sperry-2017} in the model and also to maximise carbon gain rather than the water use efficiency \citet{Wolf-2016}. I think that \citep{Sperry-2016} propose a framework that would be easy to implement and to connect to a water budget in \plant\ . But as an initial step we could use either the model of \citet{Medlyn-2011} or \citet{Leuning-1995}. We need to keep in mind that these models that are based only on vpd are supposed to be applicable only to plant without soil water stress.}
 
-The figures \ref{fig:photo_stomat_BB}, \ref{fig:photo_stomat_Leuning}, \ref{fig:photo_stomat_opti}, and \ref{fig:photo_stomat} show the different coupled models in plantecophys.
+The figure \ref{fig:photo_stomat} shows three different classical coupled models.
 
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/FvC_stomatal_BallBerry.pdf}
-\caption{\textbf{Coupled FvC and Ball Berry models with effect of $V_{cmax}$ and VPD.}
-\label{fig:photo_stomat_BB}}
-\end{figure}
+% \begin{figure}[ht]
+% \centering
+% \includegraphics{../figures/FvC_stomatal_BallBerry.pdf}
+% \caption{\textbf{Coupled FvC and Ball Berry models with effect of $V_{cmax}$ and VPD.}
+% \label{fig:photo_stomat_BB}}
+% \end{figure}
 
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/FvC_stomatal_BBLeuning.pdf}
-\caption{\textbf{Coupled FvC and Leuning models with effect of $V_{cmax}$ and VPD.}
-\label{fig:photo_stomat_Leuning}}
-\end{figure}
+% \begin{figure}[ht]
+% \centering
+% \includegraphics{../figures/FvC_stomatal_BBLeuning.pdf}
+% \caption{\textbf{Coupled FvC and Leuning models with effect of $V_{cmax}$ and VPD.}
+% \label{fig:photo_stomat_Leuning}}
+% \end{figure}
 
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/FvC_stomatal_BBOpti.pdf}
-\caption{\textbf{Coupled FvC and Medlyn models with effect of $V_{cmax}$ and VPD.}
-\label{fig:photo_stomat_opti}}
-\end{figure}
+% \begin{figure}[ht]
+% \centering
+% \includegraphics{../figures/FvC_stomatal_BBOpti.pdf}
+% \caption{\textbf{Coupled FvC and Medlyn models with effect of $V_{cmax}$ and VPD.}
+% \label{fig:photo_stomat_opti}}
+% \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/FvCstomatal.pdf}
-\caption{\textbf{Coupled FvC and stomatal models with effect of $V_{cmax}$ and VPD for three stomatal conductance models.}
+\caption{\textbf{Coupled Farquhar and stomatal models with effect of
+    $V_{cmax}$ and VPD for three stomatal conductance models, Ball
+    Berry model, Leuning model, and Medlyn optimal model.}
 \label{fig:photo_stomat}}
 \end{figure}
 
 \clearpage
 
-The variation of the Leuning model with vpd seems to give rise to an annual model that is well approximated by the non-rectangular hyperbola (see Figure \ref{fig:photo_annu_fvc_vpd3}).
+The Ball Berry model lead to a very low photosynthesis at high vpd,
+and has a discontinuity wich might be difficult to handel in numerical
+simulation. The Medlyn optimal model lead also to a
+discontinuity and has a relatively weak vpd effect. But more
+importantly the Medlyn model is based on an optimisation approach that
+ignore light competition whereas we do not want to be limited to an
+optimisation approach. We thus decided to use the Leuning empirical
+model (as in ED2). 
 
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/Annual_Photo_FvC_vpd3.pdf}
-\caption{\textbf{Annual photosynthesis model of FvC with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ coupled with the Leuning stomatal model and integrated over one year in the left panel.}
-\label{fig:photo_annu_fvc_vpd3}}
-\end{figure}
+% The variation of the Leuning model with vpd seems to give rise to an annual model that is well approximated by the non-rectangular hyperbola (see Figure \ref{fig:photo_annu_fvc_vpd3}).
 
-So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Sakschewski-2015}.
+% \begin{figure}[ht]
+% \centering
+% \includegraphics{../figures/Annual_Photo_FvC_vpd3.pdf}
+% \caption{\textbf{Annual photosynthesis model of FvC with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ coupled with the Leuning stomatal model and integrated over one year in the left panel.}
+% \label{fig:photo_annu_fvc_vpd3}}
+% \end{figure}
+
+% So my proposition would be to run simulation with this coupled FvC-Leuning model along a gradient of vpd where the $V_{cmax}$ and $J_{max}$ are related to $N_{area}$ using the link proposed by \citep{Sakschewski-2015}.
 
 \pagebreak
 
 
-\subsection{Parametrisation of the FvCB}
+\subsection{Parametrisation of the Farquhar model}
+
+The optimisation approach of $N_{area}$ in function drought assume a
+link between $V_{cmax}$ and $N_{area}$ that need to be paramterised in
+the photosynthesis model. Then, the light reponse of photosynthesis model needs to be parameterised.
+
+\subsubsection{Parametrisation of $V_{cmax}$ \textit{vs.} $N_{area}$}
+
+Photosynthetic rate should scale positively with leaf Nitrogen content
+per area $N_{area}$ because of the large amount of nitrogen invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
+
+\begin{itemize}
+
+\item \citet{Kattge-2009} proposed the relationship $V_{cmax} = a + b
+  \times N_{area}$ with different value per biomes estimated either
+  with $V_{cmax}$ only or also constrained by $A_{max}$ (unit g per m2 need to be converted in kg per m2).
+
+\item \citet{Sakschewski-2015} proposed the relationship $V_{cmax} = 31.62 \times N_{area}^{0.801}$ (unit g per m2 need to be converted in kg per m2).
+
+\item  \citet{Walker-2014} proposed that $ln(Vcmax) = 3.946 + 0.921
+  \times log(N) + 0.121 \times log(P) + 0.281 \times log(N) \times
+  log(P)$ and explored other model that include also LMA. To get a
+  function of only N this should be $V_{cmax} = exp(3.712) \times
+  N^{0.650}$ see  \citet{Walker-2017} (unit g per m2 need to be converted in kg per m2).
+
+\item \citet{Domingues-2010} proposed several model based on N and P.
+  If we look only at the one based only on N this is: $V_{cmax} =
+  10^{1.57} \times N_{area}^{0.55}$ (Appendix C Table A2) (unit g per m2 need to be converted in kg per m2).
+
+\end{itemize}
+
+The Figure \ref{fig:Narea_Vcmax} shows the different parametrisation.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Param_FvC_Narea_Vcmax.pdf}
+\caption{\textbf{Different parametrization of the link between $N_{area}$ and $V_{cmax}$. The panel on the right present the different biomes estimate of \citet{Kattge-2011}.}
+\label{fig:Narea_Vcmax}}
+\end{figure}
+
+Other traits such as leaf P and $LMA$ could also influence $V_{cmax}$
+\citep{Walker-2014,Domingues-2010}. $LMA$ has little effect on the
+link between $V_{cmax}$ and $N_{area}$.  Leaf P has little direct
+effect on $V_{cmax}$ but an important interaction with $N_{area}$: at
+low leaf P the slope of $V_{cmax}$ \textit{vs} $N_{area}$ is shallow
+but at high leaf P this slope is steeper \citep{Walker-2014}.
+
+% It is also possible to use an other approach where both $V_{cmax}$ and $J_{max}$
+% are function of N and P rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
+
+The objective is not to focus on P effect, so we propose to use the
+most recent parameterisation using the TRY data of \citet{Sakschewski-2015}.
 
 
-Choice of parameters of the FvCB model to use for
-forest trees? Here is a short list of existing parametrisation for the
+\subsubsection{Light response parametrisation of the Farquhar model}
+
+We propose to choose the parameters of light response of the Farqhuar model
+classicaly used for evergreen forest trees. The parameterisation has
+important impact on the model and numerous type of parameterisation
+exist \citep{Rogers-2017}. Here is a short list of existing parametrisation for the
 light response part:
 \begin{itemize}
 
@@ -274,96 +357,74 @@ light response part:
 
 \item In \citet{Medlyn-2002} $\alpha = 0.3$ and $\theta = 0.9$
 
-\item In Plant $\theta = 0.5$ and $\alpha= 0.04$ not on the same unite
-  (mol of CO2 per mol of photon wherease in FvCB in mol electron per
-  mol photon)  (conversion see Mercado et al 2009, the conversion of
-  the apparent quantum yield in micromolCO2/micromol quantum into
-  $\mu$ mol e-/micxromol quantum is done by multipliyng by 4, since
-  four electrons are needed to regenerate RuBP $4*0.04 = 0.16$ but we
-  also probably need to correct for leaf absorbance for instance 0.8 in \citet{Medlyn-2002})
-
-\item In \citet{Sterck-2011} $\theta = 0.5$ and $\alpha = 0.25$ (not exactly the same alpha ...)
-
-\item  In \citet{Valladares-1997} for tropical shrubs $\theta$ ranges between 0.51 and 0.8 and $\alpha$ (in mol CO2) between 0.048 and 0.066
-
 \item In TROLL \citet{Marechaux-2017} $\alpha = 0.075*4 = 0.3$ and $\theta = 0.7$ based on von Caemmerer 2000
 
-\item In \citet{vonCaemmerer-2000} the non rectangular hyperbola light response curve has an initial slope $\alpha_1 \times \Phi_{PSII} \times \beta$ with $\alpha_1$ the leaf absorptance, $\Phi_{PSII}$ the maximum quantum yield of the photosystem II and $\beta$ the fraction of absorbed light that reach PSII.
-
 \end{itemize}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Photo_FvC_narea_vpd0.pdf}
+\caption{\textbf{Photosynthesis model of \plant\ and Farquhar model
+    for different parameterisation of the reponse curve at mean $N_{area}$ and a $vpd
+    = 0$.}
+\label{fig:photo0}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Photo_FvC_narea_vpd1_5.pdf}
+\caption{\textbf{Photosynthesis model of \plant\ and Farquhar model for different parameterisation of the reponse curve at mean $N_{area}$ and a $vpd = -1.5$.}
+\label{fig:photo15}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Photo_FvC_narea_vpd3.pdf}
+\caption{\textbf{Photosynthesis model of \plant\ and Farquhar model for different parameterisation of the reponse curve at mean $N_{area}$ and a $vpd = -3$.}
+\label{fig:photo3}}
+\end{figure}
+
+The figure \ref{fig:photo0} to \ref{fig:photo3} show the light response curves for
+different parameterisation at vpd from 0 to -3.
 
 I propose to use the parametrisation of \citet{Marechaux-2017}.
 
+\clearpage
 
-\subsection{Parametrisation of $J_{max}$ \textit{vs.} $V_{cmax}$}
+Then we can see how this scale up to the annual photosynthesis rate
+using the integration approach of \plant\ . \plant\ use a Michaelis
+Menten function to approximate the annual photosynthesis rate see
+figure \ref{fig:photo_annu_plant}. The Michaelis Menten approximation
+is not working well for the Farquhar model, see Figures
+\ref{fig:photo_annu_fvc0} and \ref{fig:photo_annu_fvc3}. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figure \ref{fig:photo_annu_fvc}. We will use a non-rectangular hyperbola.
 
-The hypothesis of a coordination between Calvin-Benson cycle limited
-rate of assimilation and electron transport limited rate of
-assimilation, lead to the assumption of a correlation between $V_{cmax}$ and
-$J_{max}$. Different model to link them have been proposed in the
-litterature.
-
-\begin{itemize}
-
-\item In \citet{Medlyn-2002} $J_{max} = 1.67 \times  V_{cmax}$.
-  
-\item In \citet{Walker-2014} the relationship is a power function of $V_{cmax}$ $J_{max} = exp(1.01) \times V_{cmax}^{0.89}$.
-
-\item In Try data from \citet{Kattge-2011} this is $J_{max} = exp(1.669) \times V_{cmax}^{0.75}$.
-
-\item In \citet{Wullschleger-1993} this is $J_{max} = exp(1.425) \times V_{cmax}^{0.837}$.
-
-\end{itemize}
-
-The Figure \ref{fig:Vcmax_Jmax} show the different parametrisation.
 
 \begin{figure}[ht]
 \centering
-\includegraphics{../figures/Param_FvC_Vcmax_Jmax.pdf}
-\caption{\textbf{Different parametrisation of the link between $J_{max}$ and $V_{cmax}$.}
-\label{fig:Vcmax_Jmax}}
+\includegraphics{../figures/Annual_Photo_Plant.pdf}
+\caption{\textbf{Annual photosynthesis model of \plant\ .}
+\label{fig:photo_annu_plant}}
 \end{figure}
 
-I propose to use either \citet{Medlyn-2002}.
-
-The slope of $J_{max}$ vs $V_{cmax}$ (in log log) affect the light level at which photosynthesis become RuBisCO limited. A shallower slope shift the light level to higher light value and a steeper slope to a lower light value. This will thus affect shade tolerance.
-
-The link between $J_{max}$ and $V_{cmax}$ might however be more complexe and depend on the light level and leaf P. According to \citet{Walker-2014} the effect of SLA and leaf P are however relatively small. So this is ok to use only $J_{max}$ in function of $V_{cmax}$.
-
-\subsection{Parametrisation of Vcmax \textit{vs.} Narea}
-
-Photosynthetic rate should scale positively with leaf Nitrogen (N) because of the large amount of N invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
-
-\begin{itemize}
-
-\item \citet{Kattge-2009} todo add equation.
-
-\item \citet{Sakschewski-2015} proposed that $V_{cmax} = 31.62 \times N_{area}^{0.801}$ (unit g per m2 need to be converted in kg per m2 as $*1000^{0.801}$.
-
-\item  \citet{Walker-2014} proposed that $ln(Vcmax) = 3.946 + 0.921 \times log(N) + 0.121 \times log(P) + 0.281 \times log(N) \times log(P)$ and explored other model that include also LMA. To get a function of only N this should be $V_{cmax} = exp(3.712) \times N^{0.650}$ see  \citet{Walker-2017}.
-
-\item \citet{Kattge-2011} proposed $V_{cmax} = a + b \times N_{area}$ with different value per biomes estimated either with $V_{cmax}$ only or also constrained by $A_{max}$.
-
-\item \citet{Domingues-2010} proposed several model based on N and P.  If we look only at the one based only on N this is: $V_{cmax} = 10^{1.57} \times N_{area}^{0.55}$ (Appendix C Table A2).
-
-\end{itemize}
-
-The Figure \ref{fig:Narea_Vcmax} show the different parametrisation.
 
 \begin{figure}[ht]
 \centering
-\includegraphics{../figures/Param_FvC_Narea_Vcmax.pdf}
-\caption{\textbf{Different parametrization of the link between Narea and Vcmax. The panel on the right present the different biomes estimate of \citet{Kattge-2011}.}
-\label{fig:Narea_Vcmax}}
+\includegraphics{../figures/Annual_Photo_FvC_vpd0.pdf}
+\caption{\textbf{Annual photosynthesis model of Farquhar model with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
+\label{fig:photo_annu_fvc0}}
 \end{figure}
 
-Other traits such as leaf P and SLA could also influence Vcmax \citep{Walker-2014,Domingues-2010}. LMA has little effect on the link between Vcmax and Narea.  Leaf P has little direct effect on Vcmax but an important interaction with Narea: at low leaf P the slope of Vcmax \textit{vs} Narea is shallow but at high leaf P this slope is steeper \citep{Walker-2014}.
-It is also possible to use an other approach where both Vcmax and Jmax
-are function of N and P rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
 
-I propose to use \citet{Sakschewski-2015}.
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Annual_Photo_FvC_vpd3.pdf}
+\caption{\textbf{Annual photosynthesis model of Farquhar model with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
+\label{fig:photo_annu_fvc3}}
+\end{figure}
 
-\pagebreak
+
+\clearpage
 
 \subsection{Correlation of vpd and T}
 

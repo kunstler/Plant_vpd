@@ -1,0 +1,112 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[osf]{mathpazo}
+\usepackage{ms}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{hyperref}
+%% \usepackage{authblk}
+\usepackage[labelfont=bf]{caption} % make label for figure bold
+
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the MAPgins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\title{Supplementary Materials 1. Additional Results}
+
+\author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
+\date{}
+\affiliation{INRAE LESSEM, Grenoble, France and Department of Biological Sciences, Macquarie University,
+  Sydney, Australia}
+\date{}
+\runninghead{}
+\keywords{}
+
+\usepackage{color}
+
+\input{common-defs}
+
+\begin{document}
+
+\mstitleshort
+%% \mstitlepage
+\parindent=1.5em
+\addtolength{\parskip}{.3em}
+
+% \begin{abstract}
+% Abstract goes here\ldots
+% \end{abstract}
+
+\section{Introduction}
+
+This supplementary materials present the results of the community
+assembly simulations with a disturbance return interval of 40 years
+with the plant model \citep{Falster-2016,Falster-2017}.
+
+\clearpage
+
+\section{Results with FVCB model}
+\section{Supplementary Materials Additional Results}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for FVCB model with low disturbance rate (Disturbance mean interval 40 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_multiSM}}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFlSM}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA.}
+\label{fig:lma_nareaFl2SM}}
+\end{figure}
+
+
+\clearpage
+
+
+
+\section{Results with FVCB model and a link between N area and leaf turnover rate}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_NvLTR_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for model with link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 40 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_single_NvLTRSM}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA. The run with vpd = 0 failed.}
+\label{fig:lma_nareaFlSM}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/gradient_narea_lma_multi_narea_lma2_NvLTR_FvCB.pdf}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with low disturbance rate (Disturbance mean interval 40). The size of the point represent the variation of LMA. The run with vpd = 0 failed.}
+\label{fig:lma_nareaFl2SM}}
+\end{figure}
+
+\bibliographystyle{amnat}
+\bibliography{references}
+\end{document}

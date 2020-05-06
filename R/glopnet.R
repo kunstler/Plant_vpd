@@ -197,6 +197,31 @@ figure_lma_tradeoff_narea <- function(data) {
 
 }
 
+figure_lma_narea <- function(data) {
+  data <- subset(data, !is.na(data[["lma"]] * data[["n.area"]])
+    & table(data[["location"]])[data[["location"]]] > 9)
+  location <- data[["location"]]
+  lma <- data[["lma"]]
+  narea <- data[["n.area"]]
+
+  sm1 <- sma(lma ~ narea * location, log="xy")
+
+  par(mar=c(4.6, 4.6, .5, .5))
+  plot(NA, type="n", log="xy", xlim=c(0.00026, 0.01), ylim=c(0.01, 1.28),
+       xlab="", ylab="", las=1)
+  mtext(expression(paste("Nitrogen per area (kg ", m^-2,")")), line=3, side = 1)
+  mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")), line=3, side = 2)
+
+  points(narea, lma, col=make_transparent("grey", 0.5), pch=16)
+  plot(sm1, add=TRUE, type="l", lwd=1.25, p.lines.transparent=0.15)
+
+  title <- sprintf("%d sites, %d species",
+                   length(unique(location)),
+                   sum(!is.na(narea)))
+
+
+}
+
 
 figure_B_kl_narea<- function(data) {
   require(dplyr)
@@ -306,7 +331,7 @@ param_B_kl_narea<- function(data) {
                              pval = unlist(sm1$pval)),
                   data_summ,
                   by = "levels")
-  
+
   df$elevationm <- 10^df$elevationm
   df$elevationcl <- 10^df$elevationcl
   df$elevationch <- 10^df$elevationch
@@ -314,7 +339,7 @@ param_B_kl_narea<- function(data) {
   df$slopw <- 1/(df$slopech - df$slopecl)
   df <-  df[df$pval <= 0.05, ]
   df$naream<-  df$n.area.mean
-  
+
   param <- data.frame(coef = c("a", "b"),
                       LMAelev = coef(lm(elevationm~naream,
                                      data = df, , weights = df$elevw )),
