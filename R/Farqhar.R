@@ -326,10 +326,6 @@ lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.24,
 lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.3,
                            theta = 0.9, lf6 = lf6 ),
       lty = 1, col = "green", lwd = 2) # Medlyn et al.(2002)
-lines(x, assimilation_FvCB(I = x, V = Vcmax, vpd = vpd, alpha = 0.25,
-                           theta = 0.5, lf6 = lf6 ),
-      lty = 1, col = "purple", lwd = 2) # Sterck et al. (2011)
-
 
 legend(x = 400, y = 5,
        lwd = 1, lty = 1,
@@ -337,8 +333,7 @@ legend(x = 400, y = 5,
        legend = c("Plant Default Falster et al. (2017)",
                   "Troll Marechaux and Chave (2017)",
                   "Duursma (2015)",
-                  "Medlyn et al.(2002)",
-                  "Sterck et al. (2011)"),
+                  "Medlyn et al.(2002)"),
         bty = "n")
 
 
@@ -435,39 +430,62 @@ lines(E, (coef(fit)[["p1"]] +coef(fit)[["p2"]]*E -
       col = "blue", lwd = 2)
 legend(x = 0.2, y = max(y$df$AA)*0.3, lwd = c(NA,2, 2, 2), pch = c(1, NA, NA, NA),
        col = c("black", "red", "green", "blue"),
-       legend = c("Data Integrated", "Michealis Menten", "Exponential", "Non Rectangular Hyperbola"),
+       legend = c("Data Integrated", "Michealis Menten",
+                  "Exponential", "Non Rectangular Hyperbola"),
        bty = "n", cex = 0.75)
 
 }
 
 ### FvC
 
-plot_photosyn_annual_FvC<-  function(vpd = 0, alpha = 0.3, theta = 0.7, Vcmax = 38){
+
+
+plot_photosyn_annual_FvC<-  function(vpd = 0,
+                                     narea = 1.87e-3,
+                                     B_lf1= 31.62 *1000^0.801,
+                                     # HTTP://DOI.WILEY.COM/10.1111/GCB.12870 CONVERSION OF NARE IN G M-2
+                                     B_lf2=0.7,
+                                     B_lf3=0.3,
+                                     B_lf4=21000,
+                                     B_lf5=0.801, # http://doi.wiley.com/10.1111/gcb.12870
+                                     B_lf6=1.67){
 require(plantecophys)
 require(plant)
 k_I <-  0.5
 latitude <- 0
-assimilation_curve <- function(I, V, vpd, alpha, theta) {
-df_pred <- Photosyn(PPFD=I *1e+06/(24*3600), # conversion of light in mu mol /m2 /s is it ok ?
-                    VPD = vpd,
-                    Vcmax  = V,
-                    Jmax  = V*1.67,
-                    alpha = alpha,
-                    theta = theta,
-                    gsmodel = "BBLeuning") # Jmax ~1.67 Vcmax in Medlyn et al. 20
-return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
+
+assimilation_curve <- function(I, V, vpd, alpha, theta, lf6) {
+    df_pred <- Photosyn(PPFD=I*1e+06/(24*3600),
+                        # conversion of light in mu mol /m2 /s is it ok ?
+                        VPD = vpd,
+                        Vcmax  = V,
+                        Jmax  = V*lf6,
+                        alpha = alpha,
+                        theta = theta,
+                        gsmodel = "BBLeuning")
+                        # Jmax ~1.67 Vcmax in Medlyn et al. 20
+ return((df_pred$ALEAF + df_pred$Rd)*24 * 3600 / 1e+06)
 }
+
+      Vcmax <- B_lf1 * (narea) ^  B_lf5
+      theta <- B_lf2
+      alpha <- B_lf3
+      lf6   <- B_lf6
+
 
 ## Photosynthesis  [mol CO2 / m2 / yr]
 approximate_annual_assimilation <- function(V, latitude, vpd, alpha, theta) {
   E <- seq(0, 1, by=0.02)
   ## Only integrate over half year, as solar path is symmetrical
   D <- seq(0, 365/2, length.out = 10000)
-  I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D, latitude = abs(latitude)))
+  I <- plant:::PAR_given_solar_angle(plant:::solar_angle(D,
+                                                   latitude = abs(latitude)))
   AA <- NA * E
   for (i in seq_len(length(E))) {
     AA[i] <- 2 * plant:::trapezium(D, assimilation_curve(
-                                k_I * I * E[i], V, vpd, alpha, theta))
+                                          k_I * I * E[i], V = Vcmax, vpd = vpd,
+                                          alpha = alpha, theta = theta,
+                                          lf6 = lf6))
   }
   if(all(diff(AA) < 1E-8)) {
     # line fitting will fail if all have are zero, or potentially same value
@@ -490,7 +508,9 @@ a_p2  <- coef(fit)[["p2"]]
 
 mar.default <- c(5,4,4,2) + 0.1
 par(mfrow = c(1, 2), mar = mar.default + c(0, 0.3, 0, 0))
-plot(0:200, assimilation_curve(0:200,  V = 38, vpd, alpha , theta),
+plot(0:200, assimilation_curve(0:200,  V = Vcmax, vpd = vpd,
+                                          alpha = alpha, theta = theta,
+                                          lf6 = lf6),
      type = "l",
      xlab = expression(paste("PPFD (mol", " ",m^-2, " ", d^-1, ")" )),
      ylab = expression(paste(A,"(mol", " ", m^-2, " ",d^-1, ")" )))

@@ -17,8 +17,9 @@
 \makeatother
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
-\title{Supplementary Materials 2. Modification of Plant model to
-  include vapour pressure deficit}
+\title{Supplementary Materials 2. Modification of \plant\ model to
+  include vapour pressure deficit with a coupled Farquhar-stomatal
+  conductance model}
 
 \author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
 \date{}
@@ -298,8 +299,7 @@ the photosynthesis model. Then, the light reponse of photosynthesis model needs 
 
 \subsubsection{Parametrisation of $V_{cmax}$ \textit{vs.} $N_{area}$}
 
-Photosynthetic rate should scale positively with leaf Nitrogen content
-per area $N_{area}$ because of the large amount of nitrogen invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
+Photosynthetic rate should scale positively with leaf $N_{area}$ because of the large amount of nitrogen invested in RuBisCO. Several relationship have been proposed to link $V_{cmax}$ and $N_{area}$.
 
 \begin{itemize}
 
@@ -336,13 +336,12 @@ link between $V_{cmax}$ and $N_{area}$.  Leaf P has little direct
 effect on $V_{cmax}$ but an important interaction with $N_{area}$: at
 low leaf P the slope of $V_{cmax}$ \textit{vs} $N_{area}$ is shallow
 but at high leaf P this slope is steeper \citep{Walker-2014}.
-
 % It is also possible to use an other approach where both $V_{cmax}$ and $J_{max}$
 % are function of N and P rather than having Jmax a function of Vcmax (Domingues et al. 2010, Walker et al. 2014).
-
 The objective is not to focus on P effect, so we propose to use the
 most recent parameterisation using the TRY data of \citet{Sakschewski-2015}.
 
+\clearpage
 
 \subsubsection{Light response parametrisation of the Farquhar model}
 
@@ -385,74 +384,76 @@ light response part:
 \label{fig:photo3}}
 \end{figure}
 
-The figure \ref{fig:photo0} to \ref{fig:photo3} show the light response curves for
-different parameterisation at vpd from 0 to -3.
-
-I propose to use the parametrisation of \citet{Marechaux-2017}.
+The figures \ref{fig:photo0} to \ref{fig:photo3} show the light response curves for
+different parameterisation at vpd from 0 to -3. We will use the
+parametrisation of \citet{Marechaux-2017}.
 
 \clearpage
 
-Then we can see how this scale up to the annual photosynthesis rate
-using the integration approach of \plant\ . \plant\ use a Michaelis
-Menten function to approximate the annual photosynthesis rate see
-figure \ref{fig:photo_annu_plant}. The Michaelis Menten approximation
+\subsubsection{Annual photosynthesis model}
+
+In \plant\ the short term photosynthesis is used to derive an annual
+photosynthesis model because the simulation approach is done at an
+annual time step. \plant\ use a Michaelis
+Menten function to approximate the annual photosynthesis rate. The Michaelis Menten approximation
 is not working well for the Farquhar model, see Figures
-\ref{fig:photo_annu_fvc0} and \ref{fig:photo_annu_fvc3}. An exponential function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) or the non-rectangular hyperbola work better, see figure \ref{fig:photo_annu_fvc}. We will use a non-rectangular hyperbola.
-
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/Annual_Photo_Plant.pdf}
-\caption{\textbf{Annual photosynthesis model of \plant\ .}
-\label{fig:photo_annu_plant}}
-\end{figure}
-
+\ref{fig:photo_annu_fvc0} to \ref{fig:photo_annu_fvc3}. We tested the exponential
+function \citep{Chen-2016} ($A = p_1 *(1-e^{-p_2* E/p_1})$) and the
+non-rectangular hyperbola, see figure
+\ref{fig:photo_annu_fvc15}. We will use a non-rectangular hyperbola
+which work well even at low vpd.
 
 \begin{figure}[ht]
 \centering
-\includegraphics{../figures/Annual_Photo_FvC_vpd0.pdf}
-\caption{\textbf{Annual photosynthesis model of Farquhar model with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
+\includegraphics{../figures/Annual_Photo_FvC_narea_vpd0.pdf}
+\caption{\textbf{Annual photosynthesis model of Farquhar model with
+    the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$,
+    $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ for $ vpd = 0$.}
 \label{fig:photo_annu_fvc0}}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\includegraphics{../figures/Annual_Photo_FvC_narea_vpd1_5.pdf}
+\caption{\textbf{Annual photosynthesis model of Farquhar model with
+    the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$,
+    $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ for $vpd = -1.5$.}
+\label{fig:photo_annu_fvc15}}
+\end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics{../figures/Annual_Photo_FvC_vpd3.pdf}
-\caption{\textbf{Annual photosynthesis model of Farquhar model with the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$, $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$.}
+\includegraphics{../figures/Annual_Photo_FvC_narea_vpd3.pdf}
+\caption{\textbf{Annual photosynthesis model of Farquhar model with
+    the parametrisation of Troll, $\alpha = 0.3$, $\theta = 0.7$,
+    $V_{cmax} = 38$ and $J_{max} = 1.67 * V_{cmax}$ for $vpd = -3$.}
 \label{fig:photo_annu_fvc3}}
 \end{figure}
 
 
 \clearpage
 
-\subsection{Correlation of vpd and T}
+\subsection{Range of varriation of $vpd$ at constant temperature}
 
-On the short term time scale, vpd and T covary strongly. VPD covaries with Temperature from its definition, but the correlation is not one.
-
-One solution to compute vpd is
-
-$$e_s = 0.6108 * exp(17.27 * T / (T + 237.3))$$
-
-$$e_a = RH / 100 * e_s $$
-
-$$vpd = e_a - e_s$$
-
-So clearly there is an effect of T but also of relative humidity RH.
-So we need actual data to estimate the correlation between vpd and T.
-
-I looked at the correlation between vpd and T using worldclim and a method to compute saturated water pressure based on Tmin and Tmax as recommended by
-Allen, RG, Pereira, LS, Raes, D, Smith, M (1998) Meteorological data, Chapter 3. In: Crop evapotranspiration - Guidelines for computing crop water requirements. Food and Agricuture Organization (FAO) Irrigation and Drainage Paper 56. United Nations, FAO, Rome, Italy. 
+On the short term, $vpd$ and air temperature covary strongly. $vpd$
+covaries with temperature according to its definition, but the correlation is
+not perfect. To evaluate on which range we could vary $vpd$ at a
+constant temperature we evaluated the link between $vpd$ and
+temperature ($T$) at the global scale using the equations of \citep{Allen-1998} to compute the $vpd$ from
+$T_{min}$, $T_{max}$, and relative humidity $RH$:
 
 $$e_s(T) = 0.6108 * exp(17.27 * T / (T + 237.3))$$
 
-$$e_s = (e_s(Tmin)+e_s(Tmax))/2 $$
+$$e_s = (e_s(T_{min})+e_s(T_{max}))/2 $$
 
 $$e_a = RH / 100 * e_s $$
 
 $$vpd = e_a - e_s$$
 
-At the world scale this gives the following pattern (see Figure \ref{fig:vpd_t}):
+$vpd$ is thus related to $T$ but also to $RH$. We use worldclim data
+to derive annual $vpd$ in function $T_{min}$, $T_{max}$, and $RH$
+globally (we thus ignore seasonal variation). At
+global scale the link between $vpd$ and $T$ is given in the Figure \ref{fig:vpd_t}.
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/vpd_t_mean.png}
@@ -460,59 +461,73 @@ At the world scale this gives the following pattern (see Figure \ref{fig:vpd_t})
 \label{fig:vpd_t}}
 \end{figure}
 
- For T = 25C it is possible to vary vpd between -0.25 and -3 following the green line up to the purple line (-0.25). I propose to use this option.
+ For a temprature of 25C it is possible to vary vpd between -0.25 and
+ -3 along the green line. We will explore this range of vpd at a
+ constant temperature of 25C.
  
-\pagebreak
+\clearpage
  
- \subsection{$N_{area}$ effect of leaf lifespan}
+ \subsection{$N_{area}$ effect of leaf turnover rate}
 
-The elevation of LMA vs leaf turnover clearly vary with $N_{area}$ see Figure \ref{fig:narea_tradeoff}. 
+The elevation of $LMA$ \textit{vs.} leaf turnover rate($LTR$) clearly vary with $N_{area}$ see Figure \ref{fig:narea_tradeoff}. 
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/data_lma_ll_trade_off_narea.pdf}
-\caption{\textbf{Trade offs between LMA and LTR at different value of N area.}
+\caption{\textbf{Trade offs between $LMA$ and LTR at different value of
+    N area based on glopnet \citep{Wright-2004}.}
 \label{fig:narea_tradeoff}}
 \end{figure}
 
-The intercept of the LMA vs LT tradeoff is linearly related to $N_{area}$ as shown on the figure \ref{fig:narea_intercept} and there is no significant effect on the slope. I propose to test this in the Farquahr model as an additionnal cost of high $N_{area}$.  Here I used $N_{area}$ divided by $N_{area}$ mean in FF16 in plant. 
+The intercept of the $LMA$ \textit{vs.} $LTR$ is linearly related to
+$N_{area}$ as shown on the figure \ref{fig:narea_intercept} and there
+is no significant effect on the slope. We thus also implemented this
+effect in \plant\ to test the effect of an
+additional cost of high $N_{area}$ on community assembly. The relathionship is
+parametrised with $N_{area} / \overline{N_{area}}$ to center the
+variation around $\overline{N_{area}}$ as done in previous version of
+\plant\ . 
 
 \begin{figure}[ht]
 \centering
 \includegraphics{../figures/data_B_kl_narea.pdf}
-\caption{\textbf{Link between $N_{area}$ and intercept ($B_{kl1}$) and slope ($B_{kl2}$) of the LMA vs leaf turnover tradeoff (using 14 bins of $N_{area}$ with equal number of observations per bin.}
+\caption{\textbf{Link between $N_{area}$ and intercept ($B_{kl1}$) and
+    slope ($B_{kl2}$) of the $LMA$ \textit{vs.} $LTR$ (using 14 bins of $N_{area}$ with equal number of observations per bin.}
 \label{fig:narea_intercept}}
 \end{figure}
 
 
 \clearpage
 
-\subsection{TODO SHORT-TERM}
+% \subsection{TODO SHORT-TERM}
 
-In the short-term it would be interesting to think about:
+% In the short-term it would be interesting to think about:
 
-\begin{itemize}
+% \begin{itemize}
 
-\item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}).
+% \item predict vpd and a full water budget for the observed data (glopnet) to facilitate comparison with theoretical prediction (building on \citet{Prentice-2014}).
 
-\item re-run all simulation on cluster with new version of plant to fix last convergence problems.
+% \item re-run all simulation on cluster with new version of plant to fix last convergence problems.
 
-\end{itemize}
-
-
-\subsection{TODO LONG-TERM}
-
-In the long-term it would be interesting to think about:
-
-\begin{itemize}
+% \end{itemize}
 
 
-\item using stomatal model that is linked to the soil water potential (as in \citet{Sperry-2016} or
-\citet{Sterck-2011})
+% \subsection{TODO LONG-TERM}
 
-\item include a simple water budget to model tree competition for water
+% In the long-term it would be interesting to think about:
 
-\end{itemize}
+% \begin{itemize}
+
+
+% \item using stomatal model that is linked to the soil water potential (as in \citet{Sperry-2016} or
+% \citet{Sterck-2011})
+
+% \item look into FATES documentation to use their soil water stress
+%   effect on photosyntehsis see https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html#fundamental-photosynthetic-physiology-theory
+
+% \item include a simple water budget to model tree competition for water
+
+% \end{itemize}
 
 
 

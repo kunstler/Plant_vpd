@@ -202,20 +202,16 @@ targets:
     command: plot_photosyn_annual_plant()
     plot: wide
 
-  figures/Annual_Photo_FvC_vpd0.pdf:
-    command: plot_photosyn_annual_FvC()
-    plot: wide
-
-  figures/Annual_Photo_FvC_vpd3.pdf:
-    command: plot_photosyn_annual_FvC(I(vpd = 3))
-    plot: wide
-
   figures/Annual_Photo_FvC_narea_vpd0.pdf:
     command: plot_photosyn_annual_FvC_Narea()
     plot: wide
 
   figures/Photo_FvC_narea_vpd0.pdf:
     command: plot_photosyn_Plant_FvC_Narea()
+    plot: wide
+
+  figures/Annual_Photo_FvC_narea_vpd1_5.pdf:
+    command: plot_photosyn_annual_FvC_Narea(I(vpd = 1.5))
     plot: wide
 
   figures/Photo_FvC_narea_vpd1_5.pdf:
