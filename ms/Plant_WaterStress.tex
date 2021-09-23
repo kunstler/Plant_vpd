@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{hyperref}
+\usepackage{float}
 %% \usepackage{authblk}
 \usepackage[labelfont=bf]{caption} % make label for figure bold
 
@@ -28,8 +29,7 @@
 
 \author{Georges Kunstler, Daniel S. Falster, Richard G. FitzJohn}
 \date{}
-\affiliation{INRAE, Grenoble, France and Department of Biological Sciences, Macquarie University,
-  Sydney, Australia}
+\affiliation{Univ. Grenoble Alpes, INRAE, LESSEM, 2 rue de la papeterie BP 76; F-38402 St-Martin-d'Heres, France; Department of Biological Sciences, Macquarie University, Sydney, Australia; Evolution and Ecology Research Centre, School of Biological, Earth and Environmental Science, University of New South Wales, Sydney, Australia.}
 \date{}
 \runninghead{}
 \keywords{}
@@ -56,11 +56,9 @@ gradients. Because functional traits are directly related to plant
 functioning these traits gradients raised the hope to help better
 understand drivers of changes in vegetation.
 
-There is a long history of studies
-proposing adaptative arguments based on optimisation approaches with
-ecophysiological models of plant functioning \citep{Makela-2002} to
-identify the drivers of the variation of traits along environmental
-gradients.
+There is a long history of studies that try to identify the drivers of the variation of traits along environmental
+gradients based on optimisation approaches with
+ecophysiological models of plant functioning \citep{Makela-2002}.
 % For instance, high $LMA$ and high $N_{area}$ has been proposed as an advantage in dry climate because
 % a higher resistance to dehydration
 % \citep{Wright-2002a,Wright-2002b}, lower risk of overheating
@@ -78,8 +76,14 @@ sites than between sites (see plots of pattern for leaf traits extracted from gl
 
 \begin{figure}[ht]
 \centering
-\includegraphics{../figures/leaf_climate.pdf}
-\caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per area along water availability index (a and d) and MAT over MAP (b and e), and MAP over PET (c and f).} Data are from glopnet \citep{Wright-2004} and MAP over PET is from \url{http://www.cgiar-csi.org/data/global-aridity-and-pet-database}.
+\includegraphics{../figures/leaf_climate.pdf}[H]
+\caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per
+  area along MAT over MAP (a and d), water availability index
+  MAP/PET (b and e), and  vpd (c and f).} Leaf traits data are from glopnet
+\citep{Wright-2004} and climatic data where derived from worldclim,
+PET is from
+\url{http://www.cgiar-csi.org/data/global-aridity-and-pet-database}
+and vpd is dervied from Tmin, Tmax, and relative air humidity.
 \label{fig:leafpattern}}
 \end{figure}
 
@@ -88,7 +92,7 @@ The key limitation of the optimisation approach is that it fails to account for 
 traits also control species interaction and the coexistence of
 species with different traits values \citep{Chesson-2018}. 
 Abstract theoretical models \citep{Case-2000,Goldberg-2006,Leimar-2008} have shown that abiotic constrains and competitive interactions jointly control species coexistence and the range of traits
-value found along environmental gradients and that competition can
+value found along environmental gradients. These studies have also shown that competition can
 clearly make the traits deviate from the climatic optimum. These
 abstract theoretical models have however generally been disconnected
 of the physiological mechanisms underpinning trait effects. Recently studies have started to extand the physiological optimisation
@@ -103,13 +107,13 @@ play. One of the most classical one for perennial plant is the
 differentiation of successional strategies that may promote
 coexistence, provided disturbances create a mosaic of successional
 stages \citep{Falster-2017}. Successional strategy is thought to be underpinned by a tradeoff
-between performance in high light and performance in low light (REF). Light
-competition is included in several of the above mentionned
+between performance in high light and performance in low light \citep{Pacala-1996}. Light
+competition is included in several of the above mentioned
 physiological models, but most of them do not represent the
 meta-community structure and disturbance regime underpinning coexistence.
 
 It is thus key to develop mechanistic models where traits are related
-to both climate constraints and coexistence mechanisms differentiation of successional strategies. We propose to do this with a new model -- \plant\
+to both climate constraints and coexistence through differentiation of successional strategies. We propose to do this with a new model -- \plant\
 \citep{Falster-2016,Falster-2017} -- that connects directly with leaf
 traits and simultaneously allows for coexistence within sites. Coexistence is driven by competition for light
 in size-structured meta-populations under a disturbance regime. Here
@@ -117,7 +121,7 @@ we propose to extand the existing model to represent community
 assembly along a drought gradient focusing on two traits, $LMA$ and
 $N_{area}$. We propose to focus on these two traits because: 1. they
  are know to be related to response to water stress and light
-competition (REF), 2.  they are among the most commonly measured
+competition, 2.  they are among the most commonly measured
 traits in field studies, and 3. we start to have a deep understanding
 of the mechanisms underpinning their effects on plant functioning. 
 
@@ -154,7 +158,8 @@ $g_s$.
 So tolerance to drought might be related to high traits value of both
 $LMA$ and $N_{area}$, leading to a selection in the same direction
 along the drought gradient, but a counter selection by the light
-competition. A side effect of high $N_{area}$
+competition.
+A side effect of high $N_{area}$
 increase is that this could results in lower mechanical
 resistance of leaf shifting the LMA \textit{vs.} leaf
 lifespan tradeoff intercept toward shorter lifespan
@@ -174,7 +179,7 @@ affect photosynthesis through an increase of vapour pressure deficit
 'vpd'. We include an effect of $N_{area}$ on $V_{cmax}$ that can
 translate into a higher drought tolerance as proposed in the
 optimisation literature. This approach
-is based on well know mechanisms implemented in most DGVMs (REF)
+is based on well know mechanisms implemented in most earth system models \citep{Rogers-2017}
 and represents a simple and well know effect of water stress on plant
 functioning.
 
@@ -215,6 +220,8 @@ TODO
 
 \begin{itemize}
 
+\item Short introduction section
+  
 \item Presentation of Plant
 
 \item Adaptation of Plant to use a Farquhar photosynthesis model coupled with a stomatal conductance model
@@ -222,10 +229,26 @@ TODO
 \item Trait based parameterisation of photosynthesis model
 
 \item vpd variation at constant temperature
+
+\item Submodels with leaf N area cost on leaf turnover rate  
   
 \item Simulations of community assembly 
 
 \end{itemize}
+
+We will first present briefly the \plant\ model and then details our modification to include a Farquhar photosynthesis model coupled with a stomatal conductance model. In this first version of the model leaf nitrogen content per area is related to $A_{max}$. Then we present a second version of the model where leaf nitrogen content per area is also affecting leaf turnover rate. Finally, we present the general approach to simulate evolutionary assembly of tree communities along a gradient of vpd with disturbances.
+
+\subsection{\plant\ model}
+
+A detailed description of \plant\ is available in \citet{Falster-2016,Falster-2017}, here we will just give an overview of the model structure.
+
+\plant\ simulates a metacommunity of patches, where disturbances remove all tree within a patch and disturbed patches are colonized by seeds arriving from all patches (global dispersal). Patches differ only by their age ($a$) corresponding to the time since disturbance. The distribution of patch ages follows a weibull distribution with a average return time between disturbances $\hat{a}$.
+
+To model how size distribution change with patch age, \plant\, use a numerical resolution of the von Forester's partial differential equation of size-structured population. \plant\ use the characteristic method for numerically solving the partial differential equation. Competition between trees is represented by vertical shading affecting growth, survival and fecundity through the carbon budget of the trees. Successional dynamics emerges in \plant\ through light competition and differences in species physiological strategies. 
+
+\plant\ represents individual physiological strategies through a limited number of traits affecting photosynthesis, respiration rates and turnover rate of leaf, sapwood, bark, and roots. \citet{Falster-2018} present the effect of five traits, seed mass, height at maturation, leaf mass per unit leaf area, leaf nitrogen per unit leaf area, and wood density. Here we will explore only leaf mass per unit leaf area $LMA$ and leaf nitrogen per unit leaf area $N_{area}$, leaving the other traits fixed at a mean value. 
+
+\subsection{Modification of \plant\ photosynthesis model to account for vpd and $N_{area}$ effect}
 
 
 
@@ -239,29 +262,24 @@ TODO
 
 \subsubsection{$LMA$  shift with vpd}
 
-\begin{figure}[ht]
+The Figure \label{fig:lma_vpd} shows the lma assembled at different
+vpd value in the case where only lma varies.
+
+\begin{figure}[H]
 \centering
 \includegraphics{../figures/gradient_lma_single_lma_FvCB.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\caption{\textbf{Predicted community assembly of leaf mass per area along a vpd gradient by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The color of the point represent the variation of vpd.}
 \label{fig:lma_vpd}}
 \end{figure}
 
-\clearpage
+\pagebreak[3]
 
 \subsection{$LMA$ and $N_{area}$ along a vpd gradient}
-\subsubsection{$LMA$ and $N_{area}$ correlation}
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_narea_lma_single_FvCB_cor.pdf}
-\caption{\textbf{LMA vs Leaf N area for FVCB model with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
-\label{fig:lma_narea_cor_single}}
-\end{figure}
-
-
-\clearpage
 
 \subsubsection{$LMA$ and $N_{area}$ shift with vpd}
+
+The Figure \label{fig:lma_nareaFh2} shows the lma values and Narea values assembled at different
+vpd value in the case where both lma and Narea vary.
 
 
 % \begin{figure}[ht]
@@ -271,7 +289,7 @@ TODO
 % \label{fig:lma_nareaFh}}
 % \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf}
 \caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
@@ -279,24 +297,32 @@ TODO
 \end{figure}
 
 
+\subsubsection{$LMA$ and $N_{area}$ correlation}
+
+The Figure \label{fig:lma_narea_cor_single} shows the correlation
+between lma and Narea assembled at different
+vpd values in the case where both lma and Narea vary.
+
+\begin{figure}[H]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for FVCB model with high
+    disturbance rate (Disturbance mean interval 5 years). The color of
+    the points represents the variations of vpd.}
+\label{fig:lma_narea_cor_single}}
+\end{figure}
 
 
-\clearpage
+\pagebreak[4]
 
 \subsection{$LMA$ and $N_{area}$ along a vpd gradient with N area impact on leaf turnover rate}
 
-\subsubsection{$LMA$ and $N_{area}$ correlation}
-
-\begin{figure}[ht]
-\centering
-\includegraphics{../figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf}
-\caption{\textbf{LMA vs Leaf N area for model with link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
-\label{fig:lma_narea_cor_single_NvLTR}}
-\end{figure}
-
-\clearpage
 
 \subsubsection{$LMA$ and $N_{area}$ shift with vpd}
+The Figure \label{fig:lma_nareaFh2_NvLTR} shows the lma values and Narea values assembled at different
+vpd value in the case where both lma and Narea vary and Narea affect
+negatively leaf trunover rate (LTR)  (the intercept of the log(LTR) =
+a + b*log(LMA)).
 
 % \begin{figure}[ht]
 % \centering
@@ -305,27 +331,41 @@ TODO
 % \label{fig:lma_nareaFh}}
 % \end{figure}
 
-\begin{figure}[ht] 
+\begin{figure}[H] 
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_narea_lma2_NvLTR_FvCB.pdf}
 \caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
-\label{fig:lma_nareaFh2}}
+\label{fig:lma_nareaFh2_NvLTR}}
 \end{figure}
 
 
+\subsubsection{$LMA$ and $N_{area}$ correlation}
+
+The Figure \label{fig:lma_narea_cor_single_NvLTR} shows the correlation
+between lma and Narea assembled at different
+vpd values in the case where both lma and Narea vary and Narea affects
+LTR.
 
 
-\clearpage
+\begin{figure}[H]
+\centering
+\includegraphics{../figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf}
+\caption{\textbf{LMA vs Leaf N area for model with link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
+\label{fig:lma_narea_cor_single_NvLTR}}
+\end{figure}
+
+\pagebreak[4]
+
 
 \section{Discussion}
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics{../figures/data_lma_narea.pdf}
-\caption{\textbf{Observed within site SMA relation between $LMA$ and
-    $N_{area}$ in glopnet data \citep{Wright-2004} for sites with at
-    least 10 observations.}
+\includegraphics{../figures/data_lma_narea_vpd.pdf}
+\caption{\textbf{Observed relation between $LMA$ and
+    $N_{area}$ in glopnet data \citep{Wright-2004} for different class
+    of vpd of the sites.}
 \label{fig:lma_narea_glopnet}}
 \end{figure}
 

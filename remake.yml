@@ -1,6 +1,6 @@
 packages:
   - plant
-  - plant.assembly
+##  - plant.assembly
   - loggr
   - rmarkdown
   - RColorBrewer
@@ -240,6 +240,11 @@ targets:
     command: figure_lma_narea(leaf_traits)
     plot: square
 
+  figures/data_lma_narea_vpd.pdf:
+    command: figure_lma_narea_by_vpd(leaf_traits)
+    plot: square
+
+
 
 # Narea effect on tradeoff LMA vs LTR
 
@@ -288,7 +293,7 @@ targets:
 ## FvCB assembly figures
 
   figures/gradient_lma_single_lma_FvCB.pdf:
-    command: plot_trait_vpd(list_assembly_FvCB_single_lma_cluster, I(vec_site_prod = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
+    command: plot_trait_vpd(list_assembly_FvCB_single_lma_cluster, I(vec_site_vpd = c(0, -0.5, -1, -1.5, -2, -2.5, -3) ))
     plot: square
 
   figures/gradient_lma_multi_lma_FvCB.pdf:

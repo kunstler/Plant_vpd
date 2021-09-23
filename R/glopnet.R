@@ -223,6 +223,50 @@ figure_lma_narea <- function(data) {
 }
 
 
+figure_lma_narea_by_vpd <- function(data) {
+  data <- subset(data,
+                 !is.na(data[["n.area"]] * data[["lma"]] *
+                          data[["vpd"]]))
+  lma <- data[["lma"]]
+  narea <- data[["n.area"]]
+  
+  data$levels <- cut(data$vpd,
+                     breaks = quantile(data$vpd,
+                                       probs = seq(0,1, length.out = 7),
+                                       na.rm = TRUE),
+                     labels = FALSE, ordered_result = TRUE,
+                     include.lowest = TRUE)
+  levels2 <- round(tapply(data$vpd, INDEX = data$levels, mean), 2)
+ 
+  groups<- data[['levels']]
+  sm1 <- sma(lma ~ narea * groups, log="xy")
+  
+  colfunc <- colorRampPalette(c("red", "green"))
+  cols <- colfunc(length(unique(data[['levels']])))
+  col_sm1 <- cols[data[["levels"]][match(sm1[["groups"]], groups)]]
+  
+  par(mar=c(4.6, 4.6, .5, .5))
+  plot(NA, type="n", log="xy", xlim=c(0.00026, 0.01), ylim=c(0.01, 1.28),
+       xlab="", ylab="", las=1)
+  mtext(expression(paste("Nitrogen per area (kg ", m^-2,")")), line=3, side = 1)
+  mtext(expression(paste("Leaf-construction cost (kg ", m^-2,")")), line=3, side = 2)
+
+  points(narea, lma, col=cols[data$levels],
+         pch=16)
+  plot(sm1, add=TRUE, col=col_sm1, type="l", lwd=2)
+  
+
+  title <- sprintf("%d sites, %d species",
+                   length(unique(data$location)),
+                   sum(!is.na(narea)))
+  legend("topleft", legend=paste("vpd", " class",
+                                  levels2), bty="n",
+         pch=16, col=cols, cex=1, title=title)
+  
+}
+
+# figure_lma_narea_by_vpd(leaf_traits)
+
 figure_B_kl_narea<- function(data) {
   require(dplyr)
   data <- subset(data, !is.na(data[["n.area"]] * data[["lma"]] *
