@@ -74,9 +74,9 @@ leaf nitrogen per area ($N_{area}$) with aridity. $LMA$
 patterns are very weak, with more variability of the traits within
 sites than between sites (see plots of pattern for leaf traits extracted from glopnet \citep{Wright-2004} in Figure. \ref{fig:leafpattern}).
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics{../figures/leaf_climate.pdf}[H]
+\includegraphics{../figures/leaf_climate.pdf}
 \caption{\textbf{Pattern in leaf mass per area and leaf nitrogen per
   area along MAT over MAP (a and d), water availability index
   MAP/PET (b and e), and  vpd (c and f).} Leaf traits data are from glopnet
@@ -209,7 +209,9 @@ With this extended version of \plant\ we build on the adaptive dynamics framewor
 \item Accounting for $N_{area}$ effect on leaf turnover rate adds an
   additional cost of high $N_{area}$ due to faster leaf turnover
   rate. This should counter select high $N_{area}$ in low water stress
-  area even for high light strategies but also affect the value of $LMA$ selected.
+  area even for high light strategies but also affect the value of
+  $LMA$ selected. WARNINGS SO FAR THIS IS VERY CRUDE! I'M NOT SURE WE
+  NEED TO KEEP THAT.
 
 \end{itemize}
 
@@ -262,8 +264,8 @@ To model how size distribution change with patch age, \plant\, use a numerical r
 
 \subsubsection{$LMA$  shift with vpd}
 
-The Figure \label{fig:lma_vpd} shows the lma assembled at different
-vpd value in the case where only lma varies.
+The Figure \label{fig:lma_vpd} shows the $LMA$ assembled at different
+vpd values in the case where only lma varies.
 
 \begin{figure}[H]
 \centering
@@ -278,8 +280,8 @@ vpd value in the case where only lma varies.
 
 \subsubsection{$LMA$ and $N_{area}$ shift with vpd}
 
-The Figure \label{fig:lma_nareaFh2} shows the lma values and Narea values assembled at different
-vpd value in the case where both lma and Narea vary.
+The Figure \label{fig:lma_nareaFh2} shows the $LMA$ values and $N_{area}$ values assembled at different
+vpd values in the case where both lma and Narea vary.
 
 
 % \begin{figure}[ht]
@@ -292,7 +294,8 @@ vpd value in the case where both lma and Narea vary.
 \begin{figure}[H]
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_narea_lma2_FvCB.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar with high disturbance rate (Disturbance mean interval 5). The color of
+    the points represents the variations of vpd.}
 \label{fig:lma_nareaFh2}}
 \end{figure}
 
@@ -300,13 +303,13 @@ vpd value in the case where both lma and Narea vary.
 \subsubsection{$LMA$ and $N_{area}$ correlation}
 
 The Figure \label{fig:lma_narea_cor_single} shows the correlation
-between lma and Narea assembled at different
+between $LMA$ and $N_{area}$ assembled at different
 vpd values in the case where both lma and Narea vary.
 
 \begin{figure}[H]
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_FvCB_cor.pdf}
-\caption{\textbf{LMA vs Leaf N area for FVCB model with high
+\caption{\textbf{$LMA$ \textit{vs.} $N_{area}$ for FVCB model with high
     disturbance rate (Disturbance mean interval 5 years). The color of
     the points represents the variations of vpd.}
 \label{fig:lma_narea_cor_single}}
@@ -319,10 +322,10 @@ vpd values in the case where both lma and Narea vary.
 
 
 \subsubsection{$LMA$ and $N_{area}$ shift with vpd}
-The Figure \label{fig:lma_nareaFh2_NvLTR} shows the lma values and Narea values assembled at different
-vpd value in the case where both lma and Narea vary and Narea affect
-negatively leaf trunover rate (LTR)  (the intercept of the log(LTR) =
-a + b*log(LMA)).
+The Figure \label{fig:lma_nareaFh2_NvLTR} shows the $LMA$ values and $N_{area}$  values assembled at different
+vpd values in the case where both $LMA$ and $N_{area}$ vary and $N_{area}$ affect
+negatively leaf trunover rate (LTR)  (the intercept of the log($LTR$) =
+a + b*log($LMA$)).
 
 % \begin{figure}[ht]
 % \centering
@@ -334,7 +337,10 @@ a + b*log(LMA)).
 \begin{figure}[H] 
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_narea_lma2_NvLTR_FvCB.pdf}
-\caption{\textbf{Predicted community assembly of leaf mass per area and leaf N per area along a productivity gradient controlled by aridity by 'Plant' based on Farquhar and a link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5). The size of the point represent the variation of LMA.}
+\caption{\textbf{Predicted community assembly of $LMA$ and $N_{area}$
+    along a productivity gradient controlled by aridity by 'Plant'
+    based on Farquhar and a link between $N_{area}$ and leaf turnover rate
+    with high disturbance rate (Disturbance mean interval 5). The color of the points represents the vpd.}
 \label{fig:lma_nareaFh2_NvLTR}}
 \end{figure}
 
@@ -342,15 +348,15 @@ a + b*log(LMA)).
 \subsubsection{$LMA$ and $N_{area}$ correlation}
 
 The Figure \label{fig:lma_narea_cor_single_NvLTR} shows the correlation
-between lma and Narea assembled at different
-vpd values in the case where both lma and Narea vary and Narea affects
+between $LMA$ and $N_{area}$  assembled at different
+vpd values in the case where both $LMA$ and $N_{area}$ vary and $N_{area}$ affects
 LTR.
 
 
 \begin{figure}[H]
 \centering
 \includegraphics{../figures/gradient_narea_lma_single_NvLTR_FvCB_cor.pdf}
-\caption{\textbf{LMA vs Leaf N area for model with link between N area and leaf turnover rate with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
+\caption{\textbf{$LMA$ \textit{vs.} $N_{area}$ for model with link between $N_{area}$  and leaf turnover rate with high disturbance rate (Disturbance mean interval 5 years). The color of the points represents the vpd.}
 \label{fig:lma_narea_cor_single_NvLTR}}
 \end{figure}
 
@@ -360,27 +366,7 @@ LTR.
 \section{Discussion}
 
 
-\begin{figure}[H]
-\centering
-\includegraphics{../figures/data_lma_narea_vpd.pdf}
-\caption{\textbf{Observed relation between $LMA$ and
-    $N_{area}$ in glopnet data \citep{Wright-2004} for different class
-    of vpd of the sites.}
-\label{fig:lma_narea_glopnet}}
-\end{figure}
-
 \begin{itemize}
-
-\item Negative correlation emerge between $LMA$ and $N_{area}$ but
-  this correlation is less clear when the additional cost of $N_{area}$
-  on leaf turnover rate is added. In contrast \citet{Wright-2004}
-  reported a weak but positive correlation between $LMA$ and
-  $N_{area}$ (see Figure in Figure. \ref{fig:lma_narea_glopnet}). The
-  negative correlation predicted by \plant\ can be inversed or
- blurred when a $N_{area}$ cost in term of leaf life span is
- included. WHY high $N_{area}$ even more counter selected in shade
- because of additional cost on top of respiration. To compensate for
- the leaf turnover cost of high $N_{are}$ selection for high $LMA$.
   
 \item \textbf{Without leaf turnover cost of $N_{area}$.} With
   decreasing vpd there is a shift toward higher values of $LMA$ and
@@ -391,14 +377,16 @@ LTR.
   observed in glopnet \citep{Wright-2004} with a counter selection of
   low value of $LMA$ and $N_{area}$ at low vpd. The range of value
   predicted for $N_{area}$ is close to the range observed and the
-  range of value predicted for $LMA$ is close but with a tendency to
-  predict higher values above 0.1.  
+  range of value predicted for $LMA$ is close but with few values
+  predicted close
+  to 1.  
 
 \item \textbf{Without leaf turnover cost of $N_{area}$.} With
   increasing vpd there is a decrease of the range of both $LMA$ and
   $N_{area}$ and smaller number of 'species' coexisting. The range and
   number of species is larger when the disturbance return interval is
-  long as already shown by \citet{Falster-2017}. This is in agreement with the pattern observed in glopnet \citep{Wright-2004}.
+  long as already shown by \citet{Falster-2017} (Not shown here but I
+  also ran simulations with longer disturbance intervals). This is in agreement with the pattern observed in glopnet \citep{Wright-2004}.
 
 \item \textbf{With leaf turnover cost of $N_{area}$.} With increasing
   vpd there is a shift toward higher values of $LMA$ because changes
@@ -416,7 +404,26 @@ LTR.
   value for $LMA$ is not in agreement with the pattern observed in
   glopnet \citep{Wright-2004}. 
 
+\item \textbf{Correlation between `$LMA$ and $N_{area}$.} Negative correlation emerge between $LMA$ and $N_{area}$. In contrast \citet{Wright-2004}
+  reported a weak but positive correlation between $LMA$ and
+  $N_{area}$ (see Figure. \ref{fig:lma_narea_glopnet}). The
+  negative correlation predicted by \plant\ can be inversed (when vpd
+  is close to 0) or
+ blurred when a $N_{area}$ cost in term of leaf life span is
+ included.  High $N_{area}$ even more counter selected in shade
+ because of additional cost on top of respiration. To compensate for
+ the leaf turnover cost of high $N_{area}$ selection for high $LMA$.
+
 \end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics{../figures/data_lma_narea_vpd.pdf}
+\caption{\textbf{Observed relation between $LMA$ and
+    $N_{area}$ in glopnet data \citep{Wright-2004} for different class
+    of vpd of the sites.}
+\label{fig:lma_narea_glopnet}}
+\end{figure}
 
 
 \clearpage
